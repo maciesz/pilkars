@@ -8,7 +8,8 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="pl.edu.mimuw.gala.app.MainMenuActivity"
+            android:name=".menus.MainMenuActivity"
+            android:name=".menus.SinglePlayerMenuActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/FullscreenTheme" >
