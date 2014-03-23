@@ -18,7 +18,7 @@ public final class Agent
     // ========================================================================
     // Constructor
     // ========================================================================
-    public Agent(final Integer width, final Integer height, 
+    public Agent(final int width, final int height, 
             final GoalConfiguration goalConfiguration, final StrategyLevel level)
     {
         /* Set final attributes */
@@ -26,7 +26,7 @@ public final class Agent
         this.SYMETRIC_POINT = (height / 2) * (width + 1) + width / 2;
         
         /* Build chart of game */
-        chart = new Chart(width, height);
+        chart = new CompVsPlayerChart(width, height);
         
         /* Pick strategy based on passed parametres */
         strategy = StrategyBuilder.getStrategy(level);
@@ -35,14 +35,21 @@ public final class Agent
     // ========================================================================
     // Methods
     // ========================================================================
-    public void registerMoveSequence(List<Integer> moveSeq)
+    public void registerPlayerMoveSequence(List<Integer> moveSeq, final PlayerType type)
     {
         /* Prepare appropriate moveSeq */
         final List<Integer> seq = parsePath(moveSeq);
-        
+
         /* Mark visited edges */
         for (int iter = 0; iter< seq.size() - 1; ++iter)
             chart.removeConnection(seq.get(iter), seq.get(iter + 1));
+
+        /* Change visited states to final */
+        for (int iter = 0; iter< seq.size(); ++iter)
+            chart.finalState[seq.get(iter)] = true;
+
+        /* Set ACTUAL state */
+        chart.ACTUAL_STATE = seq.get(seq.size() - 1);
     }
 
     public List<Integer> getComputerSequence()
@@ -62,6 +69,11 @@ public final class Agent
         return path;
     }
     
+    public boolean isMoveLegal(final int lhs, final int rhs)
+    {
+        return chart.isMovePossible(lhs, rhs);
+    }
+
     // ========================================================================
     // Variables
     // ========================================================================
@@ -69,7 +81,7 @@ public final class Agent
     
     public Chart chart;
     
-    private final Integer SYMETRIC_POINT;
+    private final int SYMETRIC_POINT;
     
     private final GoalConfiguration GOAL_CONFIGURATION;
     
