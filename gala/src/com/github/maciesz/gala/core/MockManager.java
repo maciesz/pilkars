@@ -2,7 +2,7 @@ package com.github.maciesz.gala.core;
 
 import android.util.Log;
 import com.github.maciesz.gala.common.Direction;
-import android.view.View;
+import java.util.List;
 
 /**
  * Prosta, tymczasowa implementacja Managera akceptująca każdy ruch gracza.
@@ -22,6 +22,11 @@ public class MockManager extends AbstractManager {
 
     @Override
     public AbstractManager getInstance() {
+        return new MockManager();
+    }
+
+    @Override
+    public List<Direction> getComputerDirectionSeq() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

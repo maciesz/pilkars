@@ -196,19 +196,19 @@ public class Chart {
      */
     private static final int MULTIPLIER = 1000;
     
-    /**
-     * Kierunki prawie według wskazówek zegara, bo zaczynamy od W(zachodu).
-     * Jest to jeden z kluczowych elementów wpływających na poprawność budowy planszy.
-     */
-    private static final int[] X_COORDS = {-1, -1, 0, 1, 1, 1, 0, -1};
-    private static final int[] Y_COORDS = {0, 1, 1, 1, 0, -1, -1, -1};
-    
     
     //=========================================================================
     //
     // Klasy, zmienne i struktury publiczne
     //
-    //=========================================================================
+    //=========================================================================    
+    /**
+     * Kierunki prawie według wskazówek zegara, bo zaczynamy od W(zachodu).
+     * Jest to jeden z kluczowych elementów wpływających na poprawność budowy planszy.
+     */
+    public static final int[] X_COORDS = {-1, -1, 0, 1, 1, 1, 0, -1};
+    public static final int[] Y_COORDS = {0, 1, 1, 1, 0, -1, -1, -1};
+    
     /**
      * Klasa przechowująca sekwencję ruchów gracza.
      */
@@ -326,6 +326,22 @@ public class Chart {
         // Metody i procedury publiczne
         //
         //=====================================================================
+        /**
+         * Procedura odznaczająca gracza rozpoczynającego rozgrywkę.
+         * 
+         * @param player gracz rozpoczynający grę 
+         */
+        public void setPlayer(final Players player) {
+            this.player = player;
+        }
+        
+        /**
+         * Procedura zmieniająca gracza posiadającego piłkę.
+         */
+        public void changeTurn() {
+            player = getOtherPlayer();
+        }
+        
         /**
          * Funkcja zaznaczająca daną pozycję jako odwiedzoną.
          * 
@@ -531,6 +547,17 @@ public class Chart {
     }
     
     /**
+     * Funkcja wyznaczająca liczbę reprezentującą połączenie między wierzchołkami start i next.
+     * 
+     * @param start wierzchołek, z którego zaczynamy ruch
+     * @param next wierzchołek, do którego chcemy się przemieścić
+     * @return wartość reprezentująca krawędź nieskierowaną (start, next)
+     */
+    public int computeHash(final int start, final int next) {
+        return Math.max(start, next) * MULTIPLIER + Math.min(start, next);
+    }
+    
+    /**
      * Funkcja zwracająca stan rozgrywki w danym momencie.
      * 
      * @return stan rozgrywki(zwycięstwo/porażka/blok/konieczny_ruch/akceptujący) 
@@ -545,14 +572,4 @@ public class Chart {
     // Funkcje i procedury prywatne
     //
     //=========================================================================
-    /**
-     * Funkcja wyznaczająca liczbę reprezentującą połączenie między wierzchołkami start i next.
-     * 
-     * @param start wierzchołek, z którego zaczynamy ruch
-     * @param next wierzchołek, do którego chcemy się przemieścić
-     * @return wartość reprezentująca krawędź nieskierowaną (start, next)
-     */
-    private int computeHash(final int start, final int next) {
-        return Math.max(start, next) * MULTIPLIER + Math.min(start, next);
-    }
 }

@@ -16,6 +16,6 @@ package com.github.maciesz.gala.exceptions;
 
 public class ImparitParameterException extends BaseException {
     static {
-        DEFAULT_MSG = "Attempt to create parametrize game chart with imparit parameter";
+        DEFAULT_MSG = "Attempt to create parametrized game chart with imparit parameter";
     }
 }

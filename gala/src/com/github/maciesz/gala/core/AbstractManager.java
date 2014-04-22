@@ -2,11 +2,12 @@ package com.github.maciesz.gala.core;
 
 import android.view.View;
 import com.github.maciesz.gala.ai.IArtificialIntelligence;
-import com.github.maciesz.gala.enums.Strategy;
 import com.github.maciesz.gala.chart.Chart;
 import com.github.maciesz.gala.common.Direction;
+import com.github.maciesz.gala.enums.Strategy;
 import com.github.maciesz.gala.exceptions.ImparitParameterException;
 import com.github.maciesz.gala.exceptions.InvalidGoalWidthException;
+import java.util.List;
 
 /**
  * Klasa abstrakcyjna głównego zarządcy gry.
@@ -78,15 +79,19 @@ public abstract class AbstractManager {
     public boolean isUserEnabled() {
         return isUserEnabled;
     }
-
-    public void setUserEnabled(boolean isUserEnabled) {
-        this.isUserEnabled = isUserEnabled;
-    }
     
-
-    // ========================================================================
-    // Dodatkowe i konieczne funkcje i procedury
-    // ========================================================================
+    
+    //=========================================================================
+    //
+    // Gettery
+    //
+    //=========================================================================
+    /**
+     * Funkcja zwracająca ciąg kierunków w które przemieszczał się gracz komputerowy.
+     * 
+     * @return wektor kierunków
+     */
+    public abstract List<Direction> getComputerDirectionSeq();
     
     /**
      * Funkcja wykorzystywana głównie we wzorcu projektowym fabryki zarządców,
@@ -134,5 +139,9 @@ public abstract class AbstractManager {
      */
     public void setStrategy(Strategy strategy) {
         // Fabryka strategii
+    }
+    
+    public void setUserEnabled(boolean isUserEnabled) {
+        this.isUserEnabled = isUserEnabled;
     }
 }

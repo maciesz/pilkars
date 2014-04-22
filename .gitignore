@@ -28,3 +28,4 @@ proguard/
 # wildcards
 *~
 *.swp
+*.iml

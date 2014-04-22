@@ -37,7 +37,7 @@ public class ManagerFactory {
      * @throws UnknownGameModeException
      */
     public static AbstractManager
-        createManager(/*View view, */ final GameMode gameMode) throws UnknownGameModeException {
+        createManager(final GameMode gameMode) throws UnknownGameModeException {
         
         if (!containsManager(gameMode))
             throw new UnknownGameModeException();
