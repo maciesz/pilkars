@@ -76,6 +76,14 @@ public abstract class AbstractManager {
      */
     public abstract boolean isMoveLegal(Direction direction);
 
+    /**
+     * Funkcja wywoływana przez widok informująca managera o podjętej decyzji ruchu.
+     * //TODO szeszek
+     *
+     * @param direction direction
+     */
+    public void executeMove(Direction direction) {}
+
     public boolean isUserEnabled() {
         return isUserEnabled;
     }

@@ -34,31 +34,38 @@ public class BoardView extends View {
     private float boardWidth;
 
     private List<Direction> history = new ArrayList<Direction>();
-    private static Paint grayPaint;
-    private static Paint whitePaint;
-    private static Paint bluePaint;
-    private static Paint redPaint;
-    private static Paint yellowPaint;
+    private static Paint backgroundPaint;
+    private static Paint linesPaint;
+    private static Paint pencilPaint;
+    private static Paint middlePointPaint;
+    private static Paint pointPaint;
 
     private int gridSize;
 
     private AbstractManager manager;
 
     static {
-        grayPaint = new Paint();
-        grayPaint.setColor(Color.DKGRAY);
+        backgroundPaint = new Paint();
+        backgroundPaint.setColor(Color.rgb(250,240,210));
 
-        whitePaint = new Paint();
-        whitePaint.setColor(Color.WHITE);
+        linesPaint = new Paint();
+        linesPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        linesPaint.setStrokeWidth((float) 5);
+        linesPaint.setColor(Color.rgb(176,224,230));
 
-        bluePaint = new Paint();
-        bluePaint.setColor(Color.BLUE);
+        pencilPaint = new Paint();
+        pencilPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        pencilPaint.setAntiAlias(true);
+        pencilPaint.setStrokeWidth((float) 5);
+        pencilPaint.setColor(Color.BLACK);
 
-        redPaint = new Paint();
-        redPaint.setColor(Color.RED);
+        middlePointPaint = pencilPaint;
+//        middlePointPaint = new Paint();
+//        middlePointPaint.setColor(Color.RED);
 
-        yellowPaint = new Paint();
-        yellowPaint.setColor(Color.YELLOW);
+        pointPaint = pencilPaint;
+//        pointPaint = new Paint();
+//        pointPaint.setColor(Color.YELLOW);
     }
 
     public BoardView(Context context, AttributeSet attrs) {
@@ -88,6 +95,7 @@ public class BoardView extends View {
                         try {
                             Direction direction = new Direction(currentX, currentY);
                             if (manager.isMoveLegal(direction)) {
+                                manager.executeMove(direction);
                                 history.add(direction);
                             }
                             invalidate();
@@ -131,7 +139,7 @@ public class BoardView extends View {
         Log.d("BoardView", String.valueOf(gridSize));
         drawMap(canvas);
 
-        drawHistory(redPaint, canvas);
+        drawHistory(canvas);
     }
 
     /**
@@ -140,46 +148,45 @@ public class BoardView extends View {
      * @param canvas canvas
      */
     private void drawMap(Canvas canvas) {
-        canvas.drawColor(Color.DKGRAY);
+        canvas.drawPaint(backgroundPaint);
         for (int i = 1; i <= canvas.getWidth(); i++) {
-            canvas.drawLine(0, i * gridSize, canvas.getWidth(), i * gridSize, whitePaint);
+            canvas.drawLine(0, i * gridSize, canvas.getWidth(), i * gridSize, linesPaint);
         }
         for (int i = 1; i <= canvas.getHeight(); i++) {
-            canvas.drawLine(i * gridSize, 0, i * gridSize, canvas.getHeight(), whitePaint);
+            canvas.drawLine(i * gridSize, 0, i * gridSize, canvas.getHeight(), linesPaint);
         }
 
-        canvas.drawLine(4 * gridSize, 5 * gridSize, 4 * gridSize, 15 * gridSize, bluePaint);
-        canvas.drawLine(12 * gridSize, 5 * gridSize, 12 * gridSize, 15 * gridSize, bluePaint);
+        canvas.drawLine(3 * gridSize, 5 * gridSize, 3 * gridSize, 15 * gridSize, pencilPaint); //lewa pionowa
+        canvas.drawLine(11 * gridSize, 5 * gridSize, 11 * gridSize, 15 * gridSize, pencilPaint); //prawa pionowa
 
-        canvas.drawLine(7 * gridSize, 4 * gridSize, 7 * gridSize, 5 * gridSize, bluePaint);
-        canvas.drawLine(9 * gridSize, 4 * gridSize, 9 * gridSize, 5 * gridSize, bluePaint);
-        canvas.drawLine(7 * gridSize, 15 * gridSize, 7 * gridSize, 16 * gridSize, bluePaint);
-        canvas.drawLine(9 * gridSize, 15 * gridSize, 9 * gridSize, 16 * gridSize, bluePaint);
+        canvas.drawLine(6 * gridSize, 4 * gridSize, 6 * gridSize, 5 * gridSize, pencilPaint); //lewa mala pionowa gorna
+        canvas.drawLine(8 * gridSize, 4 * gridSize, 8 * gridSize, 5 * gridSize, pencilPaint); //prawa mala pionowa gorna
+        canvas.drawLine(6 * gridSize, 15 * gridSize, 6 * gridSize, 16 * gridSize, pencilPaint);
+        canvas.drawLine(8 * gridSize, 15 * gridSize, 8 * gridSize, 16 * gridSize, pencilPaint);
 
-        canvas.drawLine(4 * gridSize, 5 * gridSize, 12 * gridSize, 5 * gridSize, bluePaint);
-        canvas.drawLine(4 * gridSize, 15 * gridSize, 12 * gridSize, 15 * gridSize, bluePaint);
+        canvas.drawLine(3 * gridSize, 5 * gridSize, 11 * gridSize, 5 * gridSize, pencilPaint);
+        canvas.drawLine(3 * gridSize, 15 * gridSize, 11 * gridSize, 15 * gridSize, pencilPaint);
 
-        canvas.drawLine(7 * gridSize, 4 * gridSize, 9 * gridSize, 4 * gridSize, bluePaint);
-        canvas.drawLine(7 * gridSize, 16 * gridSize, 9 * gridSize, 16 * gridSize, bluePaint);
-        canvas.drawLine(7 * gridSize, 5 * gridSize, 9 * gridSize, 5 * gridSize, whitePaint);
-        canvas.drawLine(7 * gridSize, 15 * gridSize, 9 * gridSize, 15 * gridSize, whitePaint);
+        canvas.drawLine(6 * gridSize, 4 * gridSize, 8 * gridSize, 4 * gridSize, pencilPaint);
+        canvas.drawLine(6 * gridSize, 16 * gridSize, 8 * gridSize, 16 * gridSize, pencilPaint);
+        canvas.drawLine(6 * gridSize, 5 * gridSize, 8 * gridSize, 5 * gridSize, linesPaint);
+        canvas.drawLine(6 * gridSize, 15 * gridSize, 8 * gridSize, 15 * gridSize, linesPaint);
     }
 
     /**
      * Metoda służąca do rysowania na mapie dotychczasowej historii ruchów.
      *
-     * @param paint  obiekt paintera
      * @param canvas canvas
      */
-    private void drawHistory(Paint paint, Canvas canvas) {
-        float p = 8 * gridSize;
+    private void drawHistory(Canvas canvas) {
+        float p = 7 * gridSize;
         float q = 10 * gridSize;
-        canvas.drawCircle(p, q, 5, paint);
+        canvas.drawCircle(p, q, 7, linesPaint);
         for (Direction aHistory : history) {
             float nextp = p + aHistory.getX() * gridSize;
             float nextq = q + aHistory.getY() * gridSize;
-            canvas.drawLine(p, q, nextp, nextq, paint);
-            canvas.drawCircle(p, q, 3, yellowPaint);
+            canvas.drawLine(p, q, nextp, nextq, pencilPaint);
+            canvas.drawCircle(p, q, 6, pointPaint);
             p = nextp;
             q = nextq;
         }
