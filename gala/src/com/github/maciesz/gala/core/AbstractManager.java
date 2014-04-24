@@ -117,6 +117,21 @@ public abstract class AbstractManager {
         return chart.isMoveLegal(direction);
     }
 
+    /**
+     * Procedura odznaczająca ruch w zadanym kierunku.
+     *
+     * @param direction konkretny kierunek
+     */
+    public void executeSingleMove(Direction direction) {
+        chart.executeSingleMove(direction);
+    }
+
+    /**
+     * Procedura potwierdzająca zakończenie sekwencji ruchów.
+     */
+    public void executeMoveSequence() {
+        chart.executeMoveSequence();
+    }
     public boolean isUserEnabled() {
         return isUserEnabled;
     }

@@ -6,5 +6,5 @@ package com.github.maciesz.gala.enums;
  * @author Maciej Szeszko <m.szeszko@student.uw.edu.pl>
  */
 public enum Strategy {
-   EASY, MEDIUM, HARD; 
+   RANDOM, EASY, MEDIUM, HARD;
 }

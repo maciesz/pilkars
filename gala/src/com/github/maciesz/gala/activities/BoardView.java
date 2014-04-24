@@ -95,7 +95,7 @@ public class BoardView extends View {
                         try {
                             Direction direction = new Direction(currentX, currentY);
                             if (manager.isMoveLegal(direction)) {
-                                manager.executeMove(direction);
+                                manager.executeSingleMove(direction);
                                 history.add(direction);
                             }
                             invalidate();
