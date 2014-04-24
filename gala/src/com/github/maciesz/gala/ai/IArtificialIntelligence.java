@@ -1,6 +1,8 @@
 package com.github.maciesz.gala.ai;
 
 import com.github.maciesz.gala.chart.Chart;
+import com.github.maciesz.gala.common.Direction;
+
 import java.util.List;
 
 /**
@@ -11,10 +13,17 @@ import java.util.List;
 public interface IArtificialIntelligence {
     
     /**
-    * Funkcja zwracająca ciąg następujących po sobie ruchów.
+    * Funkcja zwracająca ciąg następujących po sobie kierunków ruchu.
     *
     * @param chart plansza
-    * @return lista kolejnych pozycji
+    * @return lista kolejnych kierunków
     */
-    List<Integer> executeMoveSequence(Chart chart);
+    List<Direction> executeMoveSequence(Chart chart);
+
+    /**
+     * Funkcja ułatwiająca tworzenie obiektów w fabryce Strategii.
+     *
+     * @return instancja klasy implementującej interfejs
+     */
+    IArtificialIntelligence getInstance();
 }

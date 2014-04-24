@@ -23,14 +23,4 @@ public class CvPManager extends AbstractManager {
     public AbstractManager getInstance() {
         return new CvPManager();
     }
-
-    @Override
-    public boolean isMoveLegal(Direction direction) {
-        return true;
-    }
-
-    @Override
-    public List<Direction> getComputerDirectionSeq() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

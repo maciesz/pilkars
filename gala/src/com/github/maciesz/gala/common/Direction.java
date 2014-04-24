@@ -62,4 +62,8 @@ public class Direction {
     public void setX(int x) {
         this.x = x;
     }
+
+    public String toString() {
+        return "(" + getX() + ", " + getY() + ")\n";
+    }
 }

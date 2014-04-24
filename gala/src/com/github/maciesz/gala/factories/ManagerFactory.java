@@ -2,6 +2,7 @@ package com.github.maciesz.gala.factories;
 
 import com.github.maciesz.gala.core.AbstractManager;
 import com.github.maciesz.gala.core.CvPManager;
+import com.github.maciesz.gala.core.MockManager;
 import com.github.maciesz.gala.core.PvPManager;
 import com.github.maciesz.gala.enums.GameMode;
 import com.github.maciesz.gala.exceptions.UnknownGameModeException;
@@ -18,20 +19,21 @@ public class ManagerFactory {
     /**
      * Struktura umożliwiająca tworzenie konkretnych obiektów na podstawie klucza.
      */
-    private static final Map managers = new EnumMap<GameMode, AbstractManager>(GameMode.class);
-    
+    private static Map managers;
+
     /**
-     * Inicjacja struktury WSZYSTKIMI dostępnymi rodzajami zarządców.
+     * Inicjalizacja struktury WSZYSTKIMI dostępnymi rodzajami zarządców.
      */
     static {
+        managers = new EnumMap<>(GameMode.class);
         addManager(GameMode.ComputerVsPlayer, new CvPManager());
         addManager(GameMode.PlayerVsPlayer, new PvPManager());
+        addManager(GameMode.Mock, new MockManager());
     }
     
     /**
      * Funkcja zwracająca konkretnego managera.
-     * 
-     * @param view widok, z którym będzie się komunikował zarządca
+     *
      * @param gameMode typ rozgrywki(PvP, CvP)
      * @return instancja konkretnego zarządcy gry
      * @throws UnknownGameModeException

@@ -4,9 +4,14 @@ import android.view.View;
 import com.github.maciesz.gala.ai.IArtificialIntelligence;
 import com.github.maciesz.gala.chart.Chart;
 import com.github.maciesz.gala.common.Direction;
+import com.github.maciesz.gala.enums.Players;
 import com.github.maciesz.gala.enums.Strategy;
 import com.github.maciesz.gala.exceptions.ImparitParameterException;
 import com.github.maciesz.gala.exceptions.InvalidGoalWidthException;
+import com.github.maciesz.gala.exceptions.UnknownStrategyException;
+import com.github.maciesz.gala.factories.ManagerFactory;
+import com.github.maciesz.gala.factories.StrategyFactory;
+
 import java.util.List;
 
 /**
@@ -16,7 +21,11 @@ import java.util.List;
  * @author Maciej Szeszko <m.szeszko@student.uw.edu.pl>
  */
 public abstract class AbstractManager {
-    
+    //=========================================================================
+    //
+    // Klasy i zmienne chronione
+    //
+    //=========================================================================
     /**
      * Klasa Converter odpowiadająca za konwersję danych przekazanych przez widok.
      */
@@ -37,11 +46,6 @@ public abstract class AbstractManager {
     protected Chart chart;
     
     /**
-     * Depozyt - przechowuje sekwencję ruchów gracza.
-     */
-    protected Chart.Deposit depo;
-    
-    /**
      * Strategia - sztuczna inteligencja.
      */
     protected IArtificialIntelligence ai;
@@ -58,58 +62,66 @@ public abstract class AbstractManager {
      */
     protected boolean isUserEnabled;
 
+
+    //=========================================================================
+    //
+    // Konstruktory
+    //
+    //=========================================================================
     /**
      * Abstrakcyjny konstruktor zarządcy.
      */
     AbstractManager() {
         chart = new Chart();
-        depo = chart.new Deposit();
+        //depo = chart.new Deposit();
         converter = new Converter();
         isUserEnabled = true;
     }
 
-    /**
-     * Funkcja odpowiadająca na pytania widoku w kwestii możliwości ruchu.
-     * 
-     * @param direction kierunek
-     * @return czy ruch we wskazanym kierunku jest dozwolony
-     */
-    public abstract boolean isMoveLegal(Direction direction);
 
-    /**
-     * Funkcja wywoływana przez widok informująca managera o podjętej decyzji ruchu.
-     * //TODO szeszek
-     *
-     * @param direction direction
-     */
-    public void executeMove(Direction direction) {}
-
-    public boolean isUserEnabled() {
-        return isUserEnabled;
-    }
-    
-    
     //=========================================================================
     //
-    // Gettery
+    // Publiczne metody abstrakcyjne
     //
     //=========================================================================
-    /**
-     * Funkcja zwracająca ciąg kierunków w które przemieszczał się gracz komputerowy.
-     * 
-     * @return wektor kierunków
-     */
-    public abstract List<Direction> getComputerDirectionSeq();
-    
     /**
      * Funkcja wykorzystywana głównie we wzorcu projektowym fabryki zarządców,
      * zwraca instancję danej klasy.
-     * 
+     *
      * @return instancja konkretnego zarządcy
      */
     public abstract AbstractManager getInstance();
 
-    
+
+    //=========================================================================
+    //
+    // Publiczne metody
+    //
+    //=========================================================================
+    /**
+     * Funkcja zwracająca ciąg kierunków w których przemieszczał się gracz komputerowy.
+     *
+     * @return wektor kierunków
+     */
+    public List<Direction> getComputerDirectionSeq() {
+        return ai.executeMoveSequence(chart);
+    }
+
+    /**
+     * Funkcja odpowiadająca na pytania widoku w kwestii możliwości ruchu.
+     *
+     * @param direction kierunek
+     * @return czy ruch we wskazanym kierunku jest dozwolony
+     */
+    public boolean isMoveLegal(Direction direction) {
+        return chart.isMoveLegal(direction);
+    }
+
+    public boolean isUserEnabled() {
+        return isUserEnabled;
+    }
+
+
     //=========================================================================
     //
     // Settery
@@ -139,14 +151,23 @@ public abstract class AbstractManager {
         chart.setChartParametres(width, height, goalWidth);
         chart.buildChart();
     }
-    
+
+    /**
+     * Procedura inicjująca gracza rozpoczynającego rozgrywkę
+     *
+     * @param player gracz
+     */
+    public void setPlayer(final Players player) {
+        chart.observer.setPlayer(player);
+    }
+
     /**
      * Procedura inicjująca stretegię(w przypadku gracza komputerowego).
      * 
      * @param strategy poziom sztucznej inteligencji lub jej brak
      */
-    public void setStrategy(Strategy strategy) {
-        // Fabryka strategii
+    public void setStrategy(Strategy strategy) throws UnknownStrategyException {
+        ai = StrategyFactory.initializeStrategy(strategy);
     }
     
     public void setUserEnabled(boolean isUserEnabled) {

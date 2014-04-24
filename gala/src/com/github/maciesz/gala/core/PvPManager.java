@@ -19,13 +19,4 @@ public class PvPManager extends AbstractManager {
         return new PvPManager();
     }
 
-    @Override
-    public boolean isMoveLegal(Direction direction) {
-        return true;
-    }
-
-    @Override
-    public List<Direction> getComputerDirectionSeq() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

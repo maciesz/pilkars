@@ -56,7 +56,7 @@ public class Chart {
          * @return zbiór krawędzi opisujący planszę 
          */
         public Set<Integer> buildChart() {
-            Set<Integer> chart = new HashSet<Integer>();
+            Set<Integer> chart = new HashSet<>();
             
             for (int k = 1; k<= HEIGHT; ++k) {
                 final int lvlBase = k * (WIDTH + 1);
@@ -81,7 +81,7 @@ public class Chart {
          * @return połączenia na rogach
          */
         private List<Integer> connectCorners() {
-            List<Integer> list = new LinkedList<Integer>();
+            List<Integer> list = new LinkedList<>();
             
             list.add(computeHash(WIDTH + 2, 2 * (WIDTH + 1))); // lewy-dolny
             list.add(computeHash(2 * WIDTH, (3 * (WIDTH + 1)) - 1)); // prawy-dolny
@@ -101,7 +101,7 @@ public class Chart {
          */
         private List<Integer> connectGoal
         (final int startIndex, final int pitchLevel, final int goalLevel) {
-            List<Integer> list = new LinkedList<Integer>();
+            List<Integer> list = new LinkedList<>();
             
             final int shift = (WIDTH - GOAL_WIDTH) / 2;
             final int directions = 5;
@@ -186,11 +186,6 @@ public class Chart {
     //
     // ========================================================================
     /**
-     * Maksymalna liczba różnych posunięć.
-     */
-    private static final int DIRECTIONS = 8;
-    
-    /**
      * Współczynnik wykorzystywany do obliczania hasha dla krawędzi nieskierowanej (x, y).
      * Hash(x, y) = MULTIPLIER * max(x, y) + min(x, y);
      */
@@ -208,11 +203,16 @@ public class Chart {
      */
     public static final int[] X_COORDS = {-1, -1, 0, 1, 1, 1, 0, -1};
     public static final int[] Y_COORDS = {0, 1, 1, 1, 0, -1, -1, -1};
-    
+
+    /**
+     * Maksymalna liczba różnych posunięć.
+     */
+    public static final int DIRECTIONS = 8;
+
     /**
      * Klasa przechowująca sekwencję ruchów gracza.
      */
-    public class Deposit {
+    private class Deposit {
         
         //=====================================================================
         //
@@ -222,7 +222,14 @@ public class Chart {
         /**
          * Struktura przechowująca ruchy zawodnika w zachowanej kolejności.
          */
-        private List<Integer> reservedEdges;
+
+        /*
+         * private List<Integer> reservedEdges;
+         *
+         * Może się przydać kiedyś, jeśli będziemy chcieli umożliwiać cofanie ruchów.
+         */
+
+        private List<Direction> dirList;
         
         
         //=====================================================================
@@ -232,15 +239,23 @@ public class Chart {
         //=====================================================================
         /**
          * Procedura rezerwująca ruch po krawędzi w grafie.
-         * 
-         * @param hash liczba jednoznacznie determinująca krawędź w grafie
+         *
+         * @param direction kierunek, do poruszenia się
          */
-        public void reserveEdge(final int hash) {
+        public void executeMove(final Direction direction) {
+            final int startPosition = boalPosition;
+            final int nextPosition = computeNext(direction);
+            boalPosition = nextPosition;
+
+            observer.markFinal(nextPosition);
+
+            final int hash = computeHash(startPosition, nextPosition);
             /**
              * Usunięcie krawędzi z oryginalnego grafu i dodanie na stos zachcianek gracza.
              */
             edges.remove(hash);
-            reservedEdges.add(hash);
+            dirList.add(direction);
+            //reservedEdges.add(hash);
         }
         
         /**
@@ -248,18 +263,19 @@ public class Chart {
          * 
          * @return sekwencja ruchów gracza
          */
-        public List<Integer> passMoveSequence() {
-            return reservedEdges;
+        public List<Direction> passMoveSequence() {
+            return dirList;
         }
         
         /**
          * Procedura czyszcząca zawartość tymczasowego pojemnika.
          */
         public void clearContainer() {
-            reservedEdges.clear();
+            dirList.clear();
+            //reservedEdges.clear();
         }
     }
-    public Deposit depo;
+    private Deposit depo;
     
     /**
      * Klasa pełniąca rolę obserwarota meczu.
@@ -304,7 +320,7 @@ public class Chart {
             /**
              * Instancjacja mapy.
              */
-            winStates = new EnumMap<Players, List<Integer>>(Players.class);
+            winStates = new EnumMap<>(Players.class);
             
             /**
              * Inicjalizacja parametrów bramek oraz oddalenia słupka od linii autu.
@@ -340,6 +356,15 @@ public class Chart {
          */
         public void changeTurn() {
             player = getOtherPlayer();
+        }
+
+        /**
+         * Procedura zwracająca aktualnie posiadającego piłkę gracza.
+         *
+         * @return aktualnie posiadający piłkę gracz.
+         */
+        public Players getCurrentPlayer() {
+            return player;
         }
         
         /**
@@ -387,7 +412,7 @@ public class Chart {
          * @return pozycje wygrywające
          */
         private List<Integer> buildList(final int shift, final int start) {
-            List<Integer> list = new LinkedList<Integer>();
+            List<Integer> list = new LinkedList<>();
             for (int i = 0; i<= GOAL_WIDTH; ++i)
                 list.add(start + shift + i);
             
@@ -469,9 +494,11 @@ public class Chart {
         /**
          * Depozyt oraz Obserwator powinni być zainicjowani po ustaleniu parametrów planszy.
          */
-        edges = new HashSet<Integer>();
+        edges = new HashSet<>();
         chartBuilder = new ChartBuilder();
         chartInspector = new ChartInspector();
+        depo = new Deposit();
+        observer = new Observer();
     }
     
     
@@ -503,7 +530,7 @@ public class Chart {
         
         observer.initVisited();
     }
-    
+
     /**
      * Getter na pozycję piłki na boisku.
      * 
@@ -528,6 +555,23 @@ public class Chart {
     // Funkcje i procedury publiczne
     //
     //=========================================================================
+
+    /**
+     * Procedura zlecająca wykonanie ruchu i przechowanie hasha dla krawędzi w depozycie.
+     *
+     * @param direction kierunek ruchu
+     */
+    public void executeSingleMove(Direction direction) {
+        depo.executeMove(direction);
+    }
+
+    public List<Direction> executeMoveSequence() {
+        List<Direction> moveSeq = depo.passMoveSequence();
+        depo.clearContainer();
+        observer.changeTurn();
+
+        return moveSeq;
+    }
     /**
      * Procuedra budująca planszę.
      */
@@ -541,20 +585,9 @@ public class Chart {
      */
     public boolean isMoveLegal(Direction direction) {
         final int start = boalPosition;
-        final int next = 
+        final int next =
                 boalPosition + direction.getX() + (WIDTH + 1) * direction.getY();
         return edges.contains(computeHash(start, next));
-    }
-    
-    /**
-     * Funkcja wyznaczająca liczbę reprezentującą połączenie między wierzchołkami start i next.
-     * 
-     * @param start wierzchołek, z którego zaczynamy ruch
-     * @param next wierzchołek, do którego chcemy się przemieścić
-     * @return wartość reprezentująca krawędź nieskierowaną (start, next)
-     */
-    public int computeHash(final int start, final int next) {
-        return Math.max(start, next) * MULTIPLIER + Math.min(start, next);
     }
     
     /**
@@ -572,4 +605,25 @@ public class Chart {
     // Funkcje i procedury prywatne
     //
     //=========================================================================
+
+    /**
+     * Funkcja wyznaczająca numer pola na planszy w kierunku direction
+     *
+     * @param direction kierunek
+     * @return numer docelowego pola na planszy
+     */
+    private int computeNext(final Direction direction) {
+        return boalPosition + direction.getX() + (WIDTH + 1) * direction.getY();
+    }
+
+    /**
+     * Funkcja wyznaczająca liczbę reprezentującą połączenie między wierzchołkami start i next.
+     *
+     * @param start wierzchołek, z którego zaczynamy ruch
+     * @param next wierzchołek, do którego chcemy się przemieścić
+     * @return wartość reprezentująca krawędź nieskierowaną (start, next)
+     */
+    private int computeHash(final int start, final int next) {
+        return Math.max(start, next) * MULTIPLIER + Math.min(start, next);
+    }
 }
