@@ -27,6 +27,7 @@ public class BoardActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
+        getActionBar().hide();
 
         boardView = (BoardView) findViewById(R.id.boardView);
         gameManager = new MockManager();

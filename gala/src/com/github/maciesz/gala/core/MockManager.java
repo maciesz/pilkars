@@ -2,6 +2,7 @@ package com.github.maciesz.gala.core;
 
 import android.util.Log;
 import com.github.maciesz.gala.common.Direction;
+
 import java.util.List;
 
 /**
@@ -28,5 +29,9 @@ public class MockManager extends AbstractManager {
     @Override
     public List<Direction> getComputerDirectionSeq() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void executeSingleMove(Direction direction) {
     }
 }

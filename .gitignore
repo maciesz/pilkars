@@ -29,3 +29,6 @@ proguard/
 *~
 *.swp
 *.iml
+
+#idea
+.idea/
