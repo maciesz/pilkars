@@ -1,7 +1,17 @@
 <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+        android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
+        android:measureWithLargestChild="true">
+
+    <Button
+            android:id="@+id/multiPlayerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/multi_player"
+            android:layout_centerVertical="true" android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@android:dimen/thumbnail_width"/>
+
     <Button
             android:id="@+id/singlePlayerButton"
             android:layout_width="wrap_content"
@@ -9,33 +19,14 @@
             android:text="@string/single_player"
             android:layout_above="@+id/multiPlayerButton"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="45dp"
-            android:onClick="singlePlayer" />
-
-    <Button
-            android:id="@+id/multiPlayerButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/multi_player"
-            android:layout_centerVertical="true"/>
-
+            android:layout_marginBottom="@android:dimen/thumbnail_height"
+            android:onClick="singlePlayer" android:layout_gravity="center_horizontal"/>
     <Button
             android:id="@+id/settingsButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings"
             android:layout_below="@+id/multiPlayerButton"
-            android:layout_marginTop="57dp" />
+            android:layout_marginTop="57dp" android:layout_gravity="center_horizontal"/>
 
-    <TextView
-            android:id="@+id/galaView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/app_name"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="48dp"
-            android:textStyle="italic"
-            android:layout_gravity="center" />
 </LinearLayout>

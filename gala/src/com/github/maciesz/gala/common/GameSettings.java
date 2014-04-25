@@ -20,5 +20,5 @@ public class GameSettings {
     /**
      * Abstrakcyjna wartość mówiąca o "gęstości" kratek na ekranie.
      */
-    public static int CANVAS_SEPARATOR = 14;
+    public static int CANVAS_SEPARATOR = 10;
 }

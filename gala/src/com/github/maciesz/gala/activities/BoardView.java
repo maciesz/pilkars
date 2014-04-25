@@ -183,32 +183,32 @@ public class BoardView extends View {
      * @param canvas canvas
      */
     private void drawBoardBorders(Canvas canvas) {
-        canvas.drawLine(3 * gridSize, 5 * gridSize, 3 * gridSize, 15 * gridSize, borderPaint); //lewa pionowa
-        canvas.drawLine(11 * gridSize, 5 * gridSize, 11 * gridSize, 15 * gridSize, borderPaint); //prawa pionowa
+        canvas.drawLine(1 * gridSize, 3 * gridSize, 1 * gridSize, 13 * gridSize, borderPaint); //lewa pionowa
+        canvas.drawLine(9 * gridSize, 3 * gridSize, 9 * gridSize, 13 * gridSize, borderPaint); //prawa pionowa
 
-        canvas.drawLine(6 * gridSize, 4 * gridSize, 6 * gridSize, 5 * gridSize, borderPaint); //lewa mala pionowa gorna
-        canvas.drawLine(8 * gridSize, 4 * gridSize, 8 * gridSize, 5 * gridSize, borderPaint); //prawa mala pionowa gorna
-        canvas.drawLine(6 * gridSize, 15 * gridSize, 6 * gridSize, 16 * gridSize, borderPaint); //lewa mala pionowa dolna
-        canvas.drawLine(8 * gridSize, 15 * gridSize, 8 * gridSize, 16 * gridSize, borderPaint); //prawa mala pionowa dolna
+        canvas.drawLine(4 * gridSize, 2 * gridSize, 4 * gridSize, 3 * gridSize, borderPaint); //lewa mala pionowa gorna
+        canvas.drawLine(6 * gridSize, 2 * gridSize, 6 * gridSize, 3 * gridSize, borderPaint); //prawa mala pionowa gorna
+        canvas.drawLine(4 * gridSize, 13 * gridSize, 4 * gridSize, 14 * gridSize, borderPaint); //lewa mala pionowa dolna
+        canvas.drawLine(6 * gridSize, 13 * gridSize, 6 * gridSize, 14 * gridSize, borderPaint); //prawa mala pionowa dolna
 
-        canvas.drawLine(6 * gridSize, 4 * gridSize, 8 * gridSize, 4 * gridSize, borderPaint); //pozioma gorna bramkowa
-        canvas.drawLine(6 * gridSize, 16 * gridSize, 8 * gridSize, 16 * gridSize, borderPaint); //pozioma dolna bramkowa
+        canvas.drawLine(4 * gridSize, 2 * gridSize, 6 * gridSize, 2 * gridSize, borderPaint); //pozioma gorna bramkowa
+        canvas.drawLine(4 * gridSize, 14 * gridSize, 6 * gridSize, 14 * gridSize, borderPaint); //pozioma dolna bramkowa
 
-        canvas.drawLine(3 * gridSize, 5 * gridSize, 6 * gridSize, 5 * gridSize, borderPaint); //pozioma gorna lewa
-        canvas.drawLine(8 * gridSize, 5 * gridSize, 11 * gridSize, 5 * gridSize, borderPaint); //pozioma gorna prawa
+        canvas.drawLine(1 * gridSize, 3 * gridSize, 4 * gridSize, 3 * gridSize, borderPaint); //pozioma gorna lewa
+        canvas.drawLine(6 * gridSize, 3 * gridSize, 9 * gridSize, 3 * gridSize, borderPaint); //pozioma gorna prawa
 
-        canvas.drawLine(3 * gridSize, 15 * gridSize, 6 * gridSize, 15 * gridSize, borderPaint); //pozioma dolna lewa
-        canvas.drawLine(8 * gridSize, 15 * gridSize, 11 * gridSize, 15 * gridSize, borderPaint); //pozioma dolna prawa
+        canvas.drawLine(1 * gridSize, 13 * gridSize, 4 * gridSize, 13 * gridSize, borderPaint); //pozioma dolna lewa
+        canvas.drawLine(6 * gridSize, 13 * gridSize, 9 * gridSize, 13 * gridSize, borderPaint); //pozioma dolna prawa
 
-        canvas.drawCircle(7 * gridSize, 10 * gridSize, 6, borderPaint); //punkt środkowy
+        canvas.drawCircle(5 * gridSize, 8 * gridSize, 6, borderPaint); //punkt środkowy
 
 
         topGoalPaint.setAlpha(100);
-        canvas.drawRect(6 * gridSize, 4 * gridSize, 8 * gridSize, 5 * gridSize, topGoalPaint);
+        canvas.drawRect(4 * gridSize, 2 * gridSize, 6 * gridSize, 3 * gridSize, topGoalPaint);
         topGoalPaint.setAlpha(255);
 
         bottomGoalPaint.setAlpha(100);
-        canvas.drawRect(6 * gridSize, 15 * gridSize, 8 * gridSize, 16 * gridSize, bottomGoalPaint);
+        canvas.drawRect(4 * gridSize, 13 * gridSize, 6 * gridSize, 14 * gridSize, bottomGoalPaint);
     }
 
     /**
@@ -219,13 +219,13 @@ public class BoardView extends View {
     private void drawMessage(Canvas canvas) {
         float tx, ty;
         if (pencilPaint.getColor() == topPlayerColor) {
-            tx = 5f;
-            ty = 2f;
+            tx = 4f;
+            ty = 1f;
         } else {
-            tx = 5f;
-            ty = 19f;
+            tx = 4f;
+            ty = 15f;
         }
-        pencilPaint.setTextSize(gridSize*1.5f);
+        pencilPaint.setTextSize(gridSize*0.75f);
         canvas.drawText("move!", tx * gridSize, ty * gridSize, pencilPaint);
     }
 
@@ -235,8 +235,8 @@ public class BoardView extends View {
      * @param canvas canvas
      */
     private void drawHistory(Canvas canvas) {
-        float p = 7 * gridSize;
-        float q = 10 * gridSize;
+        float p = 5 * gridSize;
+        float q = 8 * gridSize;
         int pencilColor = pencilPaint.getColor();
 
         for (Pair<Direction, Integer> pair : history) {
