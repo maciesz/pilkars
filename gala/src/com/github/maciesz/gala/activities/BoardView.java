@@ -1,11 +1,9 @@
 package com.github.maciesz.gala.activities;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
@@ -35,19 +33,28 @@ public class BoardView extends View {
     private static Paint borderPaint;
     private static Paint topGoalPaint;
     private static Paint bottomGoalPaint;
+
     private static int paperWhiteColor = Color.rgb(250, 240, 210);
     private static int lightBlueColor = Color.rgb(176, 224, 230);
     private static int bottomPlayerColor = Color.rgb(189,183,107);
     private static int topPlayerColor = Color.rgb(0, 0, 112);
     private static int borderColor = Color.BLACK;
+
     private float currentX;
     private float currentY;
     private float startX;
     private float startY;
-    private float boardHeight;
-    private float boardWidth;
-    private List<Pair<Direction, Integer>> history = new ArrayList<>();
+
+    private float screenHeight;
+    private float screenWidth;
+    private int boardHeight;
+    private int boardWidth;
+    private int goalWidth;
+
     private int gridSize;
+
+    private List<Pair<Direction, Integer>> history = new ArrayList<>();
+
 
     private AbstractManager manager;
 
@@ -80,8 +87,8 @@ public class BoardView extends View {
 
     public BoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        boardHeight = context.getResources().getDisplayMetrics().heightPixels;
-        boardWidth = context.getResources().getDisplayMetrics().widthPixels;
+        screenHeight = context.getResources().getDisplayMetrics().heightPixels;
+        screenWidth = context.getResources().getDisplayMetrics().widthPixels;
     }
 
     @Override
@@ -131,7 +138,7 @@ public class BoardView extends View {
      * @return prawda, jeżeli ruch był wystarczający długi
      */
     private boolean isMoveEnoughLong(float x1, float y1, float x2, float y2) {
-        float limiter = (boardHeight < boardWidth) ? boardHeight : boardWidth;
+        float limiter = (screenHeight < screenWidth) ? screenHeight : screenWidth;
         limiter /= 10;
         return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) >= limiter;
     }
@@ -267,5 +274,32 @@ public class BoardView extends View {
      */
     public void setManager(AbstractManager manager) {
         this.manager = manager;
+    }
+
+    /**
+     * Ustawia szerokość bramki.
+     *
+     * @param goalWidth szerokość bramki
+     */
+    public void setGoalWidth(int goalWidth) {
+        this.goalWidth = goalWidth;
+    }
+
+    /**
+     * Ustawia szerokość boiska.
+     *
+     * @param boardWidth szerokość boiska
+     */
+    public void setBoardWidth(int boardWidth) {
+        this.boardWidth = boardWidth;
+    }
+
+    /**
+     * Ustawia wysokość boiska.
+     *
+     * @param boardHeight wysokość boiska
+     */
+    public void setBoardHeight(int boardHeight) {
+        this.boardHeight = boardHeight;
     }
 }
