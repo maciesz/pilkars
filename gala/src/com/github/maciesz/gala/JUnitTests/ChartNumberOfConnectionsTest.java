@@ -8,7 +8,7 @@ import org.junit.Test;
 import static junit.framework.Assert.assertEquals;
 
 /**
- * Test na prawidłową liczbę połączeń w [planszy o podanych wymiarach].
+ * Testy na liczbę połączeń w planszy o podanych wymiarach.
  *
  * @author Maciej Szeszko <m.szeszko@student.uw.edu.pl>
  */
@@ -71,6 +71,6 @@ public class ChartNumberOfConnectionsTest {
      * @return 2 x (liczba krawędzi związana z bramką)
      */
     private int countGoalsEdges(final int GOAL_WIDTH) {
-        return 2 * (countCrosses(GOAL_WIDTH, 1) + 2 + 1);
+        return 2 * (4 + 2 + 1);
     }
 }

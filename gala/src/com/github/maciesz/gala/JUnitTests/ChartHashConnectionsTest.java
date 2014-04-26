@@ -98,8 +98,11 @@ public class ChartHashConnectionsTest {
          * Czy identyczny zbiór przechowywanych wartości.
          */
         boolean decision = true;
-        for (Integer edge: chartSet) {
-            decision = set.contains(edge) ? true : false;
+        for (Integer edge: set) {
+            if (!set.contains(edge)) {
+                System.out.println("Nie ma połączenia: " + edge);
+                decision = false;
+            }
         }
 
         assertTrue("Chart instance does not contain required edges", decision);

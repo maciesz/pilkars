@@ -45,95 +45,108 @@ public class Chart {
 	 * Klasa budująca planszę.
 	 */
 	private class ChartBuilder {
-		private final int BOTTOM = 1;
-		private final int TOP = 5; //HEIGHT + 1;
-		private final int BOTTOM_GOAL = 0;
-		private final int TOP_GOAL = 6; //HEIGHT + 2;
 
-		/**
-		 * Funkcja budująca planszę do gry.
-		 *
-		 * @return zbiór krawędzi opisujący planszę
-		 */
-		public Set<Integer> buildChart() {
-			Set<Integer> chart = new HashSet<>();
+        /**
+         * Zbuduj planszę do gry.
+         */
+        public void buildChart() {
+            constructCrossEdges(WIDTH, 1, HEIGHT, 0, WIDTH);
+            constructVerticalEdges(WIDTH, 1, HEIGHT, 1, WIDTH);
+            constructHorizontalEdges(WIDTH, 2, HEIGHT, 0, WIDTH);
+            constructGoalEdges(GOAL_WIDTH, WIDTH, 0, 1);
+            constructGoalEdges(GOAL_WIDTH, WIDTH, HEIGHT + 1, HEIGHT + 2);
+        }
+        /**
+         * Budujemy krzyże na [boisku bez bramek]
+         *
+         * @param width szerokość boiska
+         * @param sHeight wysokość, na której zaczynamy
+         * @param fHeight wysokość, na której kończymy
+         * @param lhs numer pozycji w wierszu, od której zaczynamy(numerujemy od 0 do (width - 1))
+         * @param rhs numer pozycji w wierszu, na której kończymy(numerujemy od 1 do width)
+         */
+        private void constructCrossEdges
+        (final int width, final int sHeight, final int fHeight, final int lhs, final int rhs) { //width, 1, height, 0, width
+            for (int i = sHeight; i<= fHeight; ++i) {
+                final int multiplier = i * (width + 1);
 
-			for (int k = 1; k<= HEIGHT; ++k) {
-				final int lvlBase = k * (WIDTH + 1);
-				for (int pos = lvlBase + 1; pos< lvlBase + WIDTH; ++pos)
-					for (int j = 0; j< X_COORDS.length; ++j) {
-                        chart.add(computeHash(pos, pos + X_COORDS[j] + Y_COORDS[j] * (WIDTH + 1)));
-                    }
-			}
+                /**
+                 * Lewy-dolny do prawego-górnego.
+                 */
+                for (int j = lhs; j < rhs; ++j)
+                    edges.add(computeHash(multiplier + j, multiplier + j + (width + 2)));
 
-			/**
-			 * Podłączenie bramek i rogów boiska.
-			 */
-			chart.addAll(connectCorners());
-			chart.addAll(connectGoal(4, 1, 0));
-			chart.addAll(connectGoal(0, HEIGHT + 2, HEIGHT + 1));
+                /**
+                 * Prawy-dolny do lewego-górnego
+                 */
+                for (int j = lhs + 1; j<= rhs; ++j)
+                    edges.add(computeHash(multiplier + j, multiplier + j + width));
+            }
+        }
 
-			return chart;
-		}
+        /**
+         * Budujem pionowe połączenia na [boisku bez bramek].
+         * Konkretniej - budujemy krawędź idąc w kierunku do góry po krawędzi
+         *
+         * @param width szerokość boiska
+         * @param sHeight wysokość, na której zaczynamy
+         * @param fHeight wysokość, na której kończymy
+         * @param lhs numer pozycji w wierszu, od której zaczynamy(numerujemy od 0 do (width - 1))
+         * @param rhs numer pozycji w wierszu, na której kończymy(numerujemy od 1 do width)
+         */
+        private void constructVerticalEdges
+        (final int width, final int sHeight, final int fHeight, final int lhs, final int rhs) { // width, 1, height, 1, width
+            for (int i = sHeight; i<= fHeight; ++i) {
+                final int multiplier = i * (width + 1);
+                for (int j = lhs; j< rhs; ++j)
+                    edges.add(computeHash(multiplier + j, multiplier + j + (width + 1)));
+            }
+        }
 
-		/**
-		 * Funkcja dobudowująca krawędzie na rogach planszy.
-		 *
-		 * @return połączenia na rogach
-		 */
-		private List<Integer> connectCorners() {
-			List<Integer> list = new LinkedList<>();
+        /**
+         * Budujemy poziome połączenia na [boisku bez bramek].
+         * Konkretniej - budujemy krawędź idąc w kierunku na prawo po krawędzi.
+         *
+         * @param width szerokość boiska
+         * @param sHeight wysokość, na której zaczynamy
+         * @param fHeight wysokość, na której kończymy
+         * @param lhs numer pozycji w wierszu, od której zaczynamy(numerujemy od 0 do (width - 1))
+         * @param rhs numer pozycji w wierszu, na której kończymy(numerujemy od 1 do width)
+         */
+        private void constructHorizontalEdges
+        (final int width, final int sHeight, final int fHeight, final int lhs, final int rhs) { // width, 2, height, 0, width
+            for (int i = sHeight; i<= fHeight; ++i) {
+                final int multiplier = i * (width + 1);
+                for (int j = lhs; j< rhs; ++j)
+                    edges.add(computeHash(multiplier + j, multiplier + j + 1));
+            }
+        }
 
-			list.add(computeHash(WIDTH + 2, 2 * (WIDTH + 1))); // lewy-dolny
-			list.add(computeHash(2 * WIDTH, (3 * (WIDTH + 1)) - 1)); // prawy-dolny
-			list.add(computeHash((WIDTH + 1) * HEIGHT, ((WIDTH + 1) * (HEIGHT + 1)) + 1)); // lewy-górny
-			list.add(computeHash(((WIDTH + 1) * (HEIGHT + 1)) - 1, ((WIDTH + 1) * (HEIGHT + 2)) - 2)); // prawy-górny
+        /**
+         * Dobudowujemy bramkę i łączymy ją krawędziami z boskiem.
+         *
+         * @param goalWidth szerkość bramki
+         * @param width szerokość boiska
+         * @param sHeight wysokość, na której zaczynamy
+         * @param fHeight wysokość, na której kończymy
+         */
+        private void constructGoalEdges
+        (final int goalWidth, final int width, final int sHeight, final int fHeight) {
+            final int shift = (width - goalWidth) / 2;
+            final int lhs = shift;
+            final int rhs = width - shift;
 
-			return list;
-		}
+            constructCrossEdges(width, sHeight, sHeight, lhs, rhs);
+            constructVerticalEdges(width, sHeight, sHeight, width / 2, (width / 2) + 1);
 
-		/**
-		 * Funkcja budująca połączenie bramki z boiskiem.
-		 *
-		 * @param startIndex startowy indeks w tablicy kierunków
-		 * @param pitchLevel poziom murawy, który łączymy z bramką(numerujemy od 1 do (wysokość + 1))
-		 * @param goalLevel poziom bramki, z którą chcemy się połączyć
-		 * @return krawędzie łączące bramkę z boiskiem
-		 */
-		private List<Integer> connectGoal
-		(final int startIndex, final int pitchLevel, final int goalLevel) {
-			List<Integer> list = new LinkedList<>();
-
-			final int shift = (WIDTH - GOAL_WIDTH) / 2;
-			final int directions = 5;
-
-			/**
-			 * Podstawa połączenia.
-			 */
-			for (int i = 0; i<= GOAL_WIDTH; ++i) {
-				final int pos = (pitchLevel * (WIDTH + 1)) + shift + i;
-				for (int k = 0; k< directions; ++k) {
-					int idx = (startIndex + k) % X_COORDS.length;
-                    final int newPos = pos + X_COORDS[idx] + Y_COORDS[idx] * (WIDTH + 1);
-                    final int lvl = goalLevel * (WIDTH + 1);
-                    if ((pos >= lvl + shift) && (pos <= lvl + WIDTH - shift))
-					    list.add(computeHash(pos, newPos));
-				}
-			}
-
-			/**
-			 * Połączenie z rogami bramki.
-			 */
-			list.add(computeHash((pitchLevel * (WIDTH + 1)) + shift,
-					(goalLevel * (WIDTH + 1)) + shift + 1)); // lewy
-
-            // TODO
-			//list.add(computeHash(((pitchLevel + 1) * (WIDTH + 1)) - shift,
-					//(goalLevel + 1) * (WIDTH + 1)) - (shift + 1)); // prawy
-
-
-			return list;
-		}
+            switch (sHeight) {
+                case 0:
+                    constructHorizontalEdges(width, fHeight, fHeight, lhs, rhs);
+                    break;
+                default:
+                    constructHorizontalEdges(width, sHeight, sHeight, lhs, rhs);
+            }
+        }
 	}
 	private final ChartBuilder chartBuilder;
 
@@ -588,10 +601,10 @@ public class Chart {
 		return moveSeq;
 	}
 	/**
-	 * Procuedra budująca planszę.
+	 * Procudura budująca planszę.
 	 */
 	public void buildChart() {
-        edges = chartBuilder.buildChart();
+        chartBuilder.buildChart();
 	}
 
 	/**
