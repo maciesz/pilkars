@@ -22,6 +22,9 @@ public class MockManager extends AbstractManager {
     }
 
     @Override
+    public void executeSingleMove(Direction direction) {}
+
+    @Override
     public AbstractManager getInstance() {
         return new MockManager();
     }
