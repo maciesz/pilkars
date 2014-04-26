@@ -1,41 +1,48 @@
-<LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
-    <Button
-            android:id="@+id/singlePlayerButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/single_player"
-            android:layout_above="@+id/multiPlayerButton"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="45dp"
-            android:onClick="singlePlayer" />
+<?xml version="1.0" encoding="utf-8"?>
 
-    <Button
-            android:id="@+id/multiPlayerButton"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+    <view
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/multi_player"
-            android:layout_centerVertical="true"/>
-
-    <Button
-            android:id="@+id/settingsButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings"
-            android:layout_below="@+id/multiPlayerButton"
-            android:layout_marginTop="57dp" />
-
-    <TextView
-            android:id="@+id/galaView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/app_name"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="48dp"
-            android:textStyle="italic"
+            class="com.github.maciesz.gala.activities.BackgroundView"
+            android:scaleType="center"
+            android:id="@+id/backgroundView"
             android:layout_gravity="center" />
-</LinearLayout>
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" android:layout_gravity="center" android:weightSum="1">
+        <ImageView
+                android:src="@drawable/logo2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView" android:layout_gravity="center_horizontal" android:layout_marginTop="40dp"
+                />
+        <Button
+                android:id="@+id/singlePlayerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/single_player"
+                android:onClick="singlePlayer"
+                android:layout_gravity="center|top" android:layout_marginTop="40dp"
+                />
+        <Button
+                android:id="@+id/multiPlayerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="multiPlayer"
+                android:text="@string/multi_player" android:layout_gravity="center|" android:layout_marginTop="40dp"/>
+        <Button
+                android:id="@+id/settingsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="settings"
+                android:text="@string/settings"
+                android:layout_gravity="center|bottom"
+                android:layout_marginTop="40dp"/>
+    </LinearLayout>
+
+</FrameLayout>

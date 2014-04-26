@@ -1,11 +1,9 @@
 package com.github.maciesz.gala.activities;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
@@ -35,19 +33,28 @@ public class BoardView extends View {
     private static Paint borderPaint;
     private static Paint topGoalPaint;
     private static Paint bottomGoalPaint;
+
     private static int paperWhiteColor = Color.rgb(250, 240, 210);
     private static int lightBlueColor = Color.rgb(176, 224, 230);
     private static int bottomPlayerColor = Color.rgb(189,183,107);
     private static int topPlayerColor = Color.rgb(0, 0, 112);
     private static int borderColor = Color.BLACK;
+
     private float currentX;
     private float currentY;
     private float startX;
     private float startY;
-    private float boardHeight;
-    private float boardWidth;
-    private List<Pair<Direction, Integer>> history = new ArrayList<>();
+
+    private float screenHeight;
+    private float screenWidth;
+    private int boardHeight;
+    private int boardWidth;
+    private int goalWidth;
+
     private int gridSize;
+
+    private List<Pair<Direction, Integer>> history = new ArrayList<>();
+
 
     private AbstractManager manager;
 
@@ -80,8 +87,8 @@ public class BoardView extends View {
 
     public BoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        boardHeight = context.getResources().getDisplayMetrics().heightPixels;
-        boardWidth = context.getResources().getDisplayMetrics().widthPixels;
+        screenHeight = context.getResources().getDisplayMetrics().heightPixels;
+        screenWidth = context.getResources().getDisplayMetrics().widthPixels;
     }
 
     @Override
@@ -131,7 +138,7 @@ public class BoardView extends View {
      * @return prawda, jeżeli ruch był wystarczający długi
      */
     private boolean isMoveEnoughLong(float x1, float y1, float x2, float y2) {
-        float limiter = (boardHeight < boardWidth) ? boardHeight : boardWidth;
+        float limiter = (screenHeight < screenWidth) ? screenHeight : screenWidth;
         limiter /= 10;
         return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) >= limiter;
     }
@@ -183,32 +190,32 @@ public class BoardView extends View {
      * @param canvas canvas
      */
     private void drawBoardBorders(Canvas canvas) {
-        canvas.drawLine(3 * gridSize, 5 * gridSize, 3 * gridSize, 15 * gridSize, borderPaint); //lewa pionowa
-        canvas.drawLine(11 * gridSize, 5 * gridSize, 11 * gridSize, 15 * gridSize, borderPaint); //prawa pionowa
+        canvas.drawLine(1 * gridSize, 3 * gridSize, 1 * gridSize, 13 * gridSize, borderPaint); //lewa pionowa
+        canvas.drawLine(9 * gridSize, 3 * gridSize, 9 * gridSize, 13 * gridSize, borderPaint); //prawa pionowa
 
-        canvas.drawLine(6 * gridSize, 4 * gridSize, 6 * gridSize, 5 * gridSize, borderPaint); //lewa mala pionowa gorna
-        canvas.drawLine(8 * gridSize, 4 * gridSize, 8 * gridSize, 5 * gridSize, borderPaint); //prawa mala pionowa gorna
-        canvas.drawLine(6 * gridSize, 15 * gridSize, 6 * gridSize, 16 * gridSize, borderPaint); //lewa mala pionowa dolna
-        canvas.drawLine(8 * gridSize, 15 * gridSize, 8 * gridSize, 16 * gridSize, borderPaint); //prawa mala pionowa dolna
+        canvas.drawLine(4 * gridSize, 2 * gridSize, 4 * gridSize, 3 * gridSize, borderPaint); //lewa mala pionowa gorna
+        canvas.drawLine(6 * gridSize, 2 * gridSize, 6 * gridSize, 3 * gridSize, borderPaint); //prawa mala pionowa gorna
+        canvas.drawLine(4 * gridSize, 13 * gridSize, 4 * gridSize, 14 * gridSize, borderPaint); //lewa mala pionowa dolna
+        canvas.drawLine(6 * gridSize, 13 * gridSize, 6 * gridSize, 14 * gridSize, borderPaint); //prawa mala pionowa dolna
 
-        canvas.drawLine(6 * gridSize, 4 * gridSize, 8 * gridSize, 4 * gridSize, borderPaint); //pozioma gorna bramkowa
-        canvas.drawLine(6 * gridSize, 16 * gridSize, 8 * gridSize, 16 * gridSize, borderPaint); //pozioma dolna bramkowa
+        canvas.drawLine(4 * gridSize, 2 * gridSize, 6 * gridSize, 2 * gridSize, borderPaint); //pozioma gorna bramkowa
+        canvas.drawLine(4 * gridSize, 14 * gridSize, 6 * gridSize, 14 * gridSize, borderPaint); //pozioma dolna bramkowa
 
-        canvas.drawLine(3 * gridSize, 5 * gridSize, 6 * gridSize, 5 * gridSize, borderPaint); //pozioma gorna lewa
-        canvas.drawLine(8 * gridSize, 5 * gridSize, 11 * gridSize, 5 * gridSize, borderPaint); //pozioma gorna prawa
+        canvas.drawLine(1 * gridSize, 3 * gridSize, 4 * gridSize, 3 * gridSize, borderPaint); //pozioma gorna lewa
+        canvas.drawLine(6 * gridSize, 3 * gridSize, 9 * gridSize, 3 * gridSize, borderPaint); //pozioma gorna prawa
 
-        canvas.drawLine(3 * gridSize, 15 * gridSize, 6 * gridSize, 15 * gridSize, borderPaint); //pozioma dolna lewa
-        canvas.drawLine(8 * gridSize, 15 * gridSize, 11 * gridSize, 15 * gridSize, borderPaint); //pozioma dolna prawa
+        canvas.drawLine(1 * gridSize, 13 * gridSize, 4 * gridSize, 13 * gridSize, borderPaint); //pozioma dolna lewa
+        canvas.drawLine(6 * gridSize, 13 * gridSize, 9 * gridSize, 13 * gridSize, borderPaint); //pozioma dolna prawa
 
-        canvas.drawCircle(7 * gridSize, 10 * gridSize, 6, borderPaint); //punkt środkowy
+        canvas.drawCircle(5 * gridSize, 8 * gridSize, 6, borderPaint); //punkt środkowy
 
 
         topGoalPaint.setAlpha(100);
-        canvas.drawRect(6 * gridSize, 4 * gridSize, 8 * gridSize, 5 * gridSize, topGoalPaint);
+        canvas.drawRect(4 * gridSize, 2 * gridSize, 6 * gridSize, 3 * gridSize, topGoalPaint);
         topGoalPaint.setAlpha(255);
 
         bottomGoalPaint.setAlpha(100);
-        canvas.drawRect(6 * gridSize, 15 * gridSize, 8 * gridSize, 16 * gridSize, bottomGoalPaint);
+        canvas.drawRect(4 * gridSize, 13 * gridSize, 6 * gridSize, 14 * gridSize, bottomGoalPaint);
     }
 
     /**
@@ -219,13 +226,13 @@ public class BoardView extends View {
     private void drawMessage(Canvas canvas) {
         float tx, ty;
         if (pencilPaint.getColor() == topPlayerColor) {
-            tx = 5f;
-            ty = 2f;
+            tx = 4f;
+            ty = 1f;
         } else {
-            tx = 5f;
-            ty = 19f;
+            tx = 4f;
+            ty = 15f;
         }
-        pencilPaint.setTextSize(gridSize*1.5f);
+        pencilPaint.setTextSize(gridSize*0.75f);
         canvas.drawText("move!", tx * gridSize, ty * gridSize, pencilPaint);
     }
 
@@ -235,8 +242,8 @@ public class BoardView extends View {
      * @param canvas canvas
      */
     private void drawHistory(Canvas canvas) {
-        float p = 7 * gridSize;
-        float q = 10 * gridSize;
+        float p = 5 * gridSize;
+        float q = 8 * gridSize;
         int pencilColor = pencilPaint.getColor();
 
         for (Pair<Direction, Integer> pair : history) {
@@ -267,5 +274,32 @@ public class BoardView extends View {
      */
     public void setManager(AbstractManager manager) {
         this.manager = manager;
+    }
+
+    /**
+     * Ustawia szerokość bramki.
+     *
+     * @param goalWidth szerokość bramki
+     */
+    public void setGoalWidth(int goalWidth) {
+        this.goalWidth = goalWidth;
+    }
+
+    /**
+     * Ustawia szerokość boiska.
+     *
+     * @param boardWidth szerokość boiska
+     */
+    public void setBoardWidth(int boardWidth) {
+        this.boardWidth = boardWidth;
+    }
+
+    /**
+     * Ustawia wysokość boiska.
+     *
+     * @param boardHeight wysokość boiska
+     */
+    public void setBoardHeight(int boardHeight) {
+        this.boardHeight = boardHeight;
     }
 }

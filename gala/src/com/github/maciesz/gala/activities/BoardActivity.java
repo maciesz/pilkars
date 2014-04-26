@@ -1,7 +1,9 @@
 package com.github.maciesz.gala.activities;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import com.github.maciesz.gala.common.GameSettings;
 import com.github.maciesz.gala.core.AbstractManager;
 import com.github.maciesz.gala.core.MockManager;
 
@@ -23,15 +25,30 @@ public class BoardActivity extends Activity {
      */
     private BoardView boardView;
 
+    private SharedPreferences preferences;
+
+    private int boardWidth;
+    private int boardHeight;
+    private int goalWidth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
         getActionBar().hide();
+        gameManager = new MockManager();
+
+        preferences = getSharedPreferences(GameSettings.PREF_NAME, Activity.MODE_PRIVATE);
+        boardWidth = preferences.getInt(GameSettings.BOARD_WIDTH, 8);
+        boardHeight = preferences.getInt(GameSettings.BOARD_HEIGHT, 10);
+        goalWidth = preferences.getInt(GameSettings.GOAL_WIDTH, 2);
 
         boardView = (BoardView) findViewById(R.id.boardView);
-        gameManager = new MockManager();
-        gameManager.setView(boardView);
         boardView.setManager(gameManager);
+        boardView.setBoardHeight(boardHeight);
+        boardView.setBoardWidth(boardWidth);
+        boardView.setGoalWidth(goalWidth);
+
+        gameManager.setView(boardView);
     }
 }
