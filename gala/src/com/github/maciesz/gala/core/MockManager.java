@@ -33,8 +33,4 @@ public class MockManager extends AbstractManager {
     public List<Direction> getComputerDirectionSeq() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    @Override
-    public void executeSingleMove(Direction direction) {
-    }
 }
