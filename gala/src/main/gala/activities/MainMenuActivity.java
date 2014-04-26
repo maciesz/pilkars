@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import com.github.maciesz.gala.activities.R;
+import main.gala.activities.R;
 
 /**
  * Klasa reprezentująca główne menu i jego pochodne.

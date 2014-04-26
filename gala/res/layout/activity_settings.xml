@@ -6,7 +6,7 @@
     <view
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            class="com.github.maciesz.gala.activities.BackgroundView"
+            class="main.gala.activities.BackgroundView"
             android:scaleType="center"
             android:id="@+id/backgroundView"
             android:layout_gravity="center" />

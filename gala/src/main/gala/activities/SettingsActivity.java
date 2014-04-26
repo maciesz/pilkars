@@ -3,7 +3,7 @@ package main.gala.activities;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import com.github.maciesz.gala.activities.R;
+import main.gala.activities.R;
 import main.gala.common.GameSettings;
 
 /**

@@ -9,7 +9,7 @@
     <view
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        class="com.github.maciesz.gala.activities.BoardView"
+        class="main.gala.activities.BoardView"
         android:id="@+id/boardView"
         android:layout_gravity="center_horizontal" />
 </LinearLayout>
