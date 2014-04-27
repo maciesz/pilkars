@@ -238,14 +238,8 @@ public class Chart {
 		/**
 		 * Struktura przechowująca ruchy zawodnika w zachowanej kolejności.
 		 */
+        private List<Direction> dirList;
 
-		/*
-		 * private List<Integer> reservedEdges;
-		 *
-		 * Może się przydać kiedyś, jeśli będziemy chcieli umożliwiać cofanie ruchów.
-		 */
-
-		private List<Direction> dirList;
 
         //=====================================================================
         //
@@ -255,6 +249,8 @@ public class Chart {
         public Deposit() {
             dirList = new LinkedList<>();
         }
+
+
 		//=====================================================================
 		//
 		// Metody i procudury
@@ -270,15 +266,18 @@ public class Chart {
 			final int nextPosition = computeNext(direction);
 			boalPosition = nextPosition;
 
+            /**
+             * Zamarkuj pozycję jako odwiedzoną.
+             */
 			observer.markFinal(boalPosition);
 
 			final int hash = computeHash(startPosition, nextPosition);
-			/**
+
+            /**
 			 * Usunięcie krawędzi z oryginalnego grafu i dodanie na stos zachcianek gracza.
 			 */
 			edges.remove(hash);
 			dirList.add(direction);
-			//reservedEdges.add(hash);
 		}
 
 		/**
@@ -295,7 +294,6 @@ public class Chart {
 		 */
 		public void clearContainer() {
 			dirList.clear();
-			//reservedEdges.clear();
 		}
 	}
 	private Deposit depo;
@@ -348,9 +346,9 @@ public class Chart {
 			/**
 			 * Inicjalizacja parametrów bramek oraz oddalenia słupka od linii autu.
 			 */
-			final int shift = WIDTH - GOAL_WIDTH;
+			final int shift = (WIDTH - GOAL_WIDTH) / 2;
 			final int bottomStart = 0;
-			final int topStart = (WIDTH + 1) * (HEIGHT + 1);
+			final int topStart = (WIDTH + 1) * (HEIGHT + 2);
 
 			/**
 			 * Inicjalizacja mapy zwycięskimi stanami dla poszczególnych zawodników.
@@ -382,9 +380,9 @@ public class Chart {
 		}
 
 		/**
-		 * Procedura zwracająca aktualnie posiadającego piłkę gracza.
+		 * Procedura zwracająca gracza aktualnie posiadającego piłkę.
 		 *
-		 * @return aktualnie posiadający piłkę gracz.
+		 * @return gracz aktualnie posiadający piłkę.
 		 */
 		public Players getCurrentPlayer() {
 			return player;
@@ -400,34 +398,52 @@ public class Chart {
 		}
 
 		/**
-		 * Funkcja oceniająca stan gry.
+		 * Funkcja oceniająca stan gry dla aktualnego wierzchołka.
 		 *
 		 * @return stan rozgrywki (typ GameState)
 		 */
-		public GameState rateGameState() {
-
-			final List<Integer> winList = winStates.get(player);
-			final List<Integer> opponentWinList = winStates.get(getOtherPlayer());
-
-			if (winList.contains(boalPosition))
-				return GameState.VICTORIOUS;
-			if (opponentWinList.contains(boalPosition))
-				return GameState.DEFEATED;
-			if (isBlocked(boalPosition)) // TODO!
-				return GameState.BLOCKED;
-			if (visited[boalPosition])
-				return GameState.OBLIGATORY_MOVE;
-
-			return GameState.ACCEPTABLE;
+		public GameState rateActualState() {
+            return rateGameState(boalPosition);
 		}
 
+        /**
+         * Funkcja oceniająca stan gry dla wskazanego wierzchołka.
+         *
+         * @param state wierzchołek
+         * @return stan gry dla wierzchołka 'state'
+         */
+        public GameState rateState(final int state) {
+            return rateGameState(state);
+        }
 
 		//=====================================================================
 		//
 		// Metody i procedury prywatne
 		//
 		//=====================================================================
-		/**
+        /**
+         * Funkcja oceniająca stan gry dla wskazanego wierzchołka.
+         *
+         * @param gameState wierzchołek
+         * @return stan gry dla wierzchołka 'fameState'
+         */
+        private GameState rateGameState(final int gameState) {
+            final List<Integer> winList = winStates.get(player);
+            final List<Integer> opponentWinList = winStates.get(getOtherPlayer());
+
+            if (winList.contains(gameState))
+                return GameState.VICTORIOUS;
+            if (opponentWinList.contains(gameState))
+                return GameState.DEFEATED;
+            if (isBlocked(gameState)) // TODO!
+                return GameState.BLOCKED;
+            if (visited[gameState])
+                return GameState.OBLIGATORY_MOVE;
+
+            return GameState.ACCEPTABLE;
+        }
+
+        /**
 		 * Funkcja zwracająca pozycje wygrywające.
 		 *
 		 * @param shift odległość słupka bramki od linii autowej
@@ -589,12 +605,12 @@ public class Chart {
 		depo.executeMove(direction);
 	}
 
-	public List<Direction> executeMoveSequence() {
-		List<Direction> moveSeq = depo.passMoveSequence();
+	public void executeMoveSequence() {
+		//List<Direction> moveSeq = depo.passMoveSequence();
 		depo.clearContainer();
-		observer.changeTurn();
+		//observer.changeTurn();
 
-		return moveSeq;
+		//return moveSeq;
 	}
 	/**
 	 * Procudura budująca planszę.
@@ -605,7 +621,7 @@ public class Chart {
 
 	/**
 	 * @param direction kierunek, w którym chcę się poruszyć
-	 * @return czy da się przejść z pola start na pole next
+	 * @return czy da się przejść we wskazanym kierunku
 	 */
 	public boolean isMoveLegal(Direction direction) {
 		final int start = boalPosition;
@@ -615,14 +631,45 @@ public class Chart {
 		return edges.contains(computeHash(start, next));
 	}
 
+    /**
+     * @param start wierzchołek startowy
+     * @param next wierzchołek docelowy
+     * @return czy da się przejść z pola start na pole next
+     */
+    public boolean isMoveLegal(final int start, final int next) {
+        return edges.contains(computeHash(start, next));
+    }
+
+    /**
+     * Funkcja wyznaczająca numer pola na planszy w kierunku direction
+     *
+     * @param direction kierunek
+     * @return numer docelowego pola na planszy
+     */
+    public int computeNext(final Direction direction) {
+        return boalPosition + direction.getX() + (WIDTH + 1) * direction.getY();
+    }
+
+    /**
+     * Funkcja wyznaczająca numer pola na planszy w kierunku direction
+     *
+     * @param start pole startowe
+     * @param direction kierunek
+     * @return numer docelowego pola na planszy
+     */
+    public int computeNext(final int start, final Direction direction) {
+        return start + direction.getX() + (WIDTH + 1) * direction.getY();
+    }
+
 	/**
 	 * Funkcja zwracająca stan rozgrywki w danym momencie.
 	 *
 	 * @return stan rozgrywki(zwycięstwo/porażka/blok/konieczny_ruch/akceptujący)
 	 */
 	public GameState rateGameState() {
-		return observer.rateGameState();
+		return observer.rateActualState();
 	}
+
 
     //=========================================================================
     //
@@ -639,8 +686,9 @@ public class Chart {
 	}
 
     /**
-     * Getter na
-     * @return
+     * Getter na zbiór dostępnych krawędzi.
+     *
+     * @return zbiór dostępnych krawędzi
      */
     public Set<Integer> getEdges() { return edges; }
 
@@ -650,17 +698,6 @@ public class Chart {
 	// Funkcje i procedury prywatne
 	//
 	//=========================================================================
-
-	/**
-	 * Funkcja wyznaczająca numer pola na planszy w kierunku direction
-	 *
-	 * @param direction kierunek
-	 * @return numer docelowego pola na planszy
-	 */
-	private int computeNext(final Direction direction) {
-		return boalPosition + direction.getX() + (WIDTH + 1) * direction.getY();
-	}
-
 	/**
 	 * Funkcja wyznaczająca liczbę reprezentującą połączenie między wierzchołkami start i next.
 	 *
