@@ -12,6 +12,7 @@ import android.view.View;
 import main.gala.common.Direction;
 import main.gala.common.GameSettings;
 import main.gala.core.AbstractManager;
+import main.gala.enums.GameState;
 import main.gala.exceptions.AmbiguousMoveException;
 
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ import java.util.List;
  * @author Maciej Andrearczyk
  */
 public class BoardView extends View {
+
+    private static GameState gameState;
 
     private static Paint backgroundPaint;
     private static Paint linesPaint;
@@ -54,7 +57,6 @@ public class BoardView extends View {
     private int gridSize;
 
     private List<Pair<Direction, Integer>> history = new ArrayList<>();
-
 
     private AbstractManager manager;
 
@@ -302,5 +304,14 @@ public class BoardView extends View {
      */
     public void setBoardHeight(int boardHeight) {
         this.boardHeight = boardHeight;
+    }
+
+    /**
+     * Ustawia aktualny stan gry.
+     *
+     * @param gameState
+     */
+    public static void setGameState(GameState gameState) {
+        BoardView.gameState = gameState;
     }
 }
