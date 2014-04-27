@@ -50,7 +50,7 @@ public class BoardActivity extends Activity {
         getActionBar().hide();
 
         try {
-            gameManager = ManagerFactory.createManager(GameMode.PlayerVsPlayer);
+            gameManager = ManagerFactory.createManager(GameMode.PlayerVsPlayer).getInstance();
         } catch (UnknownGameModeException e) {
             e.printStackTrace();
         }

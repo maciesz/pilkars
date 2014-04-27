@@ -16,6 +16,7 @@ import main.gala.enums.GameState;
 import main.gala.exceptions.AmbiguousMoveException;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 //TODO przerobić wszystko na animacje
@@ -113,10 +114,10 @@ public class BoardView extends View {
                         try {
                             Direction direction = new Direction(currentX, currentY);
                             if (manager.isMoveLegal(direction)) {
-                                manager.executeSingleMove(direction);
                                 history.add(new Pair(direction, pencilPaint.getColor()));
+                                invalidate();
+                                manager.executeSingleMove(direction);
                             }
-                            invalidate();
                         } catch (AmbiguousMoveException x) {
                             Log.d(BoardView.class.getCanonicalName(), "Ambiguous move exception!");
                         }
@@ -267,7 +268,18 @@ public class BoardView extends View {
     public void changePlayer() {
         int newColor = (pencilPaint.getColor() == topPlayerColor) ? bottomPlayerColor : topPlayerColor;
         pencilPaint.setColor(newColor);
-        Log.d(BoardView.class.getCanonicalName(), "changle player to " + String.valueOf(pencilPaint.getColor()));
+    }
+
+    /**
+     * Rysuje żądaną sekwencje ruchów na planszy.
+     *
+     * @param moveSequence sekwencje ruchów
+     */
+    public void drawSequence(Collection<Direction> moveSequence) {
+        for (Direction direction : moveSequence) {
+            history.add(new Pair<>(direction, topPlayerColor));
+        }
+        invalidate();
     }
 
     /**
@@ -313,5 +325,6 @@ public class BoardView extends View {
      */
     public static void setGameState(GameState gameState) {
         BoardView.gameState = gameState;
+        Log.d(BoardView.class.getCanonicalName(), "game state -" + gameState);
     }
 }
