@@ -54,6 +54,7 @@ public class MainMenuActivity extends Activity {
             @Override
             public void onClick(View view) {
                 viaPhone(view);
+                dialog.hide();
             }
         });
 
