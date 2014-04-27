@@ -45,10 +45,8 @@ public class CvPManager extends AbstractManager {
          * Ustawiamy stan gry w widoku.
          */
         GameState gameState = chart.observer.rateActualState();
-        /*
-        TODO: Ustawić flagę ze stanem gry w widoku.
-        view.setGameState(gameState); // coś takiego
-         */
+        boardView.setGameState(gameState);
+
 
         return resList;
     }

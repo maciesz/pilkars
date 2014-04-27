@@ -137,10 +137,7 @@ public abstract class AbstractManager {
         /**
          * Ustawiamy stan gry w widoku.
          */
-        /*
-        TODO: Ustawić flagę ze stanem gry w widoku.
-        view.setGameState(gameState); // coś takiego
-         */
+        boardView.setGameState(gameState);
     }
 
     public boolean isUserEnabled() {
