@@ -7,6 +7,13 @@ import main.gala.activities.R;
 import main.gala.common.GameSettings;
 import main.gala.core.AbstractManager;
 import main.gala.core.MockManager;
+import main.gala.core.PvPManager;
+import main.gala.enums.GameMode;
+import main.gala.enums.Players;
+import main.gala.exceptions.ImparitParameterException;
+import main.gala.exceptions.InvalidGoalWidthException;
+import main.gala.exceptions.UnknownGameModeException;
+import main.gala.factories.ManagerFactory;
 
 /**
  * Klasa aktywności planszy łącząca obiekty widoku z obiektami zarządającymi grą.
@@ -15,6 +22,10 @@ import main.gala.core.MockManager;
  */
 
 public class BoardActivity extends Activity {
+
+    private static final int DEFAULT_BOARD_WITH = 8;
+    private static final int DEFAULT_BOARD_HEIGHT = 10;
+    private static final int DEFAULT_GOAL_WIDTH = 2;
 
     /**
      * Obiekt głównego zarządcy gry.
@@ -37,12 +48,17 @@ public class BoardActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
         getActionBar().hide();
-        gameManager = new MockManager();
+
+        try {
+            gameManager = ManagerFactory.createManager(GameMode.PlayerVsPlayer);
+        } catch (UnknownGameModeException e) {
+            e.printStackTrace();
+        }
 
         preferences = getSharedPreferences(GameSettings.PREF_NAME, Activity.MODE_PRIVATE);
-        boardWidth = preferences.getInt(GameSettings.BOARD_WIDTH, 8);
-        boardHeight = preferences.getInt(GameSettings.BOARD_HEIGHT, 10);
-        goalWidth = preferences.getInt(GameSettings.GOAL_WIDTH, 2);
+        boardWidth = preferences.getInt(GameSettings.BOARD_WIDTH, DEFAULT_BOARD_WITH);
+        boardHeight = preferences.getInt(GameSettings.BOARD_HEIGHT, DEFAULT_BOARD_HEIGHT);
+        goalWidth = preferences.getInt(GameSettings.GOAL_WIDTH, DEFAULT_GOAL_WIDTH);
 
         boardView = (BoardView) findViewById(R.id.boardView);
         boardView.setManager(gameManager);
@@ -51,5 +67,13 @@ public class BoardActivity extends Activity {
         boardView.setGoalWidth(goalWidth);
 
         gameManager.setView(boardView);
+        try {
+            gameManager.setChart(boardWidth, boardHeight, goalWidth);
+        } catch (ImparitParameterException e) {
+            e.printStackTrace();
+        } catch (InvalidGoalWidthException e) {
+            e.printStackTrace();
+        }
+        gameManager.setPlayer(Players.BOTTOM);
     }
 }

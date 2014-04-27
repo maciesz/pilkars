@@ -265,6 +265,7 @@ public class BoardView extends View {
     public void changePlayer() {
         int newColor = (pencilPaint.getColor() == topPlayerColor) ? bottomPlayerColor : topPlayerColor;
         pencilPaint.setColor(newColor);
+        Log.d(BoardView.class.getCanonicalName(), "changle player to " + String.valueOf(pencilPaint.getColor()));
     }
 
     /**
