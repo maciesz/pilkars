@@ -269,7 +269,7 @@ public class Chart {
             /**
              * Zamarkuj pozycję jako odwiedzoną.
              */
-			observer.markFinal(boalPosition);
+			//observer.markFinal(boalPosition);
 
 			final int hash = computeHash(startPosition, nextPosition);
 
@@ -440,6 +440,7 @@ public class Chart {
             if (visited[gameState])
                 return GameState.OBLIGATORY_MOVE;
 
+            visited[gameState] = true;
             return GameState.ACCEPTABLE;
         }
 
