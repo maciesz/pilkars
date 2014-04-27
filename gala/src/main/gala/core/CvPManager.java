@@ -1,6 +1,7 @@
 package main.gala.core;
 
 import main.gala.common.Direction;
+import main.gala.enums.GameState;
 
 import java.util.List;
 
@@ -27,6 +28,10 @@ public class CvPManager extends AbstractManager {
     @Override
     public List<Direction> getComputerDirectionSeq() {
         List<Direction> resList = ai.executeMoveSequence(chart);
+
+        /**
+         * Automatyczne uaktualnienie stanu końcowego przy ostatnim wywołaniu execute'a.
+         */
         for (Direction direction: resList) {
             chart.executeSingleMove(direction);
         }
@@ -39,11 +44,12 @@ public class CvPManager extends AbstractManager {
         /**
          * Ustawiamy stan gry w widoku.
          */
+        GameState gameState = chart.observer.rateActualState();
         /*
         TODO: Ustawić flagę ze stanem gry w widoku.
         view.setGameState(gameState); // coś takiego
          */
-        
+
         return resList;
     }
 }

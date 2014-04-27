@@ -518,7 +518,7 @@ public class Chart {
 			final int startPos = goalLineLevel * (WIDTH + 1);
 			for (int i = 0; i<= shift; ++i) {
 				visited[startPos + i] = true;
-				visited[startPos + i + GOAL_WIDTH] = true;
+				visited[startPos + i + shift + GOAL_WIDTH] = true;
 			}
 		}
 	}
