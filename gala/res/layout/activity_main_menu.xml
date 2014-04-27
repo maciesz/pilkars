@@ -39,7 +39,7 @@
                 android:onClick="multiPlayer"
                 android:src="@drawable/multiplayer_selector"
                 android:layout_gravity="center|"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="55dp"
                 android:background="@android:color/transparent"/>
 
         <ImageButton
@@ -47,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="60dp"
                 android:src="@drawable/settings_selector"
                 android:onClick="settings"
                 android:background="@android:color/transparent">

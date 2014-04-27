@@ -5,7 +5,9 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageButton;
 import main.gala.activities.R;
 
 /**
@@ -17,7 +19,7 @@ import main.gala.activities.R;
 
 public class MainMenuActivity extends Activity {
 
-    private Button viaPhoneButton;
+    private  ImageButton viaPhoneButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +48,16 @@ public class MainMenuActivity extends Activity {
     public void multiPlayer(View view) {
 
         final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        dialog.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         dialog.setContentView(R.layout.dialog_multiplayer);
-        dialog.setTitle("Choose game type");
-
-        viaPhoneButton = (Button) dialog.findViewById(R.id.viaPhone);
+//        dialog.getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.dialog_multiplayer_title);
+        viaPhoneButton = (ImageButton) dialog.findViewById(R.id.viaPhone);
         viaPhoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 viaPhone(view);
+                dialog.hide();
             }
         });
 
