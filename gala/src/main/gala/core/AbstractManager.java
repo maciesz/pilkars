@@ -1,9 +1,10 @@
 package main.gala.core;
 
-import android.view.View;
+import main.gala.activities.BoardView;
 import main.gala.ai.IArtificialIntelligence;
 import main.gala.chart.Chart;
 import main.gala.common.Direction;
+import main.gala.enums.GameState;
 import main.gala.enums.Players;
 import main.gala.enums.Strategy;
 import main.gala.exceptions.ImparitParameterException;
@@ -26,20 +27,6 @@ public abstract class AbstractManager {
     //
     //=========================================================================
     /**
-     * Klasa Converter odpowiadająca za konwersję danych przekazanych przez widok.
-     */
-    protected final class Converter {
-        public int convertData(final Direction direction) {
-            return 0;
-        }
-    }
-    
-    /**
-     * Converter.
-     */
-    protected Converter converter;
-    
-    /**
      * Plansza.
      */
     protected Chart chart;
@@ -52,7 +39,7 @@ public abstract class AbstractManager {
     /**
      * Widok.
      */
-    protected View boardView;
+    protected BoardView boardView;
     
     /**
      * Pomocnicza zmienna zapobiegająca męczeniu widoku, 
@@ -72,8 +59,6 @@ public abstract class AbstractManager {
      */
     AbstractManager() {
         chart = new Chart();
-        //depo = chart.new Deposit();
-        converter = new Converter();
         isUserEnabled = true;
     }
 
@@ -122,14 +107,40 @@ public abstract class AbstractManager {
      * @param direction konkretny kierunek
      */
     public void executeSingleMove(Direction direction) {
+        /**
+         * Wykonujemy pojedynczy ruch.
+         * Tak naprawdę pod spodem dzieje się co następuje:
+         * -> krawędź zostaje zaznaczona jako 'odwiedzona'
+         * -> wierzchołek w kierunku direction zostaje zamarkowany jako 'do odbicia'
+         * -> pozycja piłki zostaje zaktualizowana
+         * -> ruch w postaci kierunku trafia na stos ruchów danej kolejki
+         */
         chart.executeSingleMove(direction);
-    }
 
-    /**
-     * Procedura potwierdzająca zakończenie sekwencji ruchów.
-     */
-    public void executeMoveSequence() {
-        chart.executeMoveSequence();
+        /**
+         * Oceń stan rozgrywki.
+         */
+        final GameState gameState = chart.observer.rateActualState();
+
+        /**
+         * Jeśli jesteśmy w stanie akceptującym(patrz enums/GameState), to:
+         * -> zmieniamy kolejkę
+         * -> czyścimy kontener przechowujący dotychczasowe ruchy
+         * -> informujemy widok o zmianie zawodnika
+         */
+        if (gameState == GameState.ACCEPTABLE) {
+            chart.observer.changeTurn();
+            chart.executeMoveSequence();
+            boardView.changePlayer();
+        }
+
+        /**
+         * Ustawiamy stan gry w widoku.
+         */
+        /*
+        TODO: Ustawić flagę ze stanem gry w widoku.
+        view.setGameState(gameState); // coś takiego
+         */
     }
 
     public boolean isUserEnabled() {
@@ -147,7 +158,7 @@ public abstract class AbstractManager {
      * 
      * @param view widok planszy
      */
-    public void setView(View view) {
+    public void setView(BoardView view) {
         this.boardView = view;
     }
     
@@ -181,7 +192,7 @@ public abstract class AbstractManager {
      * 
      * @param strategy poziom sztucznej inteligencji lub jej brak
      */
-    public void setStrategy(Strategy strategy) throws UnknownStrategyException {
+    public void setStrategy(final Strategy strategy) throws UnknownStrategyException {
         ai = StrategyFactory.initializeStrategy(strategy);
     }
     
