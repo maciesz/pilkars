@@ -2,7 +2,6 @@ package main.gala.factories;
 
 import main.gala.ai.IArtificialIntelligence;
 import main.gala.ai.RandomPlayer;
-import main.gala.enums.GameMode;
 import main.gala.enums.Strategy;
 import main.gala.exceptions.UnknownStrategyException;
 
@@ -25,7 +24,7 @@ public class StrategyFactory {
      * Inicjalizacja struktury dostępnymi strategiami.
      */
     static {
-        strategies = new EnumMap<>(GameMode.class);
+        strategies = new EnumMap<>(Strategy.class);
         addStrategy(Strategy.RANDOM, new RandomPlayer());
     }
 
