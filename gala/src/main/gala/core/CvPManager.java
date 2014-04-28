@@ -31,7 +31,6 @@ public class CvPManager extends AbstractManager {
          * Wykonujemy pojedynczy ruch.
          * Tak naprawdę pod spodem dzieje się co następuje:
          * -> krawędź zostaje zaznaczona jako 'odwiedzona'
-         * -> wierzchołek w kierunku direction zostaje zamarkowany jako 'do odbicia'
          * -> pozycja piłki zostaje zaktualizowana
          * -> ruch w postaci kierunku trafia na stos ruchów danej kolejki
          */
@@ -39,8 +38,10 @@ public class CvPManager extends AbstractManager {
 
         /**
          * Oceń stan rozgrywki.
+         * Oznacz wierzchołek jako tylko 'do-odbicia'.
          */
         final GameState gameState = chart.observer.rateActualState();
+        chart.observer.markFinal(chart.getBoalPosition());
 
         /**
          * Jeśli jesteśmy w stanie akceptującym(patrz enums/GameState), to:
@@ -55,37 +56,27 @@ public class CvPManager extends AbstractManager {
             chart.executeMoveSequence();
 
             /**
-             * Zaznacz zmianę kolejki w logice i widoku.
+             * Zaznacz zmianę kolejki w logice.
              */
             chart.observer.changeTurn();
-            boardView.changePlayer();
 
             /**
-             * Poproś o sekwencję ruchów komputera.
-             * Po wykonaniu funkcji getComputerDirectionSeq, sprawdź bieżący stan gry.
-             * Jeśli jesteś w stanie akceptującym(patrz enums/GameState) potwierdź zmianę zawodnika.
-             * W przeciwnym wypadku znaleźliśmy się w jednym ze stanów kończących grę,
-             * w związku z czym zwracamy false(zmiana zawodnika nie następuje).
-             * Stan gry zostaje automatycznie zaktualizowany po wywołaniu ostatniego executeSingleMove'a
-             * w funkcji getComputerDirectionSeq.
+             * Poproś o sekwencję ruchów komputera i przekaż widokowi, aby ją narysował.
              */
             final List<Direction> resList = getComputerDirectionSeq();
-            final boolean decision = (chart.observer.rateActualState() == GameState.ACCEPTABLE) ? true : false;
-            /*
-            TODO: Wystarczy odkomentować po wprowadzeniu dodatkowego parametru decision typu boolean w metodzie drawSequence widoku
-            boardView.drawSequence(resList, decision);
+            boardView.drawSequence(resList);
+
+            /**
+             * Ponownie zmień kolejkę gracza.
              */
+            chart.observer.changeTurn();
+
         } else {
             /**
              * Ustawiamy stan gry w widoku.
              */
             boardView.setGameState(gameState);
         }
-
-        /**
-         * Przekaż widokowi sekwencję ruchów gracza komputerowego,
-         */
-
     }
 
     @Override
@@ -93,10 +84,16 @@ public class CvPManager extends AbstractManager {
         List<Direction> resList = ai.executeMoveSequence(chart);
 
         /**
-         * Automatyczne uaktualnienie stanu końcowego przy ostatnim wywołaniu execute'a.
+         * Iterując po liście ruchów dla gracza komputerowego:
+         * -> wykonaj pojedynczy ruch na planszy(patrz executeMove w klasie Chart),
+         * -> oceń stan gry dla aktualnie rozpatrywanego pola,
+         * -> po uprzedniej ocenie oznacz pole jako odwiedzone
          */
+        GameState gameState = GameState.ACCEPTABLE;
         for (Direction direction: resList) {
             chart.executeSingleMove(direction);
+            gameState = chart.observer.rateActualState();
+            chart.observer.markFinal(chart.getBoalPosition());
         }
 
         /**
@@ -107,16 +104,7 @@ public class CvPManager extends AbstractManager {
         /**
          * Ustawiamy stan gry w widoku.
          */
-        GameState gameState = chart.observer.rateActualState();
         boardView.setGameState(gameState);
-
-        /**
-         * Jeśli komputer zakończy swoją sekwencję na polu akceptującym(patrz enums/GameState),
-         * to zmień zawodnika.
-         */
-        //if (gameState == GameState.ACCEPTABLE)
-          //  boardView.changePlayer();
-
 
         return resList;
     }

@@ -440,7 +440,7 @@ public class Chart {
             if (visited[gameState])
                 return GameState.OBLIGATORY_MOVE;
 
-            visited[gameState] = true;
+            //visited[gameState] = true;
             return GameState.ACCEPTABLE;
         }
 

@@ -121,6 +121,7 @@ public abstract class AbstractManager {
          * Oceń stan rozgrywki.
          */
         final GameState gameState = chart.observer.rateActualState();
+        chart.observer.markFinal(chart.getBoalPosition());
 
         /**
          * Jeśli jesteśmy w stanie akceptującym(patrz enums/GameState), to:
