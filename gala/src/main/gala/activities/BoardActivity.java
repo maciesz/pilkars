@@ -10,9 +10,11 @@ import main.gala.core.MockManager;
 import main.gala.core.PvPManager;
 import main.gala.enums.GameMode;
 import main.gala.enums.Players;
+import main.gala.enums.Strategy;
 import main.gala.exceptions.ImparitParameterException;
 import main.gala.exceptions.InvalidGoalWidthException;
 import main.gala.exceptions.UnknownGameModeException;
+import main.gala.exceptions.UnknownStrategyException;
 import main.gala.factories.ManagerFactory;
 
 /**
@@ -37,28 +39,38 @@ public class BoardActivity extends Activity {
      */
     private BoardView boardView;
 
+    /**
+     * Tryb gry.
+     */
+    private GameMode gameMode;
     private SharedPreferences preferences;
 
     private int boardWidth;
     private int boardHeight;
     private int goalWidth;
+    private Strategy strategy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
         getActionBar().hide();
-
-        try {
-            gameManager = ManagerFactory.createManager(GameMode.PlayerVsPlayer).getInstance();
-        } catch (UnknownGameModeException e) {
-            e.printStackTrace();
-        }
+        gameMode = GameMode.valueOf(getIntent().getStringExtra(GameSettings.GAME_MODE));
 
         preferences = getSharedPreferences(GameSettings.PREF_NAME, Activity.MODE_PRIVATE);
         boardWidth = preferences.getInt(GameSettings.BOARD_WIDTH, DEFAULT_BOARD_WITH);
         boardHeight = preferences.getInt(GameSettings.BOARD_HEIGHT, DEFAULT_BOARD_HEIGHT);
         goalWidth = preferences.getInt(GameSettings.GOAL_WIDTH, DEFAULT_GOAL_WIDTH);
+        strategy = Strategy.valueOf(preferences.getString(GameSettings.STRATEGY, Strategy.RANDOM.name()));
+
+        try {
+            gameManager = ManagerFactory.createManager(gameMode).getInstance();
+            gameManager.setStrategy(Strategy.RANDOM);
+        } catch (UnknownGameModeException e) {
+            e.printStackTrace();
+        } catch (UnknownStrategyException e) {
+            e.printStackTrace();
+        }
 
         boardView = (BoardView) findViewById(R.id.boardView);
         boardView.setManager(gameManager);

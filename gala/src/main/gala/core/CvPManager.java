@@ -58,7 +58,7 @@ public class CvPManager extends AbstractManager {
              * Zaznacz zmianę kolejki w logice i widoku.
              */
             chart.observer.changeTurn();
-            boardView.changePlayer();
+//            boardView.changePlayer();
 
             /**
              * Poproś o sekwencję ruchów komputera.
@@ -70,11 +70,11 @@ public class CvPManager extends AbstractManager {
              * w funkcji getComputerDirectionSeq.
              */
             final List<Direction> resList = getComputerDirectionSeq();
-            final boolean decision = (chart.observer.rateActualState() == GameState.ACCEPTABLE) ? true : false;
-            /*
-            TODO: Wystarczy odkomentować po wprowadzeniu dodatkowego parametru decision typu boolean w metodzie drawSequence widoku
-            boardView.drawSequence(resList, decision);
-             */
+            //final boolean decision = (chart.observer.rateActualState() == GameState.ACCEPTABLE) ? true : false;
+
+            //boardView.drawSequence(resList, decision);
+            boardView.drawSequence(resList);
+
         } else {
             /**
              * Ustawiamy stan gry w widoku.

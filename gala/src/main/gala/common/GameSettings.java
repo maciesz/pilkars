@@ -34,4 +34,14 @@ public class GameSettings {
      */
     public static final String GOAL_WIDTH = "GOAL_WIDTH";
 
+    /**
+     * Nazwa extrasa przekazywanego jako parametr w Intentach.
+     */
+    public static final String GAME_MODE = "GAME_MODE";
+
+    /**
+     * Nazwa preferencji określającej poziom trudności.
+     */
+    public static final String STRATEGY = "STRATEGY";
+
 }
