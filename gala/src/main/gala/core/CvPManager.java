@@ -90,8 +90,8 @@ public class CvPManager extends AbstractManager {
          * -> po uprzedniej ocenie oznacz pole jako odwiedzone
          */
         GameState gameState = GameState.ACCEPTABLE;
-        for (Direction direction: resList) {
-            chart.executeSingleMove(direction);
+        for (int i = 0; i< resList.size(); ++i) {
+            chart.executeSingleMove(resList.get(i));
             gameState = chart.observer.rateActualState();
             chart.observer.markFinal(chart.getBoalPosition());
         }

@@ -667,11 +667,20 @@ public class Chart {
 	 *
 	 * @return stan rozgrywki(zwycięstwo/porażka/blok/konieczny_ruch/akceptujący)
 	 */
-	public GameState rateGameState() {
+	/*public GameState rateGameState() {
 		return observer.rateActualState();
-	}
+	}*/
 
-
+    /**
+     * Funkcja wyznaczająca liczbę reprezentującą połączenie między wierzchołkami start i next.
+     *
+     * @param start wierzchołek, z którego zaczynamy ruch
+     * @param next wierzchołek, do którego chcemy się przemieścić
+     * @return wartość reprezentująca krawędź nieskierowaną (start, next)
+     */
+    public int computeHash(final int start, final int next) {
+        return Math.max(start, next) * MULTIPLIER + Math.min(start, next);
+    }
     //=========================================================================
     //
     // Metody służące do testowania klasy Chart
@@ -699,14 +708,4 @@ public class Chart {
 	// Funkcje i procedury prywatne
 	//
 	//=========================================================================
-	/**
-	 * Funkcja wyznaczająca liczbę reprezentującą połączenie między wierzchołkami start i next.
-	 *
-	 * @param start wierzchołek, z którego zaczynamy ruch
-	 * @param next wierzchołek, do którego chcemy się przemieścić
-	 * @return wartość reprezentująca krawędź nieskierowaną (start, next)
-	 */
-	private int computeHash(final int start, final int next) {
-		return Math.max(start, next) * MULTIPLIER + Math.min(start, next);
-	}
 }

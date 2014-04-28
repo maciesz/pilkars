@@ -4,10 +4,7 @@ import main.gala.chart.Chart;
 import main.gala.common.Direction;
 import main.gala.enums.GameState;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Klasa opisująca losowo grającego przeciwnika komputerowego.
@@ -24,6 +21,8 @@ public class RandomPlayer implements IArtificialIntelligence {
                 for (int i = 0; i < chart.DIRECTIONS; ++i)
                     add(i);
             }};
+        Set<Integer> edges = new HashSet<>();
+        Set<Integer> visited = new HashSet<>();
 
         /**
          * Ustal pozycję piłki w grze i zadeklaruj zmienne pomocnicze.
@@ -33,32 +32,62 @@ public class RandomPlayer implements IArtificialIntelligence {
         Direction direction = new Direction(0, 0);
 
         /**
+         * Dodaj do odwiedzonych pozycję startową.
+         */
+        visited.add(boalPosition);
+
+        /**
          * Wyznacz sekwencję ruchów.
          */
-        while (chart.observer.rateState(boalPosition) == GameState.OBLIGATORY_MOVE) {
+        int edgeHash;
+        boolean observerCondition;
+        boolean visitedCondition;
+        boolean usedEdgeCondition;
+        boolean isMovePossible;
+        do {
+            observerCondition = chart.observer.rateState(boalPosition) == GameState.OBLIGATORY_MOVE;
+            visitedCondition = visited.contains(boalPosition);
+
+            /**
+             * Jeżeli wierzchołek nie był odwiedzony:
+             * -> zanim zaczęła się tura komputera
+             * lub
+             * -> w ciągu kilku ruchów komputera wykonanych na początku,
+             * to znaczy, że jest on wierzchołkiem końcowym - przerwij szukanie ścieżki.
+             */
+            if (!(observerCondition || visitedCondition))
+                break;
+
+            /**
+             * W przeciwnym wypadku, jeśli musimy wykonać ruch, to:
+             */
             Collections.shuffle(indexList);
 
-            boolean isMovePossible = false;
-            for (Integer index: indexList) {
+            isMovePossible = false;
+            for (int index : indexList) {
                 direction.setX(chart.X_COORDS[index]);
                 direction.setY(chart.Y_COORDS[index]);
                 nextPosition = chart.computeNext(boalPosition, direction);
 
-                if (chart.isMoveLegal(boalPosition, nextPosition)) {
+                edgeHash = chart.computeHash(boalPosition, nextPosition);
+                usedEdgeCondition = edges.contains(edgeHash);
+                if (chart.isMoveLegal(boalPosition, nextPosition) && !usedEdgeCondition) {
                     moveSequence.add(direction);
                     boalPosition = nextPosition;
                     isMovePossible = true;
+                    visited.add(boalPosition);
+                    edges.add(edgeHash);
                     break;
                 }
             }
 
             /**
-             * Jeśli nie udało się poruszyć a byliśmy w stanie,
-             * z którego musieliśmy wykonać ruch, to nastąpił blok.
+             * Jeśli nie byliśmy w stanie wykonać żadnego ruchu, to blok.
              */
             if (!isMovePossible)
                 break;
-        }
+        } while (true);
+
 
         return moveSequence;
     }
