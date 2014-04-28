@@ -21,7 +21,8 @@ import main.gala.enums.GameMode;
 
 public class MainMenuActivity extends Activity {
 
-    private  ImageButton viaPhoneButton;
+    private ImageButton viaPhoneButton;
+    private ImageButton viaBluetoothButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,14 @@ public class MainMenuActivity extends Activity {
                 dialog.hide();
             }
         });
+        viaBluetoothButton = (ImageButton) dialog.findViewById(R.id.viaBluetooth);
+        viaBluetoothButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bluetoothDialog(view);
+                dialog.hide();
+            }
+        });
 
         dialog.show();
     }
@@ -76,6 +85,21 @@ public class MainMenuActivity extends Activity {
         Intent intent = new Intent(this, BoardActivity.class);
         intent.putExtra(GameSettings.GAME_MODE, GameMode.PlayerVsPlayer.name());
         startActivity(intent);
+    }
+
+    /**
+     * Metoda odpowiadająca za wyświetlenie Dialogu z opcjami wyboru
+     * trybów gry dla bluetooth (host, server).
+     *
+     * @param view widok przekazywany przez aplikacje
+     */
+    public void bluetoothDialog(View view) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_bluetooth);
+        //TODO dodać listenerów na oba buttony, tj be host i be server
+
+        dialog.show();
     }
 
     /**
