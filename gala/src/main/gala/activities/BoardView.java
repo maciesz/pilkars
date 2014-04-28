@@ -121,8 +121,6 @@ public class BoardView extends View {
                         } catch (AmbiguousMoveException x) {
                             Log.d(BoardView.class.getCanonicalName(), "Ambiguous move exception!");
                         }
-//                    Log.d(BoardView.class.getCanonicalName(), "onTouchEvent() DIFFERENCE" + " " +
-//                            currentX + ", " + currentY);
                     }
                     break;
             }

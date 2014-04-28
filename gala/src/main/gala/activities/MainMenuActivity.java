@@ -9,6 +9,8 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import main.gala.activities.R;
+import main.gala.common.GameSettings;
+import main.gala.enums.GameMode;
 
 /**
  * Klasa reprezentująca główne menu i jego pochodne.
@@ -35,8 +37,9 @@ public class MainMenuActivity extends Activity {
      * @param view widok przekazywany przez aplikacje
      */
     public void singlePlayer(View view) {
-//        Intent intent = new Intent(this, BoardActivity.class);
-//        startActivity(intent);
+        Intent intent = new Intent(this, BoardActivity.class);
+        intent.putExtra(GameSettings.GAME_MODE, GameMode.ComputerVsPlayer.name());
+        startActivity(intent);
     }
 
     /**
@@ -49,9 +52,7 @@ public class MainMenuActivity extends Activity {
 
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        dialog.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         dialog.setContentView(R.layout.dialog_multiplayer);
-//        dialog.getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.dialog_multiplayer_title);
         viaPhoneButton = (ImageButton) dialog.findViewById(R.id.viaPhone);
         viaPhoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +74,7 @@ public class MainMenuActivity extends Activity {
      */
     public void viaPhone(View view) {
         Intent intent = new Intent(this, BoardActivity.class);
+        intent.putExtra(GameSettings.GAME_MODE, GameMode.PlayerVsPlayer.name());
         startActivity(intent);
     }
 
