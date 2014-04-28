@@ -18,7 +18,7 @@ public class ChartParametresCorrectnessTest {
      * @throws main.gala.exceptions.ImparitParameterException
      */
     @Test(expected = ImparitParameterException.class)
-    public void imparitHeightParity() throws InvalidGoalWidthException, ImparitParameterException {
+    public void imparitHeight() throws InvalidGoalWidthException, ImparitParameterException {
         final int width = 6;
         final int height = 9;
 
@@ -49,7 +49,7 @@ public class ChartParametresCorrectnessTest {
      * @throws main.gala.exceptions.ImparitParameterException
      */
     @Test(expected = InvalidGoalWidthException.class)
-    public void goalWidthEqualsChartWidthError() throws InvalidGoalWidthException, ImparitParameterException {
+    public void goalWidthEqualsChartWidth() throws InvalidGoalWidthException, ImparitParameterException {
         final int width = 6;
         final int height = 6;
         final int goalWidth = 6;
@@ -75,5 +75,4 @@ public class ChartParametresCorrectnessTest {
 
         assertTrue("IncorrectChartParametres", true);
     }
-
 }

@@ -49,20 +49,43 @@ public class CvPManager extends AbstractManager {
          * -> informujemy widok o zmianie zawodnika
          */
         if (gameState == GameState.ACCEPTABLE) {
-            chart.observer.changeTurn();
+            /**
+             * Wyczyść kontener w planszy odpowiedzialny za przechowywanie danych.
+             */
             chart.executeMoveSequence();
-            boardView.changePlayer();
-        }
 
-        /**
-         * Ustawiamy stan gry w widoku.
-         */
-        boardView.setGameState(gameState);
+            /**
+             * Zaznacz zmianę kolejki w logice i widoku.
+             */
+            chart.observer.changeTurn();
+            boardView.changePlayer();
+
+            /**
+             * Poproś o sekwencję ruchów komputera.
+             * Po wykonaniu funkcji getComputerDirectionSeq, sprawdź bieżący stan gry.
+             * Jeśli jesteś w stanie akceptującym(patrz enums/GameState) potwierdź zmianę zawodnika.
+             * W przeciwnym wypadku znaleźliśmy się w jednym ze stanów kończących grę,
+             * w związku z czym zwracamy false(zmiana zawodnika nie następuje).
+             * Stan gry zostaje automatycznie zaktualizowany po wywołaniu ostatniego executeSingleMove'a
+             * w funkcji getComputerDirectionSeq.
+             */
+            final List<Direction> resList = getComputerDirectionSeq();
+            final boolean decision = (chart.observer.rateActualState() == GameState.ACCEPTABLE) ? true : false;
+            /*
+            TODO: Wystarczy odkomentować po wprowadzeniu dodatkowego parametru decision typu boolean w metodzie drawSequence widoku
+            boardView.drawSequence(resList, decision);
+             */
+        } else {
+            /**
+             * Ustawiamy stan gry w widoku.
+             */
+            boardView.setGameState(gameState);
+        }
 
         /**
          * Przekaż widokowi sekwencję ruchów gracza komputerowego,
          */
-        boardView.drawSequence(getComputerDirectionSeq());
+
     }
 
     @Override
@@ -91,8 +114,8 @@ public class CvPManager extends AbstractManager {
          * Jeśli komputer zakończy swoją sekwencję na polu akceptującym(patrz enums/GameState),
          * to zmień zawodnika.
          */
-        if (gameState == GameState.ACCEPTABLE)
-            boardView.changePlayer();
+        //if (gameState == GameState.ACCEPTABLE)
+          //  boardView.changePlayer();
 
 
         return resList;

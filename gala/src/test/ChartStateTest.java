@@ -62,7 +62,7 @@ public class ChartStateTest {
      * @throws ImparitParameterException
      */
     @Test
-    public void checkPlayersVictoryStates() throws InvalidGoalWidthException, ImparitParameterException {
+    public void checkPlayerVictoryStates() throws InvalidGoalWidthException, ImparitParameterException {
         final int width = 6;
         final int height = 6;
         final int goalWidth = 4;
