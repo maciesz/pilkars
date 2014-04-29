@@ -25,10 +25,6 @@ import main.gala.factories.ManagerFactory;
 
 public class BoardActivity extends Activity {
 
-    private static final int DEFAULT_BOARD_WITH = 8;
-    private static final int DEFAULT_BOARD_HEIGHT = 10;
-    private static final int DEFAULT_GOAL_WIDTH = 2;
-
     /**
      * Obiekt głównego zarządcy gry.
      */
@@ -58,9 +54,9 @@ public class BoardActivity extends Activity {
         gameMode = GameMode.valueOf(getIntent().getStringExtra(GameSettings.GAME_MODE));
 
         preferences = getSharedPreferences(GameSettings.PREF_NAME, Activity.MODE_PRIVATE);
-        boardWidth = preferences.getInt(GameSettings.BOARD_WIDTH, DEFAULT_BOARD_WITH);
-        boardHeight = preferences.getInt(GameSettings.BOARD_HEIGHT, DEFAULT_BOARD_HEIGHT);
-        goalWidth = preferences.getInt(GameSettings.GOAL_WIDTH, DEFAULT_GOAL_WIDTH);
+        boardWidth = preferences.getInt(GameSettings.BOARD_WIDTH, GameSettings.DEFAULT_BOARD_WITH);
+        boardHeight = preferences.getInt(GameSettings.BOARD_HEIGHT, GameSettings.DEFAULT_BOARD_HEIGHT);
+        goalWidth = preferences.getInt(GameSettings.GOAL_WIDTH, GameSettings.DEFAULT_GOAL_WIDTH);
         strategy = Strategy.valueOf(preferences.getString(GameSettings.STRATEGY, Strategy.RANDOM.name()));
 
         try {

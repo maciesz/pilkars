@@ -44,4 +44,18 @@ public class GameSettings {
      */
     public static final String STRATEGY = "STRATEGY";
 
+    /**
+     * Stała z domyślną szerokością boiska.
+     */
+    public static final int DEFAULT_BOARD_WITH = 8;
+
+    /**
+     * Stała z domyślną wysokością boiska.
+     */
+    public static final int DEFAULT_BOARD_HEIGHT = 10;
+
+    /**
+     * Stała z domyślną szerokością bramki.
+     */
+    public static final int DEFAULT_GOAL_WIDTH = 2;
 }
