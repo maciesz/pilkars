@@ -22,36 +22,42 @@
                 android:id="@+id/imageView" android:layout_gravity="center_horizontal" android:layout_marginTop="40dp"
                 />
 
-        <ImageButton
+        <Button
                 android:id="@+id/singlePlayerButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/singleplayer_selector"
+                android:text="@string/single_player"
+                android:textColor="@drawable/button_selector"
+                android:textSize="25dp"
                 android:onClick="singlePlayer"
                 android:layout_gravity="center|top"
                 android:layout_marginTop="50dp"
                 android:background="@android:color/transparent"/>
 
-        <ImageButton
+        <Button
                 android:id="@+id/multiPlayerButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="multiPlayer"
-                android:src="@drawable/multiplayer_selector"
+                android:text="@string/multi_player"
+                android:textColor="@drawable/button_selector"
+                android:textSize="25dp"
                 android:layout_gravity="center|"
-                android:layout_marginTop="55dp"
+                android:layout_marginTop="60dp"
                 android:background="@android:color/transparent"/>
 
-        <ImageButton
+        <Button
                 android:id="@+id/settingsButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="60dp"
-                android:src="@drawable/settings_selector"
+                android:text="@string/settings"
+                android:textColor="@drawable/button_selector"
+                android:textSize="25dp"
                 android:onClick="settings"
                 android:background="@android:color/transparent">
-        </ImageButton>
+        </Button>
 
     </LinearLayout>
 

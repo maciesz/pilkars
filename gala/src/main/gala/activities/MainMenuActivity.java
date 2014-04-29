@@ -3,14 +3,19 @@ package main.gala.activities;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import main.gala.activities.R;
 import main.gala.common.GameSettings;
 import main.gala.enums.GameMode;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Klasa reprezentująca główne menu i jego pochodne.
@@ -24,11 +29,30 @@ public class MainMenuActivity extends Activity {
     private ImageButton viaPhoneButton;
     private ImageButton viaBluetoothButton;
 
+    private Typeface puricaFont;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         getActionBar().hide();
+        setUI();
+    }
+
+    /**
+     * Metoda do ustawiania tych części UI, których nie można zrobić w xmlach, lub
+     * nie umiem :)
+     */
+    private void setUI() {
+        puricaFont = Typeface.createFromAsset(getAssets(), "fonts/purisa_bold.ttf");
+        List<TextView> elements = new LinkedList<>();
+        elements.add((TextView) findViewById(R.id.singlePlayerButton));
+        elements.add((TextView) findViewById(R.id.multiPlayerButton));
+        elements.add((TextView) findViewById(R.id.settingsButton));
+
+        for (TextView textView : elements) {
+            textView.setTypeface(puricaFont);
+        }
     }
 
     /**

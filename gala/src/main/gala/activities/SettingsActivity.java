@@ -3,13 +3,16 @@ package main.gala.activities;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 import main.gala.common.GameSettings;
+import main.gala.enums.Strategy;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,6 +27,7 @@ public class SettingsActivity extends Activity {
     private SharedPreferences preferences;
     private Typeface puricaFont;
 
+    private String strategy;
     private int boardWidth;
     private int boardHeight;
     private int goalWidth;
@@ -33,12 +37,14 @@ public class SettingsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         getActionBar().hide();
-        setUI();
 
         preferences = getSharedPreferences(GameSettings.PREF_NAME, Activity.MODE_PRIVATE);
+        strategy = preferences.getString(GameSettings.STRATEGY, Strategy.RANDOM.name());
         boardWidth = preferences.getInt(GameSettings.BOARD_WIDTH, GameSettings.DEFAULT_BOARD_WITH);
         boardHeight = preferences.getInt(GameSettings.BOARD_HEIGHT, GameSettings.DEFAULT_BOARD_HEIGHT);
         goalWidth = preferences.getInt(GameSettings.GOAL_WIDTH, GameSettings.DEFAULT_GOAL_WIDTH);
+
+        setUI();
     }
 
     /**
@@ -50,6 +56,20 @@ public class SettingsActivity extends Activity {
 //        final Dialog dialog = new Dialog(this);
 //        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 //        dialog.show();
+
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+////        builder.setView(findViewById(R.layout.dialog_bluetooth));
+//        builder.setNeutralButton("chuj", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        Log.d(SettingsActivity.class.getCanonicalName(), "CHUJ " + String.valueOf(i));
+//                    }
+//                });
+//
+//        AlertDialog dialog = builder.create();
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        dialog.getButton();
+//        dialog.show();
     }
 
     /**
@@ -58,18 +78,29 @@ public class SettingsActivity extends Activity {
      */
     private void setUI() {
         puricaFont = Typeface.createFromAsset(getAssets(), "fonts/purisa_bold.ttf");
+
+        TextView aiDifficultyText = (TextView) findViewById(R.id.ai_difficulty_text);
+        TextView boardHeightText = (TextView) findViewById(R.id.board_height_text);
+        TextView boardWidthText = (TextView) findViewById(R.id.board_width_text);
+        TextView goalWidthText = (TextView) findViewById(R.id.goal_width_text);
+
         List<TextView> elements = new LinkedList<>();
         elements.add((TextView) findViewById(R.id.ai_button));
-        elements.add((TextView) findViewById(R.id.ai_difficulty_text));
+        elements.add(aiDifficultyText);
         elements.add((TextView) findViewById(R.id.board_height));
-        elements.add((TextView) findViewById(R.id.board_height_text));
+        elements.add(boardHeightText);
         elements.add((TextView) findViewById(R.id.board_width));
-        elements.add((TextView) findViewById(R.id.board_width_text));
+        elements.add(boardWidthText);
         elements.add((TextView) findViewById(R.id.goal_width));
-        elements.add((TextView) findViewById(R.id.goal_width_text));
+        elements.add(goalWidthText);
 
         for (TextView textView : elements) {
             textView.setTypeface(puricaFont);
         }
+
+        aiDifficultyText.setText(strategy);
+        boardHeightText.setText(String.valueOf(boardHeight));
+        boardWidthText.setText(String.valueOf(boardWidth));
+        goalWidthText.setText(String.valueOf(goalWidth));
     }
 }
