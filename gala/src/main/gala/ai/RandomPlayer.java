@@ -34,7 +34,7 @@ public class RandomPlayer implements IArtificialIntelligence {
         /**
          * Dodaj do odwiedzonych pozycję startową.
          */
-        visited.add(boalPosition);
+        //visited.add(boalPosition);
 
         /**
          * Wyznacz sekwencję ruchów.
@@ -44,7 +44,8 @@ public class RandomPlayer implements IArtificialIntelligence {
         boolean visitedCondition;
         boolean usedEdgeCondition;
         boolean isMovePossible;
-        do {
+        //System.out.println("kolejka: " + i);
+        while(true) {
             observerCondition = chart.observer.rateState(boalPosition) == GameState.OBLIGATORY_MOVE;
             visitedCondition = visited.contains(boalPosition);
 
@@ -55,9 +56,11 @@ public class RandomPlayer implements IArtificialIntelligence {
              * -> w ciągu kilku ruchów komputera wykonanych na początku,
              * to znaczy, że jest on wierzchołkiem końcowym - przerwij szukanie ścieżki.
              */
+            System.out.println("Observer condition: " + observerCondition + ", visitedCondition: " + visitedCondition);
             if (!(observerCondition || visitedCondition))
                 break;
 
+            visited.add(boalPosition);
             /**
              * W przeciwnym wypadku, jeśli musimy wykonać ruch, to:
              */
@@ -67,32 +70,38 @@ public class RandomPlayer implements IArtificialIntelligence {
             for (int index : indexList) {
                 direction.setX(chart.X_COORDS[index]);
                 direction.setY(chart.Y_COORDS[index]);
+                //System.out.println("getX: " + direction.getX() + ", getY: " + direction.getY());
                 nextPosition = chart.computeNext(boalPosition, direction);
 
                 edgeHash = chart.computeHash(boalPosition, nextPosition);
                 usedEdgeCondition = edges.contains(edgeHash);
+                //System.out.println("!usedEdgeCondition: " + !usedEdgeCondition);
+                //System.out.println("IsMoveLegal from: " + boalPosition + " to: " + nextPosition + "... " + chart.isMoveLegal(boalPosition, nextPosition));
                 if (chart.isMoveLegal(boalPosition, nextPosition) && !usedEdgeCondition) {
+                    //System.out.println("Wybrałem pozycję: " + nextPosition);
                     moveSequence.add(direction);
                     boalPosition = nextPosition;
                     isMovePossible = true;
-                    visited.add(boalPosition);
                     edges.add(edgeHash);
                     break;
                 }
             }
+            //System.out.println("-----------------------------------------------------");
 
             /**
              * Jeśli nie byliśmy w stanie wykonać żadnego ruchu, to blok.
              */
             if (!isMovePossible)
                 break;
-        } while (true);
+        }
 
-
+        //System.out.println("JESTEM, JESTEM");
         return moveSequence;
     }
 
     public IArtificialIntelligence getInstance() {
         return new RandomPlayer();
     }
+
+    private static int i = 1;
 }
