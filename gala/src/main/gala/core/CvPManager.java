@@ -1,8 +1,10 @@
 package main.gala.core;
 
 import main.gala.common.Direction;
+import main.gala.converter.Converter;
 import main.gala.enums.GameState;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -90,7 +92,7 @@ public class CvPManager extends AbstractManager {
          * -> po uprzedniej ocenie oznacz pole jako odwiedzone
          */
         GameState gameState = GameState.ACCEPTABLE;
-        for (int i = 0; i< resList.size(); ++i) {
+        for (int i = 0; i < resList.size(); i++) {
             chart.executeSingleMove(resList.get(i));
             gameState = chart.observer.rateActualState();
             chart.observer.markFinal(chart.getBoalPosition());
@@ -106,6 +108,16 @@ public class CvPManager extends AbstractManager {
          */
         boardView.setGameState(gameState);
 
-        return resList;
+        /**
+         * Przekonwertuj kierunki na format rozpoznawalny przez Widok.
+         */
+        List<Direction> convertedList = new LinkedList<>();
+        for (Direction direction: resList)
+            convertedList.add(Converter.cuseMVConversion(direction));
+
+        /**
+         * Zwróć skonwertowaną listę kierunków.
+         */
+        return convertedList;
     }
 }

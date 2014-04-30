@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import main.gala.common.Direction;
 import main.gala.common.GameSettings;
+import main.gala.converter.Converter;
 import main.gala.core.AbstractManager;
 import main.gala.enums.GameState;
 import main.gala.exceptions.AmbiguousMoveException;
@@ -113,10 +114,11 @@ public class BoardView extends View {
                         currentY = endY - startY;
                         try {
                             Direction direction = new Direction(currentX, currentY);
-                            if (manager.isMoveLegal(direction)) {
+                            final Direction convertedDirection = Converter.cuseMVConversion(direction);
+                            if (manager.isMoveLegal(convertedDirection)) {
                                 history.add(new Pair(direction, pencilPaint.getColor()));
                                 invalidate();
-                                manager.executeSingleMove(direction);
+                                manager.executeSingleMove(convertedDirection);
                             }
                         } catch (AmbiguousMoveException x) {
                             Log.d(BoardView.class.getCanonicalName(), "Ambiguous move exception!");

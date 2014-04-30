@@ -12,8 +12,6 @@ import java.util.*;
  * @author Maciej Szeszko <m.szeszko@student.uw.edu.pl>
  */
 public class RandomPlayer implements IArtificialIntelligence {
-    //private Set<Integer> edges;
-
     public List<Direction> executeMoveSequence(final Chart chart) {
         List<Direction> moveSequence = new LinkedList<>();
         List<Integer> indexList = new ArrayList<Integer>() {
@@ -29,12 +27,7 @@ public class RandomPlayer implements IArtificialIntelligence {
          */
         int boalPosition = chart.getBoalPosition();
         int nextPosition;
-        Direction direction = new Direction(0, 0);
-
-        /**
-         * Dodaj do odwiedzonych pozycję startową.
-         */
-        //visited.add(boalPosition);
+        Direction direction;
 
         /**
          * Wyznacz sekwencję ruchów.
@@ -44,7 +37,6 @@ public class RandomPlayer implements IArtificialIntelligence {
         boolean visitedCondition;
         boolean usedEdgeCondition;
         boolean isMovePossible;
-        //System.out.println("kolejka: " + i);
         while(true) {
             observerCondition = chart.observer.rateState(boalPosition) == GameState.OBLIGATORY_MOVE;
             visitedCondition = visited.contains(boalPosition);
@@ -56,7 +48,6 @@ public class RandomPlayer implements IArtificialIntelligence {
              * -> w ciągu kilku ruchów komputera wykonanych na początku,
              * to znaczy, że jest on wierzchołkiem końcowym - przerwij szukanie ścieżki.
              */
-            System.out.println("Observer condition: " + observerCondition + ", visitedCondition: " + visitedCondition);
             if (!(observerCondition || visitedCondition))
                 break;
 
@@ -68,17 +59,12 @@ public class RandomPlayer implements IArtificialIntelligence {
 
             isMovePossible = false;
             for (int index : indexList) {
-                direction.setX(chart.X_COORDS[index]);
-                direction.setY(chart.Y_COORDS[index]);
-                //System.out.println("getX: " + direction.getX() + ", getY: " + direction.getY());
+                direction = new Direction(chart.X_COORDS[index], chart.Y_COORDS[index]);
                 nextPosition = chart.computeNext(boalPosition, direction);
 
                 edgeHash = chart.computeHash(boalPosition, nextPosition);
                 usedEdgeCondition = edges.contains(edgeHash);
-                //System.out.println("!usedEdgeCondition: " + !usedEdgeCondition);
-                //System.out.println("IsMoveLegal from: " + boalPosition + " to: " + nextPosition + "... " + chart.isMoveLegal(boalPosition, nextPosition));
                 if (chart.isMoveLegal(boalPosition, nextPosition) && !usedEdgeCondition) {
-                    //System.out.println("Wybrałem pozycję: " + nextPosition);
                     moveSequence.add(direction);
                     boalPosition = nextPosition;
                     isMovePossible = true;
@@ -86,7 +72,6 @@ public class RandomPlayer implements IArtificialIntelligence {
                     break;
                 }
             }
-            //System.out.println("-----------------------------------------------------");
 
             /**
              * Jeśli nie byliśmy w stanie wykonać żadnego ruchu, to blok.
@@ -95,13 +80,10 @@ public class RandomPlayer implements IArtificialIntelligence {
                 break;
         }
 
-        //System.out.println("JESTEM, JESTEM");
         return moveSequence;
     }
 
     public IArtificialIntelligence getInstance() {
         return new RandomPlayer();
     }
-
-    private static int i = 1;
 }

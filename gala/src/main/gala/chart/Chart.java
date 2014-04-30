@@ -266,11 +266,6 @@ public class Chart {
 			final int nextPosition = computeNext(direction);
 			boalPosition = nextPosition;
 
-            /**
-             * Zamarkuj pozycję jako odwiedzoną.
-             */
-			//observer.markFinal(boalPosition);
-
 			final int hash = computeHash(startPosition, nextPosition);
 
             /**
@@ -394,7 +389,8 @@ public class Chart {
 		 * @param position pozycja do odznaczenia
 		 */
 		public void markFinal(final int position) {
-			visited[position] = true;
+            System.out.println("MARKED POS: " + position);
+            visited[position] = true;
 		}
 
 		/**
@@ -629,7 +625,7 @@ public class Chart {
 		final int next =
 				boalPosition + direction.getX() + (WIDTH + 1) * direction.getY();
 
-		return edges.contains(computeHash(start, next));
+		return (next > 0) ? edges.contains(computeHash(start, next)) : false;
 	}
 
     /**
@@ -638,7 +634,7 @@ public class Chart {
      * @return czy da się przejść z pola start na pole next
      */
     public boolean isMoveLegal(final int start, final int next) {
-        return edges.contains(computeHash(start, next));
+        return (next > 0) ? edges.contains(computeHash(start, next)) : false;
     }
 
     /**
