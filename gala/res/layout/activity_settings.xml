@@ -3,20 +3,112 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
              android:layout_height="match_parent">
-    <view
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            class="main.gala.activities.BackgroundView"
-            android:scaleType="center"
-            android:id="@+id/backgroundView"
-            android:layout_gravity="center" />
+	<view
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			class="main.gala.activities.BackgroundView"
+			android:scaleType="center"
+			android:id="@+id/backgroundView"
+			android:layout_gravity="center"/>
 
-    <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center"
-            android:weightSum="1">
-    </LinearLayout>
+	<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent">
+
+		<Button
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/ai_difficulty"
+				android:textColor="@drawable/button_selector"
+				android:textStyle="bold"
+				android:textSize="20dp"
+				android:id="@+id/ai_button"
+				android:onClick="ai"
+				android:background="@android:color/transparent"
+				android:layout_gravity="center|top"
+				android:layout_marginTop="35dp"/>
+
+		<TextView
+				android:id="@+id/ai_difficulty_text"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="random"
+				android:textSize="15dp"
+				android:textColor="#808080"
+				android:layout_gravity="center|top"
+				android:layout_marginTop="-15dp"
+				android:textStyle="bold"/>
+
+		<Button
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/board_height"
+				android:textColor="@drawable/button_selector"
+				android:textStyle="bold"
+				android:textSize="18dp"
+				android:id="@+id/board_height"
+				android:background="@android:color/transparent"
+				android:layout_gravity="center|top"
+				android:layout_marginTop="15dp"/>
+
+		<TextView
+				android:id="@+id/board_height_text"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="10"
+				android:textSize="15dp"
+				android:textColor="#808080"
+				android:layout_gravity="center|top"
+				android:layout_marginTop="-15dp"
+				android:textStyle="bold"/>
+
+		<Button
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/board_width"
+				android:textColor="@drawable/button_selector"
+				android:textStyle="bold"
+				android:textSize="18dp"
+				android:id="@+id/board_width"
+				android:background="@android:color/transparent"
+				android:layout_gravity="center|top"
+				android:layout_marginTop="15dp"/>
+
+		<TextView
+				android:id="@+id/board_width_text"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="8"
+				android:textSize="15dp"
+				android:textColor="#808080"
+				android:layout_gravity="center|top"
+				android:layout_marginTop="-15dp"
+				android:textStyle="bold"/>
+
+		<Button
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/goal_width"
+				android:textColor="@drawable/button_selector"
+				android:textStyle="bold"
+				android:textSize="17dp"
+				android:id="@+id/goal_width"
+				android:background="@android:color/transparent"
+				android:layout_gravity="center|top"
+				android:layout_marginTop="15dp"/>
+
+		<TextView
+				android:id="@+id/goal_width_text"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="2"
+				android:textSize="15dp"
+				android:textColor="#808080"
+				android:layout_gravity="center|top"
+				android:layout_marginTop="-15dp"
+				android:textStyle="bold"/>
+
+	</LinearLayout>
 
 </FrameLayout>
