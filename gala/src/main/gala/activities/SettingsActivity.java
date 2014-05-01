@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 import main.gala.common.GameSettings;
+import main.gala.common.StaticContent;
 import main.gala.enums.Strategy;
 
 import java.util.LinkedList;
@@ -77,7 +78,7 @@ public class SettingsActivity extends Activity {
      * nie umiem :)
      */
     private void setUI() {
-        puricaFont = Typeface.createFromAsset(getAssets(), "fonts/purisa_bold.ttf");
+        puricaFont = Typeface.createFromAsset(getAssets(), StaticContent.textFontLocation);
 
         TextView aiDifficultyText = (TextView) findViewById(R.id.ai_difficulty_text);
         TextView boardHeightText = (TextView) findViewById(R.id.board_height_text);

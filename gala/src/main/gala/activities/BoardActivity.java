@@ -10,10 +10,14 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.TextView;
 import main.gala.activities.R;
 import main.gala.common.GameSettings;
+import main.gala.common.StaticContent;
 import main.gala.core.AbstractManager;
 import main.gala.core.MockManager;
 import main.gala.core.PvPManager;
@@ -57,10 +61,13 @@ public class BoardActivity extends Activity {
     private int goalWidth;
     private Strategy strategy;
 
+    private Typeface puricaFont;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(BoardActivity.class.getCanonicalName(), "ON CREATE()");
+
+        puricaFont = Typeface.createFromAsset(getAssets(), StaticContent.textFontLocation);
         setContentView(R.layout.activity_board);
         getActionBar().hide();
         gameMode = GameMode.valueOf(getIntent().getStringExtra(GameSettings.GAME_MODE));
@@ -104,31 +111,40 @@ public class BoardActivity extends Activity {
      */
     @Override
     public void onBackPressed() {
-        Typeface puricaFont = Typeface.createFromAsset(getAssets(), "fonts/purisa_bold.ttf");
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Do you really want to quit?");
+
+        LayoutInflater inflater = getLayoutInflater();
+        builder.setCustomTitle(inflater.inflate(R.layout.dialog_backbutton, null));
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Log.d(SettingsActivity.class.getCanonicalName(), "NO " + String.valueOf(i));
                 //Wałek, nic się nie dzieje :)
             }
         });
 
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.d(SettingsActivity.class.getCanonicalName(), "YES " + String.valueOf(i));
-                        BoardActivity.this.finish();
-                    }
-                });
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                BoardActivity.this.finish();
+            }
+        });
 
         AlertDialog dialog = builder.create();
         dialog.show();
 
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTypeface(puricaFont);
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTypeface(puricaFont);
+        TextView textView = (TextView) dialog.findViewById(R.id.title);
+        textView.setTypeface(puricaFont);
 
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+        Button negativeButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
+        positiveButton.setTypeface(puricaFont);
+        positiveButton.setBackgroundColor(StaticContent.backgroundColor);
+        positiveButton.setTextColor(StaticContent.textColor);
+        negativeButton.setTypeface(puricaFont);
+        negativeButton.setBackgroundColor(StaticContent.backgroundColor);
+        negativeButton.setTextColor(StaticContent.textColor);
     }
 }
