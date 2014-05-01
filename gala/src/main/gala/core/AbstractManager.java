@@ -112,40 +112,7 @@ public abstract class AbstractManager {
      *
      * @param direction konkretny kierunek
      */
-    public void executeSingleMove(Direction direction) {
-        /**
-         * Wykonujemy pojedynczy ruch.
-         * Tak naprawdę pod spodem dzieje się co następuje:
-         * -> krawędź zostaje zaznaczona jako 'odwiedzona'
-         * -> wierzchołek w kierunku direction zostaje zamarkowany jako 'do odbicia'
-         * -> pozycja piłki zostaje zaktualizowana
-         * -> ruch w postaci kierunku trafia na stos ruchów danej kolejki
-         */
-        chart.executeSingleMove(direction);
-
-        /**
-         * Oceń stan rozgrywki.
-         */
-        final GameState gameState = chart.observer.rateActualState();
-        chart.observer.markFinal(chart.getBoalPosition());
-
-        /**
-         * Jeśli jesteśmy w stanie akceptującym(patrz enums/GameState), to:
-         * -> zmieniamy kolejkę
-         * -> czyścimy kontener przechowujący dotychczasowe ruchy
-         * -> informujemy widok o zmianie zawodnika
-         */
-        if (gameState == GameState.ACCEPTABLE) {
-            chart.observer.changeTurn();
-            chart.executeMoveSequence();
-            boardView.changePlayer();
-        }
-
-        /**
-         * Ustawiamy stan gry w widoku.
-         */
-        boardView.setGameState(gameState);
-    }
+    public abstract void executeSingleMove(Direction direction);
 
     public boolean isUserEnabled() {
         return isUserEnabled;
