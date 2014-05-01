@@ -80,7 +80,6 @@ public class BoardView extends View {
         pencilPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         pencilPaint.setAntiAlias(true);
         pencilPaint.setStrokeWidth(5f);
-        pencilPaint.setColor(bottomPlayerColor);
 
         topGoalPaint = new Paint();
         topGoalPaint.setColor(topPlayerColor);
@@ -91,6 +90,7 @@ public class BoardView extends View {
 
     public BoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        pencilPaint.setColor(bottomPlayerColor);
         screenHeight = context.getResources().getDisplayMetrics().heightPixels;
         screenWidth = context.getResources().getDisplayMetrics().widthPixels;
     }
