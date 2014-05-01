@@ -315,6 +315,7 @@ public class Chart {
 		 * Struktura determinująca konieczność odbicia się z dowolnego pola na planszy.
 		 */
 		private boolean[] visited;
+        private final boolean[] austereBoard;
 
 
 		//=====================================================================
@@ -332,6 +333,7 @@ public class Chart {
 			 * Inicjalizacja tablicy odwiedzonych.
 			 */
 			visited = new boolean[maxStatesSize];
+            austereBoard = new boolean[maxStatesSize];
 
 			/**
 			 * Instancjacja mapy.
@@ -389,7 +391,7 @@ public class Chart {
 		 * @param position pozycja do odznaczenia
 		 */
 		public void markFinal(final int position) {
-            System.out.println("MARKED POS: " + position);
+            //System.out.println("MARKED POS: " + position);
             visited[position] = true;
 		}
 
@@ -467,8 +469,84 @@ public class Chart {
 		 * @return czy gracz został zablokowany przez przeciwnika
 		 */
 		private boolean isBlocked(final int boalPosition) {
-			// TODO: BFS do napisania
-			return false;
+            final int size = (WIDTH + 1) * (HEIGHT + 3) + 1;
+			Queue<Integer> queue = new LinkedList<>();
+            boolean[] queued = new boolean[size];
+            Set<Integer> bEdges = new HashSet<>();
+
+            /**
+             * Inicjalizacja struktur danych.
+             */
+            System.arraycopy(austereBoard, 0, queued, 0, austereBoard.length);
+            queued[boalPosition] = true;
+            bEdges.addAll(edges);
+            queue.add(boalPosition);
+
+            /**
+             * Deklaracja zmiennych oraz inicjalizacja stałych.
+             */
+            final int level = WIDTH + 1;
+            int front;
+            int next;
+            int hash;
+            Direction direction;
+            boolean isMoveLegal;
+
+            /**
+             * Źródłem nazywamy wierzchołek startowy.
+             *
+             *
+             * Definicje:
+             *
+             * Dobry wierzchołek:
+             * Powiemy, że wierzchołek jest dobry,
+             * jeżeli nie był on jeszcze odwiedzony w drzewie przeszukiwań,
+             * nie jest przeznaczony tylko 'do-odbicia' oraz jest osiągalny ze źródła.
+             *
+             * Dobra ścieżka:
+             * Ścieżka łącząca źródło z dobrym wierzchołkiem.
+             *
+             *
+             * Chcąc sprawdzić, czy została założona blokada,
+             * chcemy tak naprawdę stwierdzić czy istnieje dobry wierzchołek.
+             * Jeśli dobry wierzchołek istnieje,
+             * to leży on na pewnej najkrótszej ścieżce łączącej go ze źródłem.
+             * Zauważmy również, że ruch w każdą z 8 stron świata kosztuje dokładnie tyle samo.
+             *
+             * Cel: Stwierdzić o istnieniu dobrej ścieżki.
+             *
+             * Do realizacji powyższego celu, w oparciu o podane wyżej założenia
+             * wykorzystamy algorytm przeszukiwania BFS.
+             */
+            while (!queue.isEmpty()) {
+                front = queue.remove();
+
+                /**
+                 * Jeżeli pozycja nie należy do tylko 'do-odbicia', to osiągnięto dobry wierzchołek.
+                 */
+                if (!visited[front])
+                    return false;
+
+                //System.out.println("Możliwe ruchy: ");
+                for (int i = 0; i< X_COORDS.length; ++i) {
+                    direction = new Direction(X_COORDS[i], Y_COORDS[i]);
+                    next = computeNext(front, direction);
+                    //System.out.println("Next: " + next);
+                    hash = computeHash(front, next);
+                    isMoveLegal = bEdges.contains(hash);
+
+                    /**
+                     * Jeżeli krawędź nie była jeszcze odwiedzona, a wierzchołek zakolejkowany...
+                     */
+                    if (isMoveLegal && !queued[next]) {
+                        //System.out.println("(" + front + ", " + next + ")");
+                        bEdges.remove(hash);
+                        queued[next] = true;
+                        queue.add(next);
+                    }
+                }
+            }
+			return true;
 		}
 
 		/**
@@ -500,8 +578,11 @@ public class Chart {
 		 * @param startPos pozycja początkowa, od której przemieszczamy się już tylko w górę
 		 */
 		private void markOuterSide(final int startPos) {
+            int pos;
 			for (int i = 0; i<= HEIGHT; ++i) {
-                visited[startPos + i * (WIDTH + 1)] = true;
+                pos = startPos + i * (WIDTH + 1);
+                visited[pos] = true;
+                austereBoard[pos] = true;
             }
 		}
 
@@ -513,9 +594,17 @@ public class Chart {
 		 */
 		private void markGoalLine(final int goalLineLevel, final int shift) {
 			final int startPos = goalLineLevel * (WIDTH + 1);
+            int posLhs;
+            int posRhs;
 			for (int i = 0; i<= shift; ++i) {
-				visited[startPos + i] = true;
-				visited[startPos + i + shift + GOAL_WIDTH] = true;
+                posLhs = startPos + i;
+                posRhs = startPos + i + shift + GOAL_WIDTH;
+
+                visited[posLhs] = true;
+                austereBoard[posLhs] = true;
+
+				visited[posRhs] = true;
+                austereBoard[posRhs] = true;
 			}
 		}
 	}
