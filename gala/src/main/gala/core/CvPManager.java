@@ -73,12 +73,12 @@ public class CvPManager extends AbstractManager {
              */
             chart.observer.changeTurn();
 
-        } else {
-            /**
-             * Ustawiamy stan gry w widoku.
-             */
-            boardView.setGameState(gameState);
         }
+        /**
+         * Ustawiamy stan gry w widoku.
+         */
+        boardView.setGameState(gameState);
+
 
     }
 
