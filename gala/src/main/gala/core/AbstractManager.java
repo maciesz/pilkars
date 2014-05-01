@@ -5,6 +5,7 @@ import main.gala.ai.IArtificialIntelligence;
 import main.gala.chart.Chart;
 import main.gala.common.Direction;
 import main.gala.enums.GameState;
+import main.gala.enums.PlayerType;
 import main.gala.enums.Players;
 import main.gala.enums.Strategy;
 import main.gala.exceptions.ImparitParameterException;
@@ -47,6 +48,11 @@ public abstract class AbstractManager {
      * a klika jak wściekły i system na to reaguje.
      */
     protected boolean isUserEnabled;
+
+    /**
+     * Zmienna opisująca typ zawodnika rozpoczynającego grę(COMPUTER/PLAYER).
+     */
+    protected PlayerType beginner;
 
 
     //=========================================================================
@@ -193,7 +199,20 @@ public abstract class AbstractManager {
     public void setStrategy(final Strategy strategy) throws UnknownStrategyException {
         ai = StrategyFactory.initializeStrategy(strategy);
     }
-    
+
+    /**
+     * Procedura inicjująca typ gracza rozpoczynającego rozgrywkę CvP.
+     * @param beginner typ gracza rozpoczynającego grę(COMPUTER/PLAYER).
+     */
+    public void setBeginnerType(final PlayerType beginner) {
+        this.beginner = beginner;
+    }
+
+    /**
+     * Procedura inicjująca rozgrywkę.
+     */
+    public void startGame() {}
+
     public void setUserEnabled(boolean isUserEnabled) {
         this.isUserEnabled = isUserEnabled;
     }

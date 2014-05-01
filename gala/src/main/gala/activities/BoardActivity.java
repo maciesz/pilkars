@@ -22,6 +22,7 @@ import main.gala.core.AbstractManager;
 import main.gala.core.MockManager;
 import main.gala.core.PvPManager;
 import main.gala.enums.GameMode;
+import main.gala.enums.PlayerType;
 import main.gala.enums.Players;
 import main.gala.enums.Strategy;
 import main.gala.exceptions.ImparitParameterException;
@@ -102,6 +103,8 @@ public class BoardActivity extends Activity {
             e.printStackTrace();
         }
         gameManager.setPlayer(Players.BOTTOM);
+        gameManager.setBeginnerType(PlayerType.PLAYER);
+        gameManager.startGame();
     }
 
     /**

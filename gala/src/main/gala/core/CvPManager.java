@@ -3,6 +3,7 @@ package main.gala.core;
 import main.gala.common.Direction;
 import main.gala.converter.Converter;
 import main.gala.enums.GameState;
+import main.gala.enums.PlayerType;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -14,7 +15,6 @@ import java.util.List;
  */
 
 public class CvPManager extends AbstractManager {
-
     public CvPManager() {
         super();
     }
@@ -79,10 +79,20 @@ public class CvPManager extends AbstractManager {
              */
             boardView.setGameState(gameState);
         }
+
     }
 
     @Override
     public List<Direction> getComputerDirectionSeq() {
+        /**
+         * Jeśli przed rozpoczęciem ruchu jesteśmy zblokowani, to zwróć pustą listę.
+         */
+        if (chart.observer.rateActualState() == GameState.BLOCKED)
+            return new LinkedList<>();
+
+        /**
+         * W przeciwnym wypadku poproś AI o ruch.
+         */
         List<Direction> resList = ai.executeMoveSequence(chart);
 
         /**
@@ -119,5 +129,13 @@ public class CvPManager extends AbstractManager {
          * Zwróć skonwertowaną listę kierunków.
          */
         return convertedList;
+    }
+
+    @Override
+    public void startGame() {
+        if (beginner == PlayerType.COMPUTER) {
+            boardView.drawSequence(getComputerDirectionSeq());
+            chart.observer.changeTurn();
+        }
     }
 }
