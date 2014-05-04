@@ -1,5 +1,6 @@
 package main.gala.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -30,7 +31,9 @@ import java.util.List;
  */
 public class BoardView extends View {
 
-    private static GameState gameState;
+    private boolean isGameFinished;
+    private BoardActivity parentActivity;
+    private GameState gameState;
 
     private static Paint backgroundPaint;
     private static Paint linesPaint;
@@ -90,6 +93,7 @@ public class BoardView extends View {
 
     public BoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        isGameFinished = false;
         pencilPaint.setColor(bottomPlayerColor);
         screenHeight = context.getResources().getDisplayMetrics().heightPixels;
         screenWidth = context.getResources().getDisplayMetrics().widthPixels;
@@ -97,7 +101,7 @@ public class BoardView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (manager.isUserEnabled()) {
+        if (manager.isUserEnabled() && !isGameFinished) {
             float endX;
             float endY;
 
@@ -145,7 +149,6 @@ public class BoardView extends View {
         limiter /= 10;
         return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) >= limiter;
     }
-
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -283,6 +286,23 @@ public class BoardView extends View {
     }
 
     /**
+     * Ustawia aktualny stan gry.
+     *
+     * @param gameState
+     */
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+        Log.d(BoardView.class.getCanonicalName(), "game state -" + gameState);
+
+        String lastPlayer = (pencilPaint.getColor() == topPlayerColor) ? "Top player" : "Bottom player";
+
+        if (gameState == GameState.DEFEATED || gameState == GameState.BLOCKED || gameState == GameState.VICTORIOUS) {
+            isGameFinished = true;
+            parentActivity.showEndGameDialog(gameState, lastPlayer);
+        }
+    }
+
+    /**
      * Ustawia managera nadrzędnego.
      *
      * @param manager manager
@@ -319,12 +339,28 @@ public class BoardView extends View {
     }
 
     /**
-     * Ustawia aktualny stan gry.
+     * Ustawia aktywność - rodzica,
      *
-     * @param gameState
+     * @param parentActivity rodzic
      */
-    public static void setGameState(GameState gameState) {
-        BoardView.gameState = gameState;
-        Log.d(BoardView.class.getCanonicalName(), "game state -" + gameState);
+    public void setParentActivity(BoardActivity parentActivity) {
+        this.parentActivity = parentActivity;
     }
+
+    /**
+     * Usuwa wartości stałych związane z grą.
+     */
+    public void clearGameProgress() {
+        history = new ArrayList<>();
+    }
+
+    /**
+     * Ustawia informację, czy aktualna rozgrywka zostala juz zakonczona.
+     *
+     * @param isGameFinished informacja o tym, czy gra juz zostala zakonczona
+     */
+    public void setGameFinished(boolean isGameFinished) {
+        this.isGameFinished = isGameFinished;
+    }
+
 }

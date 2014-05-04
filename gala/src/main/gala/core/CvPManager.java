@@ -116,7 +116,7 @@ public class CvPManager extends AbstractManager {
         /**
          * Ustawiamy stan gry w widoku.
          */
-        boardView.setGameState(gameState);
+//        boardView.setGameState(gameState);
 
         /**
          * Przekonwertuj kierunki na format rozpoznawalny przez Widok.

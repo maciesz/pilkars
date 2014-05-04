@@ -21,10 +21,7 @@ import main.gala.common.StaticContent;
 import main.gala.core.AbstractManager;
 import main.gala.core.MockManager;
 import main.gala.core.PvPManager;
-import main.gala.enums.GameMode;
-import main.gala.enums.PlayerType;
-import main.gala.enums.Players;
-import main.gala.enums.Strategy;
+import main.gala.enums.*;
 import main.gala.exceptions.ImparitParameterException;
 import main.gala.exceptions.InvalidGoalWidthException;
 import main.gala.exceptions.UnknownGameModeException;
@@ -79,42 +76,16 @@ public class BoardActivity extends Activity {
         goalWidth = preferences.getInt(GameSettings.GOAL_WIDTH, GameSettings.DEFAULT_GOAL_WIDTH);
         strategy = Strategy.valueOf(preferences.getString(GameSettings.STRATEGY, Strategy.RANDOM.name()));
 
-        try {
-            gameManager = ManagerFactory.createManager(gameMode).getInstance();
-            gameManager.setStrategy(strategy);
-        } catch (UnknownGameModeException e) {
-            e.printStackTrace();
-        } catch (UnknownStrategyException e) {
-            e.printStackTrace();
-        }
-
-        boardView = (BoardView) findViewById(R.id.boardView);
-        boardView.setManager(gameManager);
-        boardView.setBoardHeight(boardHeight);
-        boardView.setBoardWidth(boardWidth);
-        boardView.setGoalWidth(goalWidth);
-
-        gameManager.setView(boardView);
-        try {
-            gameManager.setChart(boardWidth, boardHeight, goalWidth);
-        } catch (ImparitParameterException e) {
-            e.printStackTrace();
-        } catch (InvalidGoalWidthException e) {
-            e.printStackTrace();
-        }
-        gameManager.setPlayer(Players.BOTTOM);
-        gameManager.setBeginnerType(PlayerType.PLAYER);
-        gameManager.startGame();
+        createMainGameObjects();
     }
+
 
     /**
      * Zachowanie w przypadku kliknięcia przycisku "wstecz" na telefonie -
      * - wyświetlenie dialogu z zapytaniem czy na pewno chcemy zakonczyc.
-     * //TODO ladniej wizualnie
      */
     @Override
     public void onBackPressed() {
-
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -137,6 +108,62 @@ public class BoardActivity extends Activity {
         AlertDialog dialog = builder.create();
         dialog.show();
 
+        setDialogFontAndColor(dialog);
+    }
+
+    /**
+     * Metoda wywoływana, gdy gra zostanie zakończona. Zapytuje, czy chcemy rozegrać kolejną partię.
+     *
+     * @param gameState stan gry
+     * @param lastPlayer gracz, który ostatnio był przy ruchu
+     */
+    public void showEndGameDialog(GameState gameState, String lastPlayer) {
+        String msg;
+        if (gameState == GameState.VICTORIOUS) {
+            msg = "Bottom player wins!";
+        }
+        else if (gameState == GameState.DEFEATED) {
+            msg = "Top player wins!";
+        } else {
+            msg = lastPlayer + " blocked!";
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        LayoutInflater inflater = getLayoutInflater();
+        builder.setCustomTitle(inflater.inflate(R.layout.dialog_endgame, null));
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                BoardActivity.this.finish();
+            }
+        });
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                createMainGameObjects();
+                boardView.setGameFinished(false);
+                boardView.clearGameProgress();
+                boardView.invalidate();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        TextView textView = (TextView) dialog.findViewById(R.id.title);
+        textView.setText(msg + " Do you want to play again?");
+
+        setDialogFontAndColor(dialog);
+    }
+
+    /**
+     * Ustawia czcionkę i kolory w dialogach.
+     *
+     * @param dialog alert dialog
+     */
+    private void setDialogFontAndColor(AlertDialog dialog) {
         TextView textView = (TextView) dialog.findViewById(R.id.title);
         textView.setTypeface(puricaFont);
 
@@ -149,5 +176,39 @@ public class BoardActivity extends Activity {
         negativeButton.setTypeface(puricaFont);
         negativeButton.setBackgroundColor(StaticContent.backgroundColor);
         negativeButton.setTextColor(StaticContent.textColor);
+    }
+
+    /**
+     * Metoda odpowiedzialna za utworzenie nowych obiektow w grze i odpowiednie ustawienie
+     * ich parametrów.
+     */
+    private void createMainGameObjects() {
+        try {
+            gameManager = ManagerFactory.createManager(gameMode).getInstance();
+            gameManager.setStrategy(strategy);
+        } catch (UnknownGameModeException e) {
+            e.printStackTrace();
+        } catch (UnknownStrategyException e) {
+            e.printStackTrace();
+        }
+
+        boardView = (BoardView) findViewById(R.id.boardView);
+        boardView.setManager(gameManager);
+        boardView.setBoardHeight(boardHeight);
+        boardView.setBoardWidth(boardWidth);
+        boardView.setGoalWidth(goalWidth);
+        boardView.setParentActivity(this);
+
+        gameManager.setView(boardView);
+        try {
+            gameManager.setChart(boardWidth, boardHeight, goalWidth);
+        } catch (ImparitParameterException e) {
+            e.printStackTrace();
+        } catch (InvalidGoalWidthException e) {
+            e.printStackTrace();
+        }
+        gameManager.setPlayer(Players.BOTTOM);
+        gameManager.setBeginnerType(PlayerType.PLAYER);
+        gameManager.startGame();
     }
 }
