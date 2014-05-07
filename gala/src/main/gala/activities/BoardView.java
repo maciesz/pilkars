@@ -41,12 +41,14 @@ public class BoardView extends View {
     private static Paint borderPaint;
     private static Paint topGoalPaint;
     private static Paint bottomGoalPaint;
+    private static Paint currentPointPaint;
 
     private static int paperWhiteColor = Color.rgb(250, 240, 210);
     private static int lightBlueColor = Color.rgb(176, 224, 230);
     private static int bottomPlayerColor = Color.rgb(189,183,107);
     private static int topPlayerColor = Color.rgb(0, 0, 112);
     private static int borderColor = Color.BLACK;
+    private static int currentPointColor = Color.RED;
 
     private float currentX;
     private float currentY;
@@ -89,6 +91,9 @@ public class BoardView extends View {
 
         bottomGoalPaint = new Paint();
         bottomGoalPaint.setColor(bottomPlayerColor);
+
+        currentPointPaint = new Paint();
+        currentPointPaint.setColor(currentPointColor);
     }
 
     public BoardView(Context context, AttributeSet attrs) {
@@ -261,6 +266,7 @@ public class BoardView extends View {
             q = nextq;
         }
 
+        canvas.drawCircle(p, q, 6f, currentPointPaint);
         pencilPaint.setColor(pencilColor);
     }
 
