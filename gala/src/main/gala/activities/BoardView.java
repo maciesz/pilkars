@@ -1,6 +1,5 @@
 package main.gala.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -12,7 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import main.gala.common.Direction;
 import main.gala.common.GameSettings;
-import main.gala.converter.Converter;
+import main.gala.utils.Converter;
 import main.gala.core.AbstractManager;
 import main.gala.enums.GameState;
 import main.gala.exceptions.AmbiguousMoveException;

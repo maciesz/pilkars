@@ -1,7 +1,7 @@
 package main.gala.core;
 
 import main.gala.common.Direction;
-import main.gala.converter.Converter;
+import main.gala.utils.Converter;
 import main.gala.enums.GameState;
 import main.gala.enums.PlayerType;
 

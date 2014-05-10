@@ -24,12 +24,12 @@
 				android:textStyle="bold"
 				android:textSize="20dp"
 				android:id="@+id/ai_button"
-				android:onClick="ai"
+				android:onClick="strategyDialog"
 				android:background="@android:color/transparent"
 				android:layout_gravity="center|top"
 				android:layout_marginTop="35dp"/>
 
-		<TextView
+		<main.gala.utils.PuricaTextView
 				android:id="@+id/ai_difficulty_text"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -48,11 +48,12 @@
 				android:textStyle="bold"
 				android:textSize="18dp"
 				android:id="@+id/board_height"
+				android:onClick="boardHeightDialog"
 				android:background="@android:color/transparent"
 				android:layout_gravity="center|top"
 				android:layout_marginTop="15dp"/>
 
-		<TextView
+		<main.gala.utils.PuricaTextView
 				android:id="@+id/board_height_text"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -71,11 +72,12 @@
 				android:textStyle="bold"
 				android:textSize="18dp"
 				android:id="@+id/board_width"
+				android:onClick="boardWidthDialog"
 				android:background="@android:color/transparent"
 				android:layout_gravity="center|top"
 				android:layout_marginTop="15dp"/>
 
-		<TextView
+		<main.gala.utils.PuricaTextView
 				android:id="@+id/board_width_text"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -94,11 +96,12 @@
 				android:textStyle="bold"
 				android:textSize="17dp"
 				android:id="@+id/goal_width"
+				android:onClick="goalWidth"
 				android:background="@android:color/transparent"
 				android:layout_gravity="center|top"
 				android:layout_marginTop="15dp"/>
 
-		<TextView
+		<main.gala.utils.PuricaTextView
 				android:id="@+id/goal_width_text"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"

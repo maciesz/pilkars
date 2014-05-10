@@ -2,19 +2,23 @@ package main.gala.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import main.gala.common.GameSettings;
 import main.gala.common.StaticContent;
 import main.gala.enums.Strategy;
+import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,13 +43,19 @@ public class SettingsActivity extends Activity {
         setContentView(R.layout.activity_settings);
         getActionBar().hide();
 
+        setPreferences();
+        setUI();
+    }
+
+    /**
+     * Metoda do ustawiania istniejących preferencji.
+     */
+    private void setPreferences() {
         preferences = getSharedPreferences(GameSettings.PREF_NAME, Activity.MODE_PRIVATE);
         strategy = preferences.getString(GameSettings.STRATEGY, Strategy.RANDOM.name());
         boardWidth = preferences.getInt(GameSettings.BOARD_WIDTH, GameSettings.DEFAULT_BOARD_WITH);
         boardHeight = preferences.getInt(GameSettings.BOARD_HEIGHT, GameSettings.DEFAULT_BOARD_HEIGHT);
         goalWidth = preferences.getInt(GameSettings.GOAL_WIDTH, GameSettings.DEFAULT_GOAL_WIDTH);
-
-        setUI();
     }
 
     /**
@@ -53,24 +63,59 @@ public class SettingsActivity extends Activity {
      *
      * @param view widok przekazywany z góry
      */
-    public void ai(View view) {
-//        final Dialog dialog = new Dialog(this);
-//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        dialog.show();
+    public void strategyDialog(View view) {
+        final List<String> difficultyLevels = new ArrayList<>();
+        for (Strategy s : Strategy.values()) {
+            difficultyLevels.add(s.name().toLowerCase());
+        }
 
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-////        builder.setView(findViewById(R.layout.dialog_bluetooth));
-//        builder.setNeutralButton("chuj", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        Log.d(SettingsActivity.class.getCanonicalName(), "CHUJ " + String.valueOf(i));
-//                    }
-//                });
-//
-//        AlertDialog dialog = builder.create();
-//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        dialog.getButton();
-//        dialog.show();
+        createSettingsDialog(difficultyLevels, GameSettings.STRATEGY);
+    }
+
+    /**
+     * Metoda wywoływana przy kliknięciu na button z opcjami
+     * dotyczącymi wyboru szerokości planszy.
+     *
+     * @param view widok przekazywany z góry
+     */
+    public void boardWidthDialog(View view) {
+        final List<String> widths = new ArrayList<>();
+        widths.add("8");
+        widths.add("10");
+        widths.add("12");
+        widths.add("14");
+
+        createSettingsDialog(widths, GameSettings.BOARD_WIDTH);
+    }
+
+    /**
+     * Metoda wywoływana przy kliknięciu na button z opcjami
+     * dotyczącymi wyboru wysokości planszy.
+     *
+     * @param view widok przekazywany z góry
+     */
+    public void boardHeightDialog(View view) {
+        final List<String> heights = new ArrayList<>();
+        heights.add("8");
+        heights.add("10");
+        heights.add("12");
+        heights.add("14");
+
+        createSettingsDialog(heights, GameSettings.BOARD_HEIGHT);
+    }
+
+    /**
+     * Metoda wywoływana przy kliknięciu na button z opcjami
+     * dotyczącymi wyboru szerokości boiska.
+     *
+     * @param view widok przekazywany z góry
+     */
+    public void goalWidth(View view) {
+        final List<String> widths = new ArrayList<>();
+        widths.add("2");
+        widths.add("4");
+
+        createSettingsDialog(widths, GameSettings.GOAL_WIDTH);
     }
 
     /**
@@ -87,21 +132,50 @@ public class SettingsActivity extends Activity {
 
         List<TextView> elements = new LinkedList<>();
         elements.add((TextView) findViewById(R.id.ai_button));
-        elements.add(aiDifficultyText);
         elements.add((TextView) findViewById(R.id.board_height));
-        elements.add(boardHeightText);
         elements.add((TextView) findViewById(R.id.board_width));
-        elements.add(boardWidthText);
         elements.add((TextView) findViewById(R.id.goal_width));
-        elements.add(goalWidthText);
 
         for (TextView textView : elements) {
             textView.setTypeface(puricaFont);
         }
 
-        aiDifficultyText.setText(strategy);
+        aiDifficultyText.setText(strategy.toLowerCase());
         boardHeightText.setText(String.valueOf(boardHeight));
         boardWidthText.setText(String.valueOf(boardWidth));
         goalWidthText.setText(String.valueOf(goalWidth));
+    }
+
+    /**
+     * Odpowiada za utworzenie dialogu wyboru ustawień dla odpowiedniej preferencji.
+     *
+     * @param settings lista stringow z ustawieniami do wyboru
+     * @param preferenceName nazwa preferencji do ustawienia
+     */
+    private void createSettingsDialog(final List<String> settings, final String preferenceName) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        ArrayAdapter<CharSequence> arrayAdapter = new ArrayAdapter<>(this, R.layout.item_text, R.id.puricaText);
+        arrayAdapter.addAll(settings);
+        builder.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                SharedPreferences.Editor preferencesEditor = preferences.edit();
+
+                try {
+                    int prefNumber = Integer.parseInt(settings.get(i));
+                    preferencesEditor.putInt(preferenceName, prefNumber);
+                } catch(NumberFormatException e) {
+                    preferencesEditor.putString(preferenceName, settings.get(i).toUpperCase());
+                }
+                preferencesEditor.commit();
+
+                setPreferences();
+                setUI();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

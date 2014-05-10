@@ -1,4 +1,4 @@
-package main.gala.converter;
+package main.gala.utils;
 
 import main.gala.common.Direction;
 
