@@ -6,19 +6,14 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.ContextThemeWrapper;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import main.gala.common.GameSettings;
 import main.gala.common.StaticContent;
 import main.gala.enums.Strategy;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -53,7 +48,7 @@ public class SettingsActivity extends Activity {
     private void setPreferences() {
         preferences = getSharedPreferences(GameSettings.PREF_NAME, Activity.MODE_PRIVATE);
         strategy = preferences.getString(GameSettings.STRATEGY, Strategy.RANDOM.name());
-        boardWidth = preferences.getInt(GameSettings.BOARD_WIDTH, GameSettings.DEFAULT_BOARD_WITH);
+        boardWidth = preferences.getInt(GameSettings.BOARD_WIDTH, GameSettings.DEFAULT_BOARD_WIDTH);
         boardHeight = preferences.getInt(GameSettings.BOARD_HEIGHT, GameSettings.DEFAULT_BOARD_HEIGHT);
         goalWidth = preferences.getInt(GameSettings.GOAL_WIDTH, GameSettings.DEFAULT_GOAL_WIDTH);
     }

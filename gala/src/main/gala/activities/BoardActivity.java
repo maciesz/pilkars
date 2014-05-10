@@ -2,32 +2,22 @@ package main.gala.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
-import main.gala.activities.R;
 import main.gala.common.GameSettings;
 import main.gala.common.StaticContent;
 import main.gala.core.AbstractManager;
-import main.gala.core.MockManager;
-import main.gala.core.PvPManager;
 import main.gala.enums.*;
 import main.gala.exceptions.ImparitParameterException;
 import main.gala.exceptions.InvalidGoalWidthException;
 import main.gala.exceptions.UnknownGameModeException;
 import main.gala.exceptions.UnknownStrategyException;
 import main.gala.factories.ManagerFactory;
-import org.w3c.dom.Text;
 
 
 /**
@@ -71,7 +61,7 @@ public class BoardActivity extends Activity {
         gameMode = GameMode.valueOf(getIntent().getStringExtra(GameSettings.GAME_MODE));
 
         preferences = getSharedPreferences(GameSettings.PREF_NAME, Activity.MODE_PRIVATE);
-        boardWidth = preferences.getInt(GameSettings.BOARD_WIDTH, GameSettings.DEFAULT_BOARD_WITH);
+        boardWidth = preferences.getInt(GameSettings.BOARD_WIDTH, GameSettings.DEFAULT_BOARD_WIDTH);
         boardHeight = preferences.getInt(GameSettings.BOARD_HEIGHT, GameSettings.DEFAULT_BOARD_HEIGHT);
         goalWidth = preferences.getInt(GameSettings.GOAL_WIDTH, GameSettings.DEFAULT_GOAL_WIDTH);
         strategy = Strategy.valueOf(preferences.getString(GameSettings.STRATEGY, Strategy.RANDOM.name()));

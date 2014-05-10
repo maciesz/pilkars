@@ -6,12 +6,16 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent" android:weightSum="1">
 
-	<ImageButton
+	<Button
 			style="?android:attr/buttonStyleSmall"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:src="@drawable/behost_selector"
+			android:src="@drawable/button_selector"
 			android:id="@+id/beHost"
+			android:text="be host"
+			android:textSize="15dp"
+			android:textStyle="bold"
+			android:textColor="#000000"
 			android:background="@android:color/transparent"
 			android:layout_marginTop="10dp"/>
 
@@ -20,12 +24,16 @@
 			android:layout_height="1dp"
 			android:background="#B0E0E6"/>
 
-	<ImageButton
+	<Button
 			style="?android:attr/buttonStyleSmall"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:src="@drawable/beserver_selector"
+			android:src="@drawable/button_selector"
 			android:id="@+id/beServer"
+			android:text="be server"
+			android:textSize="15dp"
+			android:textStyle="bold"
+			android:textColor="#000000"
 			android:background="@android:color/transparent" android:layout_marginTop="10dp"
 			android:layout_marginBottom="10dp"/>
 

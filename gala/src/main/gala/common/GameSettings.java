@@ -47,7 +47,7 @@ public class GameSettings {
     /**
      * Stała z domyślną szerokością boiska.
      */
-    public static final int DEFAULT_BOARD_WITH = 8;
+    public static final int DEFAULT_BOARD_WIDTH = 8;
 
     /**
      * Stała z domyślną wysokością boiska.

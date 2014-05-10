@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import main.gala.activities.R;
 import main.gala.common.GameSettings;
+import main.gala.common.StaticContent;
 import main.gala.enums.GameMode;
 
 import java.util.LinkedList;
@@ -26,8 +27,8 @@ import java.util.List;
 
 public class MainMenuActivity extends Activity {
 
-    private ImageButton viaPhoneButton;
-    private ImageButton viaBluetoothButton;
+    private Button viaPhoneButton;
+    private Button viaBluetoothButton;
 
     private Typeface puricaFont;
 
@@ -44,7 +45,7 @@ public class MainMenuActivity extends Activity {
      * nie umiem :)
      */
     private void setUI() {
-        puricaFont = Typeface.createFromAsset(getAssets(), "fonts/purisa_bold.ttf");
+        puricaFont = Typeface.createFromAsset(getAssets(), StaticContent.textFontLocation);
         List<TextView> elements = new LinkedList<>();
         elements.add((TextView) findViewById(R.id.singlePlayerButton));
         elements.add((TextView) findViewById(R.id.multiPlayerButton));
@@ -78,7 +79,8 @@ public class MainMenuActivity extends Activity {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_multiplayer);
-        viaPhoneButton = (ImageButton) dialog.findViewById(R.id.viaPhone);
+
+        viaPhoneButton = (Button) dialog.findViewById(R.id.viaPhone);
         viaPhoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,7 +88,7 @@ public class MainMenuActivity extends Activity {
                 dialog.hide();
             }
         });
-        viaBluetoothButton = (ImageButton) dialog.findViewById(R.id.viaBluetooth);
+        viaBluetoothButton = (Button) dialog.findViewById(R.id.viaBluetooth);
         viaBluetoothButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -96,6 +98,11 @@ public class MainMenuActivity extends Activity {
         });
 
         dialog.show();
+
+        TextView tv = (TextView) dialog.findViewById(R.id.viaPhone);
+        TextView tv2 = (TextView)dialog.findViewById(R.id.viaBluetooth);
+        tv2.setTypeface(puricaFont);
+        tv.setTypeface(puricaFont);
     }
 
     /**
@@ -124,6 +131,11 @@ public class MainMenuActivity extends Activity {
         //TODO dodać listenerów na oba buttony, tj be host i be server
 
         dialog.show();
+
+        TextView tv = (TextView) dialog.findViewById(R.id.beHost);
+        TextView tv2 = (TextView)dialog.findViewById(R.id.beServer);
+        tv2.setTypeface(puricaFont);
+        tv.setTypeface(puricaFont);
     }
 
     /**
