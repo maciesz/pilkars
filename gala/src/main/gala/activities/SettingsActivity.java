@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -172,5 +175,8 @@ public class SettingsActivity extends Activity {
 
         AlertDialog dialog = builder.create();
         dialog.show();
+
+        dialog.getListView().setDivider(new ColorDrawable(Color.parseColor("#B0E0E6")));
+        dialog.getListView().setDividerHeight(2);
     }
 }
