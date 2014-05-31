@@ -1,5 +1,6 @@
 package main.gala.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -11,16 +12,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import main.gala.common.Direction;
 import main.gala.common.GameSettings;
+import main.gala.common.StaticContent;
 import main.gala.utils.Converter;
 import main.gala.core.AbstractManager;
 import main.gala.enums.GameState;
 import main.gala.exceptions.AmbiguousMoveException;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-//TODO przerobić wszystko na animacje
+import java.util.*;
 
 /**
  * Klasa widoku odpowiedzialna za obsługę zdarzeń związanymi z interakcją użytkownika z planszą.
@@ -29,6 +27,24 @@ import java.util.List;
  * @author Maciej Andrearczyk
  */
 public class BoardView extends View {
+
+    /**
+     * Struktura reprezentująca czwórkę liczb do rysowania linii.
+     */
+    private class LineParameters {
+        public float x1;
+        public float x2;
+        public float y1;
+        public float y2;
+
+        private LineParameters(float x1, float y1, float x2, float y2) {
+            this.y2 = y2;
+            this.y1 = y1;
+            this.x2 = x2;
+            this.x1 = x1;
+        }
+
+    }
 
     private boolean isGameFinished;
     private BoardActivity parentActivity;
@@ -48,7 +64,7 @@ public class BoardView extends View {
 
     private static int paperWhiteColor = Color.rgb(250, 240, 210);
     private static int lightBlueColor = Color.rgb(176, 224, 230);
-    private static int bottomPlayerColor = Color.rgb(189,183,107);
+    private static int bottomPlayerColor = Color.rgb(189, 183, 107);
     private static int topPlayerColor = Color.rgb(0, 0, 112);
     private static int borderColor = Color.BLACK;
     private static int currentPointColor = Color.RED;
@@ -65,6 +81,9 @@ public class BoardView extends View {
     private int goalWidth;
 
     private int gridSize;
+
+    private Deque<Pair<Direction, Integer>> aiPlayerMoves;
+    private String lastPlayer;
 
     private List<Pair<Direction, Integer>> history = new ArrayList<>();
 
@@ -105,11 +124,14 @@ public class BoardView extends View {
         pencilPaint.setColor(bottomPlayerColor);
         screenHeight = context.getResources().getDisplayMetrics().heightPixels;
         screenWidth = context.getResources().getDisplayMetrics().widthPixels;
+        aiPlayerMoves = new LinkedList<>();
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (manager.isUserEnabled() && !isGameFinished) {
+        if (manager.isUserEnabled() &&
+                !isGameFinished &&
+                aiPlayerMoves.isEmpty()) {
             float endX;
             float endY;
 
@@ -163,13 +185,18 @@ public class BoardView extends View {
         super.onDraw(canvas);
         int height = canvas.getHeight();
         int width = canvas.getWidth();
-        canvasSeparator = Math.max(boardHeight, boardWidth) + 2;
+        canvasSeparator = boardWidth + 2;
 
-        gridSize = width / canvasSeparator ;
+        if (boardHeight - boardWidth > 2) {
+            canvasSeparator += 2;
+        }
+
+        gridSize = width / canvasSeparator;
 
         drawMap(canvas);
         drawHistory(canvas);
         drawMessage(canvas);
+        resolveGameState();
     }
 
     /**
@@ -204,32 +231,49 @@ public class BoardView extends View {
      * @param canvas canvas
      */
     private void drawBoardBorders(Canvas canvas) {
-        int widthDistance = (canvasSeparator - boardWidth)/2;
-        canvas.drawLine(widthDistance * gridSize, 3 * gridSize, widthDistance * gridSize, (3+boardHeight) * gridSize, borderPaint); //lewa pionowa
-        canvas.drawLine((widthDistance + boardWidth) * gridSize, 3 * gridSize, (widthDistance + boardWidth) * gridSize, (3+boardHeight) * gridSize, borderPaint); //prawa pionowa
+        int widthDistance = (canvasSeparator - boardWidth) / 2;
+        List<LineParameters> lines = new LinkedList<>();
 
-        canvas.drawLine((widthDistance+boardWidth/2 - goalWidth/2) * gridSize, 2 * gridSize,(widthDistance+boardWidth/2 - goalWidth/2) * gridSize, 3 * gridSize, borderPaint); //lewa mala pionowa gorna
-        canvas.drawLine((widthDistance+boardWidth/2 + goalWidth/2) * gridSize, 2 * gridSize, (widthDistance+boardWidth/2 + goalWidth/2) * gridSize, 3 * gridSize, borderPaint); //prawa mala pionowa gorna
-        canvas.drawLine((widthDistance+boardWidth/2 - goalWidth/2) * gridSize, (3+boardHeight) * gridSize, (widthDistance + boardWidth/2 - goalWidth/2) * gridSize, (4+boardHeight) * gridSize, borderPaint); //lewa mala pionowa dolna
-        canvas.drawLine((widthDistance+boardWidth/2 + goalWidth/2) * gridSize, (3+boardHeight) * gridSize, (widthDistance + boardWidth/2 + goalWidth/2) * gridSize, (4+boardHeight) * gridSize, borderPaint); //prawa mala pionowa dolna
+        lines.add(new LineParameters(widthDistance * gridSize, 3 * gridSize,
+                widthDistance * gridSize, (3 + boardHeight) * gridSize)); //lewa pionowa
+        lines.add(new LineParameters((widthDistance + boardWidth) * gridSize, 3 * gridSize,
+                (widthDistance + boardWidth) * gridSize, (3 + boardHeight) * gridSize)); //prawa pionowa
 
-        canvas.drawLine((widthDistance+boardWidth/2 - goalWidth/2) * gridSize, 2 * gridSize, (widthDistance+boardWidth/2 + goalWidth/2) * gridSize, 2 * gridSize, borderPaint); //pozioma gorna bramkowa
-        canvas.drawLine((widthDistance+boardWidth/2 - goalWidth/2) * gridSize, (4+boardHeight) * gridSize, (widthDistance+boardWidth/2 + goalWidth/2) * gridSize, (4+boardHeight) * gridSize, borderPaint); //pozioma dolna bramkowa
+        lines.add(new LineParameters((widthDistance + boardWidth / 2 - goalWidth / 2) * gridSize,
+                2 * gridSize, (widthDistance + boardWidth / 2 - goalWidth / 2) * gridSize, 3 * gridSize)); //lewa mala pionowa gorna
+        lines.add(new LineParameters((widthDistance + boardWidth / 2 + goalWidth / 2) * gridSize,
+                2 * gridSize, (widthDistance + boardWidth / 2 + goalWidth / 2) * gridSize, 3 * gridSize)); //prawa mala pionowa gorna
+        lines.add(new LineParameters((widthDistance + boardWidth / 2 - goalWidth / 2) * gridSize, (3 + boardHeight) * gridSize,
+                (widthDistance + boardWidth / 2 - goalWidth / 2) * gridSize, (4 + boardHeight) * gridSize)); //lewa mala pionowa dolna
+        lines.add(new LineParameters((widthDistance + boardWidth / 2 + goalWidth / 2) * gridSize, (3 + boardHeight) * gridSize,
+                (widthDistance + boardWidth / 2 + goalWidth / 2) * gridSize, (4 + boardHeight) * gridSize)); //prawa mala pionowa dolna
 
-        canvas.drawLine(widthDistance * gridSize, 3 * gridSize, (widthDistance+ (boardWidth-goalWidth)/2) * gridSize, 3 * gridSize, borderPaint); //pozioma gorna lewa
-        canvas.drawLine(((widthDistance+ (boardWidth + goalWidth)/2)) * gridSize, 3 * gridSize, (boardWidth + widthDistance) * gridSize, 3 * gridSize, borderPaint); //pozioma gorna prawa
+        lines.add(new LineParameters((widthDistance + boardWidth / 2 - goalWidth / 2) * gridSize, 2 * gridSize,
+                (widthDistance + boardWidth / 2 + goalWidth / 2) * gridSize, 2 * gridSize)); //pozioma gorna bramkowa
+        lines.add(new LineParameters((widthDistance + boardWidth / 2 - goalWidth / 2) * gridSize, (4 + boardHeight) * gridSize,
+                (widthDistance + boardWidth / 2 + goalWidth / 2) * gridSize, (4 + boardHeight) * gridSize)); //pozioma dolna bramkowa
 
-        canvas.drawLine(widthDistance * gridSize, (3+boardHeight) * gridSize, (widthDistance+ (boardWidth-goalWidth)/2) * gridSize, (3+boardHeight) * gridSize, borderPaint); //pozioma dolna lewa
-        canvas.drawLine(((widthDistance+ (boardWidth + goalWidth)/2)) * gridSize, (3+boardHeight) * gridSize, (boardWidth + widthDistance) * gridSize, (3+boardHeight) * gridSize, borderPaint); //pozioma dolna prawa
+        lines.add(new LineParameters(widthDistance * gridSize, 3 * gridSize,
+                (widthDistance + (boardWidth - goalWidth) / 2) * gridSize, 3 * gridSize)); //pozioma gorna lewa
+        lines.add(new LineParameters(((widthDistance + (boardWidth + goalWidth) / 2)) * gridSize, 3 * gridSize,
+                (boardWidth + widthDistance) * gridSize, 3 * gridSize)); //pozioma gorna prawa
 
-        canvas.drawCircle((widthDistance + boardWidth/2) * gridSize, (6 + boardHeight)/2 * gridSize, 6, borderPaint); //punkt środkowy
+        lines.add(new LineParameters(widthDistance * gridSize, (3 + boardHeight) * gridSize,
+                (widthDistance + (boardWidth - goalWidth) / 2) * gridSize, (3 + boardHeight) * gridSize)); //pozioma dolna lewa
+        lines.add(new LineParameters((widthDistance + (boardWidth + goalWidth) / 2) * gridSize,
+                (3 + boardHeight) * gridSize, (boardWidth + widthDistance) * gridSize, (3 + boardHeight) * gridSize)); //pozioma dolna prawa
+
+        for (LineParameters lp : lines) {
+            canvas.drawLine(lp.x1, lp.y1, lp.x2, lp.y2, borderPaint);
+        }
+        canvas.drawCircle((widthDistance + boardWidth / 2) * gridSize, (6 + boardHeight) / 2 * gridSize, 6, borderPaint); //punkt środkowy
 
         topGoalPaint.setAlpha(100);
-        canvas.drawRect((widthDistance+boardWidth/2 - goalWidth/2) * gridSize, 2 * gridSize, (widthDistance+boardWidth/2 + goalWidth/2) * gridSize, 3 * gridSize, topGoalPaint);
+        canvas.drawRect((widthDistance + boardWidth / 2 - goalWidth / 2) * gridSize, 2 * gridSize, (widthDistance + boardWidth / 2 + goalWidth / 2) * gridSize, 3 * gridSize, topGoalPaint);
         topGoalPaint.setAlpha(255);
 
         bottomGoalPaint.setAlpha(100);
-        canvas.drawRect((widthDistance+boardWidth/2 - goalWidth/2) * gridSize, (3+boardHeight) * gridSize, (widthDistance+boardWidth/2 + goalWidth/2) * gridSize, (4+boardHeight) * gridSize, bottomGoalPaint);
+        canvas.drawRect((widthDistance + boardWidth / 2 - goalWidth / 2) * gridSize, (3 + boardHeight) * gridSize, (widthDistance + boardWidth / 2 + goalWidth / 2) * gridSize, (4 + boardHeight) * gridSize, bottomGoalPaint);
     }
 
     /**
@@ -238,16 +282,18 @@ public class BoardView extends View {
      * @param canvas canvas
      */
     private void drawMessage(Canvas canvas) {
-        float tx, ty;
-        if (pencilPaint.getColor() == topPlayerColor) {
-            tx = (boardWidth/2f) + (canvasSeparator - boardWidth)/2 - 1;
-            ty = 1f;
-        } else {
-            tx = (boardWidth/2f) + (canvasSeparator - boardWidth)/2 - 1;
-            ty = 5f+boardHeight;
+        if (aiPlayerMoves.isEmpty()) {
+            float tx, ty;
+            if (pencilPaint.getColor() == topPlayerColor) {
+                tx = (boardWidth / 2f) + (canvasSeparator - boardWidth) / 2 - 1;
+                ty = 1.6f;
+            } else {
+                tx = (boardWidth / 2f) + (canvasSeparator - boardWidth) / 2 - 1;
+                ty = 4.7f + boardHeight;
+            }
+            pencilPaint.setTextSize(gridSize * 0.75f);
+            canvas.drawText("move!", tx * gridSize, ty * gridSize, pencilPaint);
         }
-        pencilPaint.setTextSize(gridSize * 0.75f);
-        canvas.drawText("move!", tx * gridSize, ty * gridSize, pencilPaint);
     }
 
     /**
@@ -255,18 +301,32 @@ public class BoardView extends View {
      *
      * @param canvas canvas
      */
-    private void drawHistory(Canvas canvas) {
-        float p = ((canvasSeparator - boardWidth)/2 + boardWidth/2) * gridSize;
-        float q = (6 + boardHeight)/2 * gridSize;
+    private void drawHistory(final Canvas canvas) {
+        float p = ((canvasSeparator - boardWidth) / 2 + boardWidth / 2) * gridSize;
+        float q = (6 + boardHeight) / 2 * gridSize;
         int pencilColor = pencilPaint.getColor();
 
-        for (Pair<Direction, Integer> pair : history) {
-            float nextp = p + pair.first.getX() * gridSize;
-            float nextq = q + pair.first.getY() * gridSize;
+        for (int i = 0; i < history.size(); ++i) {
+            Pair<Direction, Integer> pair = history.get(i);
+            float p2 = p + pair.first.getX() * gridSize;
+            float q2 = q + pair.first.getY() * gridSize;
+
             pencilPaint.setColor(pair.second);
-            canvas.drawLine(p, q, nextp, nextq, pencilPaint);
-            p = nextp;
-            q = nextq;
+            canvas.drawLine(p, q, p2, q2, new Paint(pencilPaint));
+            p = p2;
+            q = q2;
+        }
+
+        if (!aiPlayerMoves.isEmpty()) {
+            Pair<Direction, Integer> pair = aiPlayerMoves.pollFirst();
+            float p2 = p + pair.first.getX() * gridSize;
+            float q2 = q + pair.first.getY() * gridSize;
+
+            pencilPaint.setColor(pair.second);
+            history.add(pair);
+            canvas.drawLine(p, q, p2, q2, new Paint(pencilPaint));
+            canvas.drawCircle(p2, q2, 6f, currentPointPaint);
+            postInvalidateDelayed(StaticContent.animationDelay);
         }
 
         canvas.drawCircle(p, q, 6f, currentPointPaint);
@@ -289,7 +349,7 @@ public class BoardView extends View {
      */
     public void drawSequence(Collection<Direction> moveSequence) {
         for (Direction direction : moveSequence) {
-            history.add(new Pair<>(direction, topPlayerColor));
+            aiPlayerMoves.add(new Pair<>(direction, topPlayerColor));
         }
         invalidate();
     }
@@ -302,12 +362,18 @@ public class BoardView extends View {
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
         Log.d(BoardView.class.getCanonicalName(), "game state -" + gameState);
+        lastPlayer = (pencilPaint.getColor() == topPlayerColor) ? "Top player" : "Bottom player";
+    }
 
-        String lastPlayer = (pencilPaint.getColor() == topPlayerColor) ? "Top player" : "Bottom player";
-
-        if (gameState == GameState.DEFEATED || gameState == GameState.BLOCKED || gameState == GameState.VICTORIOUS) {
-            isGameFinished = true;
-            parentActivity.showEndGameDialog(gameState, lastPlayer);
+    /**
+     * Analizuje stan gry.
+     */
+    public void resolveGameState() {
+        if (aiPlayerMoves.isEmpty() && !isGameFinished) { //unikamy błędu pokazania dialogu przed zakończeniem animacji
+            if (gameState == GameState.DEFEATED || gameState == GameState.BLOCKED || gameState == GameState.VICTORIOUS) {
+                isGameFinished = true;
+                parentActivity.showEndGameDialog(gameState, lastPlayer);
+            }
         }
     }
 
@@ -357,10 +423,11 @@ public class BoardView extends View {
     }
 
     /**
-     * Usuwa wartości stałych związane z grą.
+     * Czyści wartości stałych związane z grą.
      */
     public void clearGameProgress() {
         history = new ArrayList<>();
+        gameState = GameState.OBLIGATORY_MOVE;
     }
 
     /**
@@ -372,4 +439,12 @@ public class BoardView extends View {
         this.isGameFinished = isGameFinished;
     }
 
+    /**
+     * Przywraca widok do stanu początkowego.
+     */
+    public void reset() {
+        setGameFinished(false);
+        clearGameProgress();
+        invalidate();
+    }
 }

@@ -133,9 +133,7 @@ public class BoardActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 createMainGameObjects();
-                boardView.setGameFinished(false);
-                boardView.clearGameProgress();
-                boardView.invalidate();
+                boardView.reset();
             }
         });
 

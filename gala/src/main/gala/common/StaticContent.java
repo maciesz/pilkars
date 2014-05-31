@@ -24,4 +24,10 @@ public class StaticContent {
      */
     public static final String textFontLocation = "fonts/purisa_bold.ttf";
 
+    /**
+     * Opóźnienie animacji rysowania ostatniej sekwencji
+     * ruchów przeciwnika (w milisekundach).
+     */
+    public static final int animationDelay = 300;
+
 }
