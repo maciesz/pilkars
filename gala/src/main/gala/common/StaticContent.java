@@ -30,4 +30,9 @@ public class StaticContent {
      */
     public static final int animationDelay = 300;
 
+    /**
+     * Domyślny port dla WiFi.
+     */
+    public static final int defaultPort = 11111;
+
 }
