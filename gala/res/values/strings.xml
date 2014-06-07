@@ -9,4 +9,5 @@
 	<string name="board_height">board height</string>
 	<string name="goal_width">goal width</string>
 	<string name="quit_message">Do you really want to quit?</string>
+	<string name="be_client">be client</string>
 </resources>

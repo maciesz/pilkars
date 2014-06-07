@@ -9,6 +9,9 @@ import android.graphics.Color;
  */
 public class StaticContent {
 
+    public static final String TOP_PLAYER = "Top player";
+    public static final String BOTTOM_PLAYER = "Bottom player";
+
     /**
      * Kolor tła menu, dialogów itd.
      */

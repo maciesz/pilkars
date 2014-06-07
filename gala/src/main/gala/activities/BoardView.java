@@ -80,6 +80,13 @@ public class BoardView extends View {
     private int boardWidth;
     private int goalWidth;
 
+    private float circleSize = 6f;
+    private static float DEFAULT_CIRCLE_SIZE = 6f;
+    private static float DEFAULT_LINES_PAINT_SIZE = 4f;
+    private static float DEFAULT_BORDER_PAINT_SIZE = 5f;
+    private static float DEFAULT_PENCIL_PAINT_SIZE = 6f;
+    private static float DEFAULT_CANVAS_HEIGHT = 1920f;
+
     private int gridSize;
 
     private Deque<Pair<Direction, Integer>> aiPlayerMoves;
@@ -95,18 +102,18 @@ public class BoardView extends View {
 
         linesPaint = new Paint();
         linesPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        linesPaint.setStrokeWidth(4f);
+        linesPaint.setStrokeWidth(DEFAULT_LINES_PAINT_SIZE);
         linesPaint.setColor(lightBlueColor);
 
         borderPaint = new Paint();
         borderPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        borderPaint.setStrokeWidth(5f);
+        borderPaint.setStrokeWidth(DEFAULT_BORDER_PAINT_SIZE);
         borderPaint.setColor(borderColor);
 
         pencilPaint = new Paint();
         pencilPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         pencilPaint.setAntiAlias(true);
-        pencilPaint.setStrokeWidth(5f);
+        pencilPaint.setStrokeWidth(DEFAULT_PENCIL_PAINT_SIZE);
 
         topGoalPaint = new Paint();
         topGoalPaint.setColor(topPlayerColor);
@@ -183,7 +190,7 @@ public class BoardView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        int height = canvas.getHeight();
+        setPaintToolsSizes(canvas);
         int width = canvas.getWidth();
         canvasSeparator = boardWidth + 2;
 
@@ -197,6 +204,21 @@ public class BoardView extends View {
         drawHistory(canvas);
         drawMessage(canvas);
         resolveGameState();
+    }
+
+    /**
+     * Ustawia grubości linii, okręgów.
+     *
+     * @param canvas canvas
+     */
+    private void setPaintToolsSizes(Canvas canvas) {
+        int height = canvas.getHeight();
+
+        float diff = height/DEFAULT_CANVAS_HEIGHT;
+        borderPaint.setStrokeWidth(diff * DEFAULT_BORDER_PAINT_SIZE);
+        linesPaint.setStrokeWidth(diff * DEFAULT_LINES_PAINT_SIZE);
+        pencilPaint.setStrokeWidth(diff * DEFAULT_PENCIL_PAINT_SIZE);
+        circleSize = diff * DEFAULT_CIRCLE_SIZE;
     }
 
     /**
@@ -266,7 +288,7 @@ public class BoardView extends View {
         for (LineParameters lp : lines) {
             canvas.drawLine(lp.x1, lp.y1, lp.x2, lp.y2, borderPaint);
         }
-        canvas.drawCircle((widthDistance + boardWidth / 2) * gridSize, (6 + boardHeight) / 2 * gridSize, 6, borderPaint); //punkt środkowy
+        canvas.drawCircle((widthDistance + boardWidth / 2) * gridSize, (6 + boardHeight) / 2 * gridSize, circleSize, borderPaint); //punkt środkowy
 
         topGoalPaint.setAlpha(100);
         canvas.drawRect((widthDistance + boardWidth / 2 - goalWidth / 2) * gridSize, 2 * gridSize, (widthDistance + boardWidth / 2 + goalWidth / 2) * gridSize, 3 * gridSize, topGoalPaint);
@@ -325,11 +347,11 @@ public class BoardView extends View {
             pencilPaint.setColor(pair.second);
             history.add(pair);
             canvas.drawLine(p, q, p2, q2, new Paint(pencilPaint));
-            canvas.drawCircle(p2, q2, 6f, currentPointPaint);
+            canvas.drawCircle(p2, q2, circleSize, currentPointPaint);
             postInvalidateDelayed(StaticContent.animationDelay);
         }
 
-        canvas.drawCircle(p, q, 6f, currentPointPaint);
+        canvas.drawCircle(p, q, circleSize, currentPointPaint);
         pencilPaint.setColor(pencilColor);
     }
 
@@ -340,6 +362,10 @@ public class BoardView extends View {
     public void changePlayer() {
         int newColor = (pencilPaint.getColor() == topPlayerColor) ? bottomPlayerColor : topPlayerColor;
         pencilPaint.setColor(newColor);
+        //
+        String s = (pencilPaint.getColor() == topPlayerColor) ?
+                StaticContent.TOP_PLAYER : StaticContent.BOTTOM_PLAYER;
+        Log.d(BoardView.class.getCanonicalName(), "player changed - " + s);
     }
 
     /**
@@ -361,8 +387,10 @@ public class BoardView extends View {
      */
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
-        Log.d(BoardView.class.getCanonicalName(), "game state -" + gameState);
-        lastPlayer = (pencilPaint.getColor() == topPlayerColor) ? "Top player" : "Bottom player";
+        lastPlayer = (pencilPaint.getColor() == topPlayerColor) ?
+                StaticContent.TOP_PLAYER : StaticContent.BOTTOM_PLAYER;
+
+        Log.d(BoardView.class.getCanonicalName(), "game state - " + gameState + "| current player - " + lastPlayer);
     }
 
     /**
@@ -444,6 +472,7 @@ public class BoardView extends View {
      */
     public void reset() {
         setGameFinished(false);
+        pencilPaint.setColor(bottomPlayerColor);
         clearGameProgress();
         invalidate();
     }

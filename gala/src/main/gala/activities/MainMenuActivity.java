@@ -8,9 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
-import main.gala.activities.R;
 import main.gala.common.GameSettings;
 import main.gala.common.StaticContent;
 import main.gala.enums.GameMode;
@@ -120,7 +118,7 @@ public class MainMenuActivity extends Activity {
 
     /**
      * Metoda odpowiadająca za wyświetlenie Dialogu z opcjami wyboru
-     * trybów gry dla bluetooth (host, server).
+     * trybów gry dla bluetooth (client, server).
      *
      * @param view widok przekazywany przez aplikacje
      */
@@ -128,11 +126,11 @@ public class MainMenuActivity extends Activity {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_bluetooth);
-        //TODO dodać listenerów na oba buttony, tj be host i be server
+        //TODO dodać listenerów na oba buttony, tj be client i be server
 
         dialog.show();
 
-        TextView tv = (TextView) dialog.findViewById(R.id.beHost);
+        TextView tv = (TextView) dialog.findViewById(R.id.beClient);
         TextView tv2 = (TextView)dialog.findViewById(R.id.beServer);
         tv2.setTypeface(puricaFont);
         tv.setTypeface(puricaFont);
