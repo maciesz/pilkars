@@ -47,6 +47,8 @@ public class BoardActivity extends Activity {
     private int boardWidth;
     private int boardHeight;
     private int goalWidth;
+    private int topPlayerColor;
+    private int bottomPlayerColor;
     private Strategy strategy;
 
     private Typeface puricaFont;
@@ -64,6 +66,8 @@ public class BoardActivity extends Activity {
         boardWidth = preferences.getInt(GameSettings.BOARD_WIDTH, GameSettings.DEFAULT_BOARD_WIDTH);
         boardHeight = preferences.getInt(GameSettings.BOARD_HEIGHT, GameSettings.DEFAULT_BOARD_HEIGHT);
         goalWidth = preferences.getInt(GameSettings.GOAL_WIDTH, GameSettings.DEFAULT_GOAL_WIDTH);
+        topPlayerColor = preferences.getInt(GameSettings.TOP_PLAYER_COLOR, GameSettings.DEFAULT_TOP_PLAYER_COLOR);
+        bottomPlayerColor = preferences.getInt(GameSettings.BOTTOM_PLAYER_COLOR, GameSettings.DEFAULT_BOTTOM_PLAYER_COLOR);
         strategy = Strategy.valueOf(preferences.getString(GameSettings.STRATEGY, Strategy.RANDOM.name()));
 
         createMainGameObjects();
@@ -198,6 +202,11 @@ public class BoardActivity extends Activity {
         boardView.setBoardWidth(boardWidth);
         boardView.setGoalWidth(goalWidth);
         boardView.setParentActivity(this);
+
+        boardView.setTopPlayerColor(topPlayerColor);
+        boardView.setBottomPlayerColor(bottomPlayerColor);
+
+        boardView.reset();
 
         gameManager.setView(boardView);
         try {

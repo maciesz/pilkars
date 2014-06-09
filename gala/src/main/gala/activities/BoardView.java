@@ -64,8 +64,8 @@ public class BoardView extends View {
 
     private static int paperWhiteColor = Color.rgb(250, 240, 210);
     private static int lightBlueColor = Color.rgb(176, 224, 230);
-    private static int bottomPlayerColor = Color.rgb(189, 183, 107);
-    private static int topPlayerColor = Color.rgb(0, 0, 112);
+    private int bottomPlayerColor;
+    private int topPlayerColor;
     private static int borderColor = Color.BLACK;
     private static int currentPointColor = Color.RED;
 
@@ -116,10 +116,8 @@ public class BoardView extends View {
         pencilPaint.setStrokeWidth(DEFAULT_PENCIL_PAINT_SIZE);
 
         topGoalPaint = new Paint();
-        topGoalPaint.setColor(topPlayerColor);
 
         bottomGoalPaint = new Paint();
-        bottomGoalPaint.setColor(bottomPlayerColor);
 
         currentPointPaint = new Paint();
         currentPointPaint.setColor(currentPointColor);
@@ -475,5 +473,25 @@ public class BoardView extends View {
         pencilPaint.setColor(bottomPlayerColor);
         clearGameProgress();
         invalidate();
+    }
+
+    /**
+     * Ustawia kolor krechy dla dolnego gracza.
+     *
+     * @param bottomPlayerColor kolor krechy
+     */
+    public void setBottomPlayerColor(int bottomPlayerColor) {
+        this.bottomPlayerColor = bottomPlayerColor;
+        bottomGoalPaint.setColor(bottomPlayerColor);
+    }
+
+    /**
+     * Ustawia kolor krechy dla górnego gracza.
+     *
+     * @param topPlayerColor kolor krechy
+     */
+    public void setTopPlayerColor(int topPlayerColor) {
+        this.topPlayerColor = topPlayerColor;
+        topGoalPaint.setColor(topPlayerColor);
     }
 }

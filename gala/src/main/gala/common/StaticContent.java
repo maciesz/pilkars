@@ -33,4 +33,8 @@ public class StaticContent {
      */
     public static final int animationDelay = 300;
 
+    /**
+     * Kolor kreski w alert dialogach.
+     */
+    public static String DIVIDER_COLOR = "#B0E0E6";
 }
