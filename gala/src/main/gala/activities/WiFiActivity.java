@@ -89,16 +89,18 @@ public class WiFiActivity extends Activity {
 
             @Override
             public void onSuccess() {
-                Log.d(WiFiDirectBroadcastReceiver.class.getCanonicalName(), "successfully connected to " + peerNames.get(position));
-                startGame();
+                Log.d(WiFiDirectBroadcastReceiver.class.getCanonicalName(), "successfully started connecting to " + peerNames.get(position));
+//                startGame();
             }
 
             @Override
             public void onFailure(int reason) {
-                Log.d(WiFiDirectBroadcastReceiver.class.getCanonicalName(), "fail while connecting to " + peerNames.get(position));
+                Log.d(WiFiDirectBroadcastReceiver.class.getCanonicalName(), "fail starting connecting to " + peerNames.get(position));
                 WiFiActivity.this.finish();
             }
         });
+
+//        mManager.
     }
 
     /**
