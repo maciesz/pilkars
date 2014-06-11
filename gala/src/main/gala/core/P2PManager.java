@@ -18,7 +18,7 @@ public class P2PManager extends AbstractManager {
 
     @Override
     public AbstractManager getInstance() {
-        return new PvPManager();
+        return new P2PManager();
     }
 
     @Override

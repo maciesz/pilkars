@@ -7,10 +7,9 @@ import android.net.NetworkInfo;
 import android.net.wifi.p2p.*;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 import main.gala.activities.WiFiActivity;
 import main.gala.common.StaticContent;
+import main.gala.enums.MultiMode;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -84,13 +83,13 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
                             // One common case is creating a server thread and accepting
                             // incoming connections.
                             Log.d(WiFiDirectBroadcastReceiver.class.getCanonicalName(), "I AM GROUP OWNER - " + groupOwnerAddress);
-                            new ConnectAsyncTask().execute();
+                            new ConnectServerAsyncTask().execute();
                         } else if (info.groupFormed) {
                             // The other device acts as the client. In this case,
                             // you'll want to create a client thread that connects to the group
                             // owner.
                             Log.d(WiFiDirectBroadcastReceiver.class.getCanonicalName(), "I AM NOT GROUP OWNER - " + groupOwnerAddress);
-                            new SendAsync().execute(groupOwnerAddress);
+                            new ConnectClientAsync().execute(groupOwnerAddress);
                         }
                     }
                 });
@@ -102,32 +101,26 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
     }
 
 
-    class SendAsync extends AsyncTask<String, Void, String> {
+    class ConnectClientAsync extends AsyncTask<String, Void, String> {
         protected String doInBackground(String... params) {
             String host = params[0];
             int port = StaticContent.defaultPort;
             Socket socket = new Socket();
 
-            String sztryng = "WIADOMOŚĆ Z DUPY";
-            byte[] buf = sztryng.getBytes();
             try {
 
                 socket.bind(null);
                 Log.d(WiFiDirectBroadcastReceiver.class.getCanonicalName(), "Trying to connect to host - " + host + ":" + port);
 
-                try {
-                    InetAddress i = InetAddress.getByName(host);
-                } catch (UnknownHostException e1) {
-                    e1.printStackTrace();
-                    throw e1;
-                }
                 socket.connect((new InetSocketAddress(host, port)), 500);
 
                 Log.d(WiFiDirectBroadcastReceiver.class.getCanonicalName(), "Successfully connected to host");
 
-                OutputStream outputStream = socket.getOutputStream();
-                outputStream.write(buf);
-                outputStream.close();
+//                String sztryng = "WIADOMOŚĆ Z DUPY";
+//                byte[] buf = sztryng.getBytes();
+//                OutputStream outputStream = socket.getOutputStream();
+//                outputStream.write(buf);
+//                outputStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -145,29 +138,31 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
         }
 
         protected void onPostExecute(String feed) {
+            //Sukces wykonania, gramy!
+            Log.d(this.getClass().getCanonicalName(), "Successfully connected to server!");
+            wiFiActivity.startGame(MultiMode.SERVER);
         }
     }
 
     /**
-     * Asynchronicznie zadanie tworzące połącznie z klientem.
+     * Asynchronicznie zadanie tworzące połącznie z serwerem.
      */
-    public class ConnectAsyncTask extends AsyncTask<String, Void, String> {
+    public class ConnectServerAsyncTask extends AsyncTask<String, Void, String> {
+
+        ServerSocket serverSocket;
+        Socket client = null;
 
         @Override
         protected String doInBackground(String... params) {
             Log.d(this.getClass().getCanonicalName(), "Waiting for client...");
-            ServerSocket serverSocket;
-            Socket client = null;
             try {
-                Log.d(this.getClass().getCanonicalName(), "Waiting for client... Try...");
                 serverSocket = new ServerSocket(StaticContent.defaultPort);
                 client = serverSocket.accept();
-                Log.d(this.getClass().getCanonicalName(), "Accepted...");
 
-                InputStream is = client.getInputStream();
-                byte[] buf = new byte[10000];
-                is.read(buf);
-                Log.d(this.getClass().getCanonicalName(), "received msg - " + buf.toString());
+//                InputStream is = client.getInputStream();
+//                byte[] buf = new byte[10000];
+//                is.read(buf);
+//                Log.d(this.getClass().getCanonicalName(), "received msg - " + new String(buf));
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -178,7 +173,9 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d(this.getClass().getCanonicalName(), "Successfully found client!");
+            //Sukces wykonania, gramy!
+            Log.d(this.getClass().getCanonicalName(), "Successfully connected to client!");
+            wiFiActivity.startGame(MultiMode.CLIENT);
         }
     }
 }

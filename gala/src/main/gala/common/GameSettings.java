@@ -40,6 +40,11 @@ public class GameSettings {
     public static final String GAME_MODE = "GAME_MODE";
 
     /**
+     * Extras oznaczający czy gracz jest serwere czy klientem.
+     */
+    public static final String MULTI_MODE = "MULTI_MODE";
+
+    /**
      * Nazwa preferencji określającej poziom trudności.
      */
     public static final String STRATEGY = "STRATEGY";

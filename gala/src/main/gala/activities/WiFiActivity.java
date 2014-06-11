@@ -17,6 +17,7 @@ import android.widget.*;
 import main.gala.broadcast.WiFiDirectBroadcastReceiver;
 import main.gala.common.GameSettings;
 import main.gala.enums.GameMode;
+import main.gala.enums.MultiMode;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -90,7 +91,6 @@ public class WiFiActivity extends Activity {
             @Override
             public void onSuccess() {
                 Log.d(WiFiDirectBroadcastReceiver.class.getCanonicalName(), "successfully started connecting to " + peerNames.get(position));
-//                startGame();
             }
 
             @Override
@@ -99,16 +99,15 @@ public class WiFiActivity extends Activity {
                 WiFiActivity.this.finish();
             }
         });
-
-//        mManager.
     }
 
     /**
      * Budzi aktywność odpowiedzialną za grę.
      */
-    private void startGame() {
+    public void startGame(MultiMode multiMode) {
         Intent intent = new Intent(this, BoardActivity.class);
         intent.putExtra(GameSettings.GAME_MODE, GameMode.WiFiP2P.name());
+        intent.putExtra(GameSettings.MULTI_MODE, multiMode.name());
         startActivity(intent);
     }
 
