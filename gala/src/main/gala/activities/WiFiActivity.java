@@ -7,14 +7,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
-import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
-import main.gala.broadcast.WiFiDirectBroadcastReceiver;
+import main.gala.wifi.WiFiDirectBroadcastReceiver;
 import main.gala.common.GameSettings;
 import main.gala.enums.GameMode;
 import main.gala.enums.MultiMode;
@@ -24,7 +23,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Aktywność odpowiadająca za zarządzanie wifi.
+ * Aktywność odpowiadająca za zarządzanie wifi, wyświetla listę aktywnych serwerów,
+ * umożliwa połączenia itd.
  *
  * @author Maciej Andrearczyk <maciej.andrearczyk@student.mimuw.edu.pl>
  */
@@ -96,7 +96,7 @@ public class WiFiActivity extends Activity {
             @Override
             public void onFailure(int reason) {
                 Log.d(WiFiDirectBroadcastReceiver.class.getCanonicalName(), "fail starting connecting to " + peerNames.get(position));
-                WiFiActivity.this.finish();
+                WiFiActivity.this.finish(); //konczymy aktywnosc, aby po ponownym jej uruchomieniu miec "odswiezoną" listę serwerów
             }
         });
     }

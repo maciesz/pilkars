@@ -4,7 +4,7 @@ import main.gala.activities.BoardView;
 import main.gala.ai.IArtificialIntelligence;
 import main.gala.chart.Chart;
 import main.gala.common.Direction;
-import main.gala.enums.GameState;
+import main.gala.enums.MultiMode;
 import main.gala.enums.PlayerType;
 import main.gala.enums.Players;
 import main.gala.enums.Strategy;
@@ -53,6 +53,11 @@ public abstract class AbstractManager {
      * Zmienna opisująca typ zawodnika rozpoczynającego grę(COMPUTER/PLAYER).
      */
     protected PlayerType beginner;
+
+    /**
+     * Informacja o rodzaju gracza w trybie gry online (Server/Client).
+     */
+    protected MultiMode multiMode;
 
 
     //=========================================================================
@@ -182,5 +187,9 @@ public abstract class AbstractManager {
 
     public void setUserEnabled(boolean isUserEnabled) {
         this.isUserEnabled = isUserEnabled;
+    }
+
+    public void setMultiMode(MultiMode multiMode) {
+        this.multiMode = multiMode;
     }
 }

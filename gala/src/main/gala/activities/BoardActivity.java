@@ -48,6 +48,7 @@ public class BoardActivity extends Activity {
     private int boardHeight;
     private int goalWidth;
     private Strategy strategy;
+    private MultiMode multiMode;
 
     private Typeface puricaFont;
 
@@ -59,6 +60,11 @@ public class BoardActivity extends Activity {
         setContentView(R.layout.activity_board);
         getActionBar().hide();
         gameMode = GameMode.valueOf(getIntent().getStringExtra(GameSettings.GAME_MODE));
+
+        String val = getIntent().getStringExtra(GameSettings.MULTI_MODE);
+        if (val != null) {
+            multiMode = MultiMode.valueOf(val);
+        }
 
         preferences = getSharedPreferences(GameSettings.PREF_NAME, Activity.MODE_PRIVATE);
         boardWidth = preferences.getInt(GameSettings.BOARD_WIDTH, GameSettings.DEFAULT_BOARD_WIDTH);
@@ -179,6 +185,7 @@ public class BoardActivity extends Activity {
         } catch (UnknownStrategyException e) {
             e.printStackTrace();
         }
+        gameManager.setMultiMode(multiMode);
 
         boardView = (BoardView) findViewById(R.id.boardView);
         boardView.setManager(gameManager);
