@@ -114,28 +114,25 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
             int port = StaticContent.defaultPort;
             Socket socket = ClientSockets.getInstance().getSocket();
 
-
             try {
-
-                socket.bind(null);
                 Log.d(WiFiDirectBroadcastReceiver.class.getCanonicalName(), "Trying to connect to host - " + host + ":" + port);
-
                 socket.connect((new InetSocketAddress(host, port)), 500);
-
+                ClientSockets.getInstance().setSocket(socket);
                 Log.d(WiFiDirectBroadcastReceiver.class.getCanonicalName(), "Successfully connected to host");
             } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-                if (socket != null) {
-                    if (socket.isConnected()) {
-                        try {
-                            socket.close();
-                        } catch (IOException e) {
-                            //catch logic
-                        }
-                    }
-                }
             }
+//            finally {
+//                if (socket != null) {
+//                    if (socket.isConnected()) {
+//                        try {
+//                            socket.close();
+//                        } catch (IOException e) {
+//                            //catch logic
+//                        }
+//                    }
+//                }
+//            }
             return null;
         }
 
@@ -143,7 +140,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
         protected void onPostExecute(Void params) {
             //Sukces wykonania, gramy!
             Log.d(this.getClass().getCanonicalName(), "Successfully connected to server!");
-            wiFiActivity.startGame(MultiMode.SERVER);
+            wiFiActivity.startGame(MultiMode.CLIENT);
         }
     }
 
@@ -153,18 +150,19 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
     public class AcceptServerAsync extends AsyncTask<String, Void, Void> {
 
         ServerSocket serverSocket = ServerSockets.getInstance().getServerSocket();
-        Socket client = ServerSockets.getInstance().getSocket();
+        Socket client;
 
         @Override
         protected Void doInBackground(String... params) {
             Log.d(this.getClass().getCanonicalName(), "Waiting for client...");
             try {
-                serverSocket = new ServerSocket(StaticContent.defaultPort);
                 client = serverSocket.accept();
+                ServerSockets.getInstance().setClientSocket(client);
+                Log.d(this.getClass().getCanonicalName(), "Connected to - " + client.getInetAddress());
+                Log.d(this.getClass().getCanonicalName(), "Connected to - " + ServerSockets.getInstance().getClientSocket().getInetAddress());
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            assert client != null;
 
             return null;
         }
@@ -173,7 +171,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
         protected void onPostExecute(Void aVoid) {
             //Sukces wykonania, gramy!
             Log.d(this.getClass().getCanonicalName(), "Successfully connected to client!");
-            wiFiActivity.startGame(MultiMode.CLIENT);
+            wiFiActivity.startGame(MultiMode.SERVER);
         }
     }
 }

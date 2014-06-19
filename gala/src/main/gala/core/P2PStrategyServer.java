@@ -1,13 +1,11 @@
 package main.gala.core;
 
+import android.util.Log;
 import main.gala.common.Direction;
 import main.gala.wifi.ServerSockets;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -17,7 +15,7 @@ import java.util.List;
  */
 public class P2PStrategyServer extends P2PStrategy {
 
-    Socket client = ServerSockets.getInstance().getSocket();
+    Socket client = ServerSockets.getInstance().getClientSocket();
 
     public P2PStrategyServer(AbstractManager manager) {
         super(manager);
@@ -25,29 +23,45 @@ public class P2PStrategyServer extends P2PStrategy {
 
     @Override
     public void sendMyMoves(List<Direction> myMoves) {
-        JSONObject jsonObject = new JSONObject();
+        Log.d(this.getClass().getCanonicalName(), "Send my moves - " + myMoves);
 
+        ObjectOutputStream oos = null;
         try {
-            jsonObject.put("type", "moves");
-            jsonObject.put("numbers", myMoves.size());
-            for (Direction direction : myMoves) {
-                jsonObject.put("direction", direction);
-            }
-
-            try (OutputStreamWriter osw = new OutputStreamWriter(client.getOutputStream(), StandardCharsets.UTF_8)) {
-                osw.write(jsonObject.toString());
-            }
-
-
+            Log.d(this.getClass().getCanonicalName(), "Trying send to - " + client.getInetAddress());
+            final OutputStream outputStream = client.getOutputStream();
+            oos = new ObjectOutputStream(outputStream);
+            oos.writeObject(myMoves);
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } finally {
+//            try {
+//                if (oos != null) {
+//                    oos.close();
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } TODO
         }
     }
 
     @Override
     public List<Direction> getOpponentMoves() {
-        return null;
+        Log.d(this.getClass().getCanonicalName(), "Get opponent moves");
+        Log.d(this.getClass().getCanonicalName(), "Get opponent moves");
+        ObjectInputStream ois;
+        List<Direction> opponentMoves = null;
+
+        try {
+            ois = new ObjectInputStream(client.getInputStream());
+            opponentMoves = (List<Direction>) ois.readObject();
+        } catch (StreamCorruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return opponentMoves;
     }
 }

@@ -33,7 +33,7 @@ public class StaticContent {
     /**
      * Domyślny port dla WiFi.
      */
-    public static final int defaultPort = 8888;
+    public static final int defaultPort = 8989;
 
 
 

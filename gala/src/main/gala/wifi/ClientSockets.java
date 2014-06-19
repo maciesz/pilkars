@@ -1,5 +1,6 @@
 package main.gala.wifi;
 
+import java.io.IOException;
 import java.net.Socket;
 
 /**
@@ -15,6 +16,11 @@ public class ClientSockets {
 
     private ClientSockets() {
         socket = new Socket();
+        try {
+            socket.bind(null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static ClientSockets getInstance() {
@@ -24,7 +30,9 @@ public class ClientSockets {
         return instance;
     }
 
-    protected Socket getSocket() {
+    public Socket getSocket() {
         return socket;
     }
+
+    public void setSocket(Socket socket) { this.socket = socket; }
 }

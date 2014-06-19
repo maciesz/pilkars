@@ -4,6 +4,7 @@ import android.util.Log;
 import main.gala.common.StaticContent;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -21,7 +22,9 @@ public class ServerSockets {
 
     private ServerSockets() {
         try {
-            serverSocket = new ServerSocket(StaticContent.defaultPort);
+            serverSocket = new ServerSocket();
+            serverSocket.setReuseAddress(true);
+            serverSocket.bind(new InetSocketAddress(StaticContent.defaultPort));
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "Error while creating server socket");
             e.printStackTrace();
@@ -39,7 +42,9 @@ public class ServerSockets {
         return serverSocket;
     }
 
-    public Socket getSocket() {
+    public Socket getClientSocket() {
         return clientSocket;
     }
+
+    public void setClientSocket(Socket clientSocket) { this.clientSocket = clientSocket; }
 }

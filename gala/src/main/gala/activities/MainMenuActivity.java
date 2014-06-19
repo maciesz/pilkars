@@ -206,7 +206,6 @@ public class MainMenuActivity extends Activity {
      * @param view widok przekazywany przez aplikacje
      */
     private void viaWifiAsServer(View view) {
-        (new ConnectAsyncTask(this, view)).execute();
         wifiConnectProgressDialog = ProgressDialog.show(this, "Waiting for connections...", "Please wait", true, true);
     }
 
@@ -239,47 +238,5 @@ public class MainMenuActivity extends Activity {
      */
     private boolean isSDKWiFiReady() {
         return Build.VERSION.SDK_INT >= 14;
-    }
-
-    /**
-     * Asynchronicznie zadanie tworzące połącznie z klientem.
-     */
-    public class ConnectAsyncTask extends AsyncTask<String, Void, String> {
-
-        private Context context;
-        private TextView statusText;
-
-        public ConnectAsyncTask(Context context, View statusText) {
-            this.context = context;
-            this.statusText = (TextView) statusText;
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            Log.d(this.getClass().getCanonicalName(), "Waiting for client...");
-            ServerSocket serverSocket;
-            Socket client = null;
-            try {
-                serverSocket = new ServerSocket(StaticContent.defaultPort);
-                client = serverSocket.accept();
-
-                InputStream is = client.getInputStream();
-                byte[] buf = new byte[10000];
-                is.read(buf);
-                Log.d(this.getClass().getCanonicalName(), "received msg - " + buf.toString());
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            assert client != null;
-            return client.getInetAddress().getHostName();
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            Log.d(this.getClass().getCanonicalName(), "Successfully found client!");
-
-            wifiConnectProgressDialog.dismiss();
-        }
     }
 }

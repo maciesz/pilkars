@@ -1,5 +1,6 @@
 package main.gala.core;
 
+import android.os.AsyncTask;
 import main.gala.common.Direction;
 import main.gala.enums.GameState;
 import main.gala.enums.MultiMode;
@@ -16,22 +17,17 @@ import java.util.List;
 public class P2PManager extends AbstractManager {
 
     private List<Direction> myMoves; //moje ruchy
-    private P2PStrategy strategy;
+    private P2PStrategy p2PStrategy;
 
     public P2PManager() {
         super();
         ai = null;
-        if (multiMode == MultiMode.SERVER) {
-            strategy = new P2PStrategyServer(this);
-        } else if (multiMode == MultiMode.CLIENT) {
-            strategy = new P2PStrategyClient(this);
-        }
         myMoves = new LinkedList<>();
     }
 
     @Override
     public AbstractManager getInstance() {
-        return new PvPManager();
+        return new P2PManager();
     }
 
     @Override
@@ -47,23 +43,46 @@ public class P2PManager extends AbstractManager {
 
             chart.observer.changeTurn();
 
-            strategy.sendMyMoves(myMoves);
-            myMoves.clear();
-            final List<Direction> resList = strategy.getOpponentMoves();
-            boardView.drawSequence(resList);
-
-            chart.observer.changeTurn();
+            new AsyncSendAndReceive().execute();
+        } else {
+            boardView.setGameState(chart.observer.rateActualState());
         }
-        boardView.setGameState(chart.observer.rateActualState());
-
 
     }
 
     @Override
     public void startGame() { //TODO zmienić, dodać, poprawić
         if (beginner == PlayerType.COMPUTER) {
-            boardView.drawSequence(strategy.getOpponentMoves());
+            boardView.drawSequence(p2PStrategy.getOpponentMoves());
             chart.observer.changeTurn();
+        }
+    }
+
+    @Override
+    public void setMultiMode(MultiMode multiMode) {
+        super.setMultiMode(multiMode);
+        if (multiMode == MultiMode.SERVER) {
+            p2PStrategy = new P2PStrategyServer(this);
+        } else if (multiMode == MultiMode.CLIENT) {
+            p2PStrategy = new P2PStrategyClient(this);
+        }
+    }
+
+    private class AsyncSendAndReceive extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... aVoid) {
+            p2PStrategy.sendMyMoves(myMoves);
+            myMoves.clear();
+            final List<Direction> resList = p2PStrategy.getOpponentMoves();
+            boardView.drawSequence(resList);
+
+            chart.observer.changeTurn();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            boardView.setGameState(chart.observer.rateActualState());
         }
     }
 }
