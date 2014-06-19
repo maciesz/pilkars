@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--<ScrollView-->
+		<!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+		<!--android:layout_width="fill_parent"-->
+		<!--android:layout_height="fill_parent">-->
+
+	<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	             android:id="@+id/wifiLayout"
+	             android:orientation="vertical"
+	             android:layout_width="fill_parent"
+	             android:layout_height="fill_parent">
+
+		<view
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				class="main.gala.activities.BackgroundView"
+				android:scaleType="center"
+				android:id="@+id/backgroundView"
+				android:layout_gravity="center"/>
+
+
+		<main.gala.utils.PuricaTextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:textSize="25dp"
+				android:text="Available servers"
+				android:textColor="@android:color/background_dark"
+				android:id="@+id/textView" android:layout_gravity="center_horizontal"/>
+	<ListView
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:id="@+id/listView"
+			android:layout_gravity="center_horizontal|top"
+			android:background="@android:color/transparent"
+			android:cacheColorHint="@android:color/transparent"
+			android:listSelector="@android:color/transparent"
+			android:layout_marginTop="50dp">
+		<!--TODO Brzydko zrobione, działa, ale warto poprawić potem-->
+
+	</ListView>
+
+
+</FrameLayout>
+<!--</ScrollView>-->

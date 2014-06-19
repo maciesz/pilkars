@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<main.gala.utils.PuricaTextView xmlns:android="http://schemas.android.com/apk/res/android"
+                                android:id="@+id/listViewRow"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+
+                                android:textSize="20dp"
+                                android:textColor="@drawable/button_selector"
+                                android:padding="10dp"
+                                android:gravity="center"/>
