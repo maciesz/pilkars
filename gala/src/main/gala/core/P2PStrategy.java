@@ -1,6 +1,7 @@
 package main.gala.core;
 
 import main.gala.common.Direction;
+import main.gala.utils.Converter;
 
 import java.util.List;
 

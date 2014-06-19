@@ -1,6 +1,5 @@
 package main.gala.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -11,7 +10,6 @@ import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import main.gala.common.Direction;
-import main.gala.common.GameSettings;
 import main.gala.common.StaticContent;
 import main.gala.utils.Converter;
 import main.gala.core.AbstractManager;

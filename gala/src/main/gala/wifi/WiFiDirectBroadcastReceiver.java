@@ -41,7 +41,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
 
         Log.d(WiFiDirectBroadcastReceiver.class.getCanonicalName(), "ON RECEIVE - " + action);
         if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
-            // Check to see if Wi-Fi is enabled and notify appropriate activity
+            // Check to see if Wi-Fi is enabled and notify appropriate parentActivity
         } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
             if (mManager != null) {
                 mManager.requestPeers(mChannel, new WifiP2pManager.PeerListListener() {

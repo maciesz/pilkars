@@ -2,11 +2,12 @@ package main.gala.core;
 
 import android.util.Log;
 import main.gala.common.Direction;
+import main.gala.utils.Converter;
 import main.gala.wifi.ClientSockets;
-import main.gala.wifi.ServerSockets;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -16,8 +17,6 @@ import java.util.List;
  */
 public class P2PStrategyClient extends P2PStrategy {
 
-    Socket mySocket = ClientSockets.getInstance().getSocket();
-
     public P2PStrategyClient(AbstractManager manager) {
         super(manager);
     }
@@ -25,13 +24,19 @@ public class P2PStrategyClient extends P2PStrategy {
     @Override
     public void sendMyMoves(List<Direction> myMoves) {
         Log.d(this.getClass().getCanonicalName(), "Send my moves - " + myMoves);
-        Socket client = ServerSockets.getInstance().getClientSocket();
+
+        List<Direction> convertedList = new LinkedList<>();
+        for (Direction direction : myMoves) {
+            convertedList.add(Converter.cuseMVConversion(direction));
+        }
+
+        Socket mySocket = ClientSockets.getInstance().getSocket();
         ObjectOutputStream oos = null;
         try {
-            Log.d(this.getClass().getCanonicalName(), "Trying send to - " + client.getInetAddress());
-            final OutputStream outputStream = client.getOutputStream();
+            Log.d(this.getClass().getCanonicalName(), "Trying send to - " + mySocket.getInetAddress());
+            final OutputStream outputStream = mySocket.getOutputStream();
             oos = new ObjectOutputStream(outputStream);
-            oos.writeObject(myMoves);
+            oos.writeObject(convertedList);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -48,12 +53,19 @@ public class P2PStrategyClient extends P2PStrategy {
     @Override
     public List<Direction> getOpponentMoves() {
         Log.d(this.getClass().getCanonicalName(), "Get opponent moves");
+
+        Socket mySocket = ClientSockets.getInstance().getSocket();
         ObjectInputStream ois;
-        List<Direction> opponentMoves = null;
+        List<Direction> result = new LinkedList<>();
 
         try {
             ois = new ObjectInputStream(mySocket.getInputStream());
-            opponentMoves = (List<Direction>) ois.readObject();
+            List<Direction> opponentMoves = (List<Direction>) ois.readObject();
+            for (Direction direction : opponentMoves) {
+                result.add(Converter.reverseXY(direction));
+            }
+
+            Log.d(this.getClass().getCanonicalName(), "Received opponent moves");
         } catch (StreamCorruptedException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -62,6 +74,6 @@ public class P2PStrategyClient extends P2PStrategy {
             e.printStackTrace();
         }
 
-        return opponentMoves;
+        return result;
     }
 }

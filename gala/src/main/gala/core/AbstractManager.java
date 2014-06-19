@@ -1,5 +1,6 @@
 package main.gala.core;
 
+import main.gala.activities.BoardActivity;
 import main.gala.activities.BoardView;
 import main.gala.ai.IArtificialIntelligence;
 import main.gala.chart.Chart;
@@ -58,7 +59,6 @@ public abstract class AbstractManager {
      * Informacja o rodzaju gracza w trybie gry online (Server/Client).
      */
     protected MultiMode multiMode;
-
 
     //=========================================================================
     //
@@ -192,4 +192,5 @@ public abstract class AbstractManager {
     public void setMultiMode(MultiMode multiMode) {
         this.multiMode = multiMode;
     }
+
 }
