@@ -3,11 +3,9 @@ package main.gala.activities;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.*;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -16,10 +14,6 @@ import main.gala.common.GameSettings;
 import main.gala.common.StaticContent;
 import main.gala.enums.GameMode;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -99,20 +93,20 @@ public class MainMenuActivity extends Activity {
                 dialog.hide();
             }
         });
-        viaBluetoothButton = (Button) dialog.findViewById(R.id.viaBluetooth);
-        viaBluetoothButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bluetoothDialog(view);
-                dialog.hide();
-            }
-        });
+//        viaBluetoothButton = (Button) dialog.findViewById(R.id.viaBluetooth);
+//        viaBluetoothButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                bluetoothDialog(view);
+//                dialog.hide();
+//            }
+//        });
         if (isSDKWiFiReady()) {
             viaWiFiButton = (Button) dialog.findViewById(R.id.viaWiFi);
             viaWiFiButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    wifiDialog(view);
+                    viaWifi(view);
                     dialog.hide();
                 }
             });
@@ -121,7 +115,7 @@ public class MainMenuActivity extends Activity {
         dialog.show();
 
         ((TextView) dialog.findViewById(R.id.viaPhone)).setTypeface(puricaFont);
-        ((TextView) dialog.findViewById(R.id.viaBluetooth)).setTypeface(puricaFont);
+//        ((TextView) dialog.findViewById(R.id.viaBluetooth)).setTypeface(puricaFont);
 
         if (isSDKWiFiReady()) {
             ((TextView)dialog.findViewById(R.id.viaWiFi)).setTypeface(puricaFont);
@@ -167,16 +161,17 @@ public class MainMenuActivity extends Activity {
      *
      * @param view widok przekazywany przez aplikacje
      */
+    @Deprecated
     public void wifiDialog(View view) {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_bluetooth);
 
-        Button beHostButton = (Button) dialog.findViewById(R.id.beHost);
+        Button beHostButton = (Button) dialog.findViewById(R.id.beClient);
         beHostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viaWifiAsClient(v);
+                viaWifi(v);
                 dialog.hide();
             }
         });
@@ -194,7 +189,7 @@ public class MainMenuActivity extends Activity {
 
         dialog.show();
 
-        TextView tv = (TextView) dialog.findViewById(R.id.beHost);
+        TextView tv = (TextView) dialog.findViewById(R.id.beClient);
         TextView tv2 = (TextView)dialog.findViewById(R.id.beServer);
         tv2.setTypeface(puricaFont);
         tv.setTypeface(puricaFont);
@@ -205,6 +200,7 @@ public class MainMenuActivity extends Activity {
      *
      * @param view widok przekazywany przez aplikacje
      */
+    @Deprecated
     private void viaWifiAsServer(View view) {
         wifiConnectProgressDialog = ProgressDialog.show(this, "Waiting for connections...", "Please wait", true, true);
     }
@@ -214,7 +210,7 @@ public class MainMenuActivity extends Activity {
      *
      * @param view widok przekazywany przez aplikacje
      */
-    private void viaWifiAsClient(View view) {
+    private void viaWifi(View view) {
         Intent intent = new Intent(this, WiFiActivity.class);
         startActivity(intent);
     }

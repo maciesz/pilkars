@@ -44,6 +44,7 @@ public class BoardView extends View {
 
     }
 
+    private int winner = 0; //stała mówiąca o tym kto wygrał
     private boolean isGameFinished;
     private BoardActivity parentActivity;
     private GameState gameState;
@@ -123,6 +124,7 @@ public class BoardView extends View {
 
     public BoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        winner = 0;
         isGameFinished = false;
         pencilPaint.setColor(bottomPlayerColor);
         screenHeight = context.getResources().getDisplayMetrics().heightPixels;
@@ -324,8 +326,11 @@ public class BoardView extends View {
         float q = (6 + boardHeight) / 2 * gridSize;
         int pencilColor = pencilPaint.getColor();
 
+        winner = 0;
         for (int i = 0; i < history.size(); ++i) {
             Pair<Direction, Integer> pair = history.get(i);
+
+            winner += pair.first.getY();
             float p2 = p + pair.first.getX() * gridSize;
             float q2 = q + pair.first.getY() * gridSize;
 
@@ -396,7 +401,7 @@ public class BoardView extends View {
         if (aiPlayerMoves.isEmpty() && !isGameFinished) { //unikamy błędu pokazania dialogu przed zakończeniem animacji
             if (gameState == GameState.DEFEATED || gameState == GameState.BLOCKED || gameState == GameState.VICTORIOUS) {
                 isGameFinished = true;
-                parentActivity.showEndGameDialog(gameState, lastPlayer);
+                parentActivity.showEndGameDialog(gameState, lastPlayer, winner);
             }
         }
     }

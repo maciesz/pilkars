@@ -116,21 +116,15 @@ public class BoardActivity extends Activity {
      *
      * @param gameState  stan gry
      * @param lastPlayer gracz, który ostatnio był przy ruchu
+     * @param winner wartosc bezwgledna roznicy pozycji pilki i srodka pozycji w osi Y
      */
-    public void showEndGameDialog(GameState gameState, String lastPlayer) { //TODO wszystkie stałe stringowe przerzucić do R
+    public void showEndGameDialog(GameState gameState, String lastPlayer, int winner) { //TODO wszystkie stałe stringowe przerzucić do R
         final String TOP_PLAYER_WINS = "Top player wins!";
         final String BOTTOM_PLAYER_WINS = "Bottom player wins";
 
         String msg;
-        if (gameState == GameState.VICTORIOUS) {
-            if (lastPlayer == StaticContent.TOP_PLAYER) {
-                msg = TOP_PLAYER_WINS;
-            }
-            else {
-                msg = BOTTOM_PLAYER_WINS;
-            }
-        } else if (gameState == GameState.DEFEATED) {
-            if (lastPlayer == StaticContent.TOP_PLAYER) {
+        if (gameState == GameState.VICTORIOUS || gameState == GameState.DEFEATED) {
+            if (winner < 0) {
                 msg = BOTTOM_PLAYER_WINS;
             }
             else {
