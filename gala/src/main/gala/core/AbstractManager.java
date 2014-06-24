@@ -60,6 +60,11 @@ public abstract class AbstractManager {
      */
     protected MultiMode multiMode;
 
+    /**
+     * Aktywność nadrzędna.
+     */
+    protected BoardActivity parentActivity;
+
     //=========================================================================
     //
     // Konstruktory
@@ -193,4 +198,15 @@ public abstract class AbstractManager {
         this.multiMode = multiMode;
     }
 
+    public void setActivity(BoardActivity boardActivity) {
+        this.parentActivity = boardActivity;
+    }
+
+    public void sendLostConnectionMessage() {
+        //Zaimplementowane niżej w P2P
+    }
+
+    public void finishGame() {
+        //Zaimplementowane niżej w P2P
+    }
 }

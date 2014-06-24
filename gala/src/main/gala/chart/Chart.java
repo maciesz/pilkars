@@ -636,7 +636,16 @@ public class Chart {
 	//=========================================================================
 	//
 	// Gettery i settery
-	//
+
+    public int getGoalWidth() {
+        return GOAL_WIDTH;
+    }
+
+    public void setGOAL_WIDTH(int GOAL_WIDTH) {
+        this.GOAL_WIDTH = GOAL_WIDTH;
+    }
+
+    //
 	//=========================================================================
 	/**
 	 * Procedura inicjująca parametry planszy.

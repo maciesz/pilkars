@@ -12,4 +12,5 @@
 	<string name="be_client">be client</string>
 	<string name="top_player_color">top player color</string>
 	<string name="bottom_player_color">bottom player color</string>
+	<string name="available_players">Available players</string>
 </resources>

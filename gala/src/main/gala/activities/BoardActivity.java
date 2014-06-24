@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import main.gala.common.GameSettings;
 import main.gala.common.StaticContent;
 import main.gala.core.AbstractManager;
@@ -101,6 +102,9 @@ public class BoardActivity extends Activity {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                if (multiMode != null) {//jeżeli gramy przez sieć to ślemy wiadomość do rywala, że kończymy rozgrywkę
+                    gameManager.sendLostConnectionMessage();
+                }
                 BoardActivity.this.finish();
             }
         });
@@ -195,8 +199,6 @@ public class BoardActivity extends Activity {
         } catch (UnknownStrategyException e) {
             e.printStackTrace();
         }
-        gameManager.setMultiMode(multiMode);
-
         boardView = (BoardView) findViewById(R.id.boardView);
         boardView.setManager(gameManager);
         boardView.setBoardHeight(boardHeight);
@@ -209,7 +211,6 @@ public class BoardActivity extends Activity {
 
         boardView.reset();
 
-        gameManager.setView(boardView);
         try {
             gameManager.setChart(boardWidth, boardHeight, goalWidth);
         } catch (ImparitParameterException e) {
@@ -217,8 +218,13 @@ public class BoardActivity extends Activity {
         } catch (InvalidGoalWidthException e) {
             e.printStackTrace();
         }
+
+        gameManager.setView(boardView);
+        gameManager.setActivity(this);
+        gameManager.setMultiMode(multiMode);
         gameManager.setPlayer(Players.BOTTOM);
         gameManager.setBeginnerType(PlayerType.PLAYER);
         gameManager.startGame();
     }
+
 }

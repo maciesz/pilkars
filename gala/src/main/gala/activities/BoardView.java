@@ -79,6 +79,8 @@ public class BoardView extends View {
     private int boardWidth;
     private int goalWidth;
 
+    private boolean shouldShowMessage = true; //czy pokazywać wiadomość "move" - do trybu p2p
+
     private float circleSize = 6f;
     private static float DEFAULT_CIRCLE_SIZE = 6f;
     private static float DEFAULT_LINES_PAINT_SIZE = 4f;
@@ -302,7 +304,7 @@ public class BoardView extends View {
      * @param canvas canvas
      */
     private void drawMessage(Canvas canvas) {
-        if (aiPlayerMoves.isEmpty()) {
+        if (aiPlayerMoves.isEmpty() && shouldShowMessage) {
             float tx, ty;
             if (pencilPaint.getColor() == topPlayerColor) {
                 tx = (boardWidth / 2f) + (canvasSeparator - boardWidth) / 2 - 1;
@@ -497,4 +499,13 @@ public class BoardView extends View {
         this.topPlayerColor = topPlayerColor;
         topGoalPaint.setColor(topPlayerColor);
     }
+
+    public boolean isShouldShowMessage() {
+        return shouldShowMessage;
+    }
+
+    public void setShouldShowMessage(boolean shouldShowMessage) {
+        this.shouldShowMessage = shouldShowMessage;
+    }
+
 }

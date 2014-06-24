@@ -2,10 +2,10 @@ package main.gala.core;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 import main.gala.common.Direction;
 import main.gala.enums.GameState;
 import main.gala.enums.MultiMode;
-import main.gala.enums.PlayerType;
 import main.gala.utils.Converter;
 
 import java.util.LinkedList;
@@ -18,8 +18,13 @@ import java.util.List;
  */
 public class P2PManager extends AbstractManager {
 
+    private static final String WAITING_FOR_OPPONENT = "Waiting for opponent move...";
+    private static final String MAKE_A_MOVE = "Make a move";
+    private static final String LOST_CONNECTION_MESSAGE = "Opponent player left";
+
     private List<Direction> myMoves; //moje ruchy
     private P2PStrategy p2PStrategy;
+    private boolean opponentLeft = false;
 
     public P2PManager() {
         super();
@@ -64,10 +69,26 @@ public class P2PManager extends AbstractManager {
     @Override
     public void setMultiMode(MultiMode multiMode) {
         super.setMultiMode(multiMode);
+        boardView.setShouldShowMessage(false);
         if (multiMode == MultiMode.SERVER) {
-            p2PStrategy = new P2PStrategyServer(this);
+            p2PStrategy = new P2PStrategyServer(this, multiMode);
+            makeToastMakeMove();
+            p2PStrategy.sendParameters(chart.getWidth(), chart.getHeight(), chart.getGoalWidth());
         } else if (multiMode == MultiMode.CLIENT) {
-            p2PStrategy = new P2PStrategyClient(this);
+            p2PStrategy = new P2PStrategyClient(this, multiMode);
+            makeToastWaiting();
+        }
+    }
+
+    private void makeToastWaiting() {
+        if (!opponentLeft) {
+            Toast.makeText(parentActivity, WAITING_FOR_OPPONENT, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void makeToastMakeMove() {
+        if (!opponentLeft) {
+            Toast.makeText(parentActivity, MAKE_A_MOVE, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -81,7 +102,19 @@ public class P2PManager extends AbstractManager {
             p2PStrategy.sendMyMoves(myMoves);
             myMoves.clear();
             isUserEnabled = false;
+            parentActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    makeToastWaiting();
+                }
+            });
             resList = p2PStrategy.getOpponentMoves();
+            parentActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    makeToastMakeMove();
+                }
+            });
             isUserEnabled = true;
             publishProgress();
 
@@ -169,5 +202,23 @@ public class P2PManager extends AbstractManager {
             boardView.setGameState(chart.observer.rateActualState());
             boardView.invalidate();
         }
+    }
+
+    @Override
+    public void sendLostConnectionMessage() {
+        opponentLeft = true;
+        p2PStrategy.sendLostConnectionMessage();
+    }
+
+    @Override
+    public void finishGame() {
+        parentActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                opponentLeft = true;
+                Toast.makeText(parentActivity, LOST_CONNECTION_MESSAGE, Toast.LENGTH_LONG).show();
+            }
+        });
+        parentActivity.finish();
     }
 }

@@ -25,7 +25,7 @@
 				android:layout_height="wrap_content"
 				android:textAppearance="?android:attr/textAppearanceLarge"
 				android:textSize="25dp"
-				android:text="Available servers"
+				android:text="@string/available_players"
 				android:textColor="@android:color/background_dark"
 				android:id="@+id/textView" android:layout_gravity="center_horizontal"/>
 	<ListView
