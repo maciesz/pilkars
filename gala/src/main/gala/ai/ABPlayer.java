@@ -71,9 +71,9 @@ public class ABPlayer implements IArtificialIntelligence {
 	        int ballPosition = chart.getballPosition();
 	        Random r = new Random();
 	        Collections.shuffle(indexList, r);
-	        moveSequence = alphaBeta(ballPosition, new LinkedList<Direction>()).seq;
+	        moveSequence = this.alphaBeta(ballPosition, new LinkedList<Direction>()).seq;
 	        return moveSequence;
-	       // return null;
+
 	    }
 	  public class pair
 	  {
@@ -86,7 +86,7 @@ public class ABPlayer implements IArtificialIntelligence {
 		  }
 	  };
 	  
-	  private pair alphaBeta(int ballPosition, LinkedList<Direction> seq)
+	  protected pair alphaBeta(int ballPosition, LinkedList<Direction> seq)
 	  {
 		  Direction direction;
 		  int nextPosition, edgeHash;
@@ -140,14 +140,14 @@ public class ABPlayer implements IArtificialIntelligence {
 	  {
 		  Direction direction;
 		  int nextPosition, edgeHash;
-		//  LinkedList<Direction> best = new LinkedList<Direction>();
+
 		  int grade = noGrade;
 		  int tempGrade = 0;
 		  int bp = ballPosition;
 		  boolean vis = visited[bp];
 		  visited[bp] = true;
 		  for(int index : indexList)
-		  {//if(x==0)System.out.println(index);
+		  {
 			  direction = new Direction(xdir[index], ydir[index]);
               nextPosition = computeNext(bp, direction);
               edgeHash = computeHash(bp, nextPosition);
@@ -159,10 +159,10 @@ public class ABPlayer implements IArtificialIntelligence {
             	  {
             		  tempGrade = SelfGrader(bp);
             		  tempGrade += firstMoveGrade;
-            		  //tempGrade -= nextMoveGrade;// * seq.size();
+            		  tempGrade -= nextMoveGrade;// * seq.size();
             		  System.out.println(tempGrade);
             		  visited[bp] = false;
-            //		  System.out.println(visited[bp]);
+            		  System.out.println(visited[bp]);
             		  edges.add(edgeHash);
             		  seq.removeLast();
             		  return EnemyGrader(bp);
