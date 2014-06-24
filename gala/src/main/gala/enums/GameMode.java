@@ -6,5 +6,5 @@ package main.gala.enums;
  * @author Maciej Szeszko <m.szeszko@student.uw.edu.pl>
  */
 public enum GameMode {
-    PlayerVsPlayer, ComputerVsPlayer, Mock
+    WiFiP2P, PlayerVsPlayer, ComputerVsPlayer, Mock
 }

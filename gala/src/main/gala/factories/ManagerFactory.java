@@ -1,9 +1,6 @@
 package main.gala.factories;
 
-import main.gala.core.AbstractManager;
-import main.gala.core.CvPManager;
-import main.gala.core.MockManager;
-import main.gala.core.PvPManager;
+import main.gala.core.*;
 import main.gala.enums.GameMode;
 import main.gala.exceptions.UnknownGameModeException;
 
@@ -30,6 +27,7 @@ public class ManagerFactory {
         addManager(GameMode.ComputerVsPlayer, new CvPManager());
         addManager(GameMode.PlayerVsPlayer, new PvPManager());
         addManager(GameMode.Mock, new MockManager());
+        addManager(GameMode.WiFiP2P, new P2PManager());
     }
     
     /**

@@ -2,12 +2,16 @@ package main.gala.common;
 
 import main.gala.exceptions.AmbiguousMoveException;
 
+import java.io.Serializable;
+
 /**
  * Klasa reprezentująca kierunek ruchu w postaci pary [-1, 0, 1][-1, 0, 1]
  *
  * @author Maciej Andrearczyk <maciej.andrearczyk@student.mimuw.edu.pl>
  */
-public class Direction {
+public class Direction implements Serializable {
+
+    private static final long serialVersionUID = 12412412L;
 
     /**
      * Błąd graniczny dla ruchów po przekątnej.

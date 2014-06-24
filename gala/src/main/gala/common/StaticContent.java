@@ -37,4 +37,10 @@ public class StaticContent {
      * Kolor kreski w alert dialogach.
      */
     public static String DIVIDER_COLOR = "#B0E0E6";
+
+    /**
+     * Domyślny port dla WiFi.
+     */
+    public static final int defaultPort = 8989;
+
 }

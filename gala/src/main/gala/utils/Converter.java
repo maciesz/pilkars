@@ -21,4 +21,18 @@ public class Converter {
 
         return new Direction(xCoord, yCoord * (-1));
     }
+
+    /**
+     * Konwertuje dane otrzymane od gracza online.
+     * (zawsze jesteśmy dolnym graczem)
+     *
+     * @param direction
+     * @return
+     */
+    public static Direction reverseXY(Direction direction) {
+        final int x = direction.getX();
+        final int y = direction.getY();
+
+        return new Direction(x *(-1), y*(-1));
+    }
 }
