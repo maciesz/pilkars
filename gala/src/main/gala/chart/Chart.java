@@ -30,7 +30,7 @@ public class Chart {
 	/**
 	 * Pozycja piłki na planszy.
 	 */
-	private int boalPosition;
+	private int ballPosition;
 
 	/**
 	 * Struktura przechowująca dostępne krawędzie w grafie.
@@ -262,9 +262,9 @@ public class Chart {
 		 * @param direction kierunek, do poruszenia się
 		 */
 		public void executeMove(final Direction direction) {
-			final int startPosition = boalPosition;
+			final int startPosition = ballPosition;
 			final int nextPosition = computeNext(direction);
-			boalPosition = nextPosition;
+			ballPosition = nextPosition;
 
 			final int hash = computeHash(startPosition, nextPosition);
 
@@ -401,7 +401,7 @@ public class Chart {
 		 * @return stan rozgrywki (typ GameState)
 		 */
 		public GameState rateActualState() {
-            return rateGameState(boalPosition);
+            return rateGameState(ballPosition);
 		}
 
         /**
@@ -465,10 +465,10 @@ public class Chart {
 		}
 
 		/**
-		 * @param boalPosition pozycja piłki na planszy
+		 * @param ballPosition pozycja piłki na planszy
 		 * @return czy gracz został zablokowany przez przeciwnika
 		 */
-		private boolean isBlocked(final int boalPosition) {
+		private boolean isBlocked(final int ballPosition) {
             final int size = (WIDTH + 1) * (HEIGHT + 3) + 1;
 			Queue<Integer> queue = new LinkedList<>();
             boolean[] queued = new boolean[size];
@@ -478,9 +478,9 @@ public class Chart {
              * Inicjalizacja struktur danych.
              */
             System.arraycopy(austereBoard, 0, queued, 0, austereBoard.length);
-            queued[boalPosition] = true;
+            queued[ballPosition] = true;
             bEdges.addAll(edges);
-            queue.add(boalPosition);
+            queue.add(ballPosition);
 
             /**
              * Deklaracja zmiennych oraz inicjalizacja stałych.
@@ -569,7 +569,7 @@ public class Chart {
 			/**
 			 * Odznacz środek boiska jako odwiedzony.
 			 */
-			visited[boalPosition] = true;
+			visited[ballPosition] = true;
 		}
 
 		/**
@@ -607,6 +607,12 @@ public class Chart {
                 austereBoard[posRhs] = true;
 			}
 		}
+
+
+		public boolean[] getVisited() {
+			// gosh...
+			return visited;
+		}
 	}
 	public Observer observer;
 
@@ -641,6 +647,13 @@ public class Chart {
 	 * @throws main.gala.exceptions.ImparitParameterException
 	 * @throws main.gala.exceptions.InvalidGoalWidthException
 	 */
+	
+	/*k*/
+	public boolean[] getVisited()
+	{
+		return observer.getVisited();
+	}
+	
 	public void setChartParametres(final int width, final int height, final int goalWidth)
 			throws ImparitParameterException, InvalidGoalWidthException {
 
@@ -651,28 +664,39 @@ public class Chart {
 		this.WIDTH = width;
 		this.HEIGHT = height;
 		this.GOAL_WIDTH = goalWidth;
-		this.boalPosition = ((HEIGHT + 3) * (WIDTH + 1) - 1) / 2;
+		this.ballPosition = ((HEIGHT + 3) * (WIDTH + 1) - 1) / 2;
 
         observer = new Observer();
 		observer.initVisited();
 	}
 
+	/* getery wymiarow - k */
+	
+	public int getWidth()
+	{
+		return WIDTH;
+	}
+	
+	public int getHeight()
+	{
+		return HEIGHT;
+	}
 	/**
 	 * Getter na pozycję piłki na boisku.
 	 *
 	 * @return pozycja piłki na planszy
 	 */
-	public int getBoalPosition() {
-		return boalPosition;
+	public int getballPosition() {
+		return ballPosition;
 	}
 
 	/**
 	 * Setter na pozycję piłki na boisku.
 	 *
-	 * @param boalPosition nowa pozycja piłki
+	 * @param ballPosition nowa pozycja piłki
 	 */
-	public void setBoalPosition(final int boalPosition) {
-		this.boalPosition = boalPosition;
+	public void setballPosition(final int ballPosition) {
+		this.ballPosition = ballPosition;
 	}
 
 
@@ -710,9 +734,9 @@ public class Chart {
 	 * @return czy da się przejść we wskazanym kierunku
 	 */
 	public boolean isMoveLegal(Direction direction) {
-		final int start = boalPosition;
+		final int start = ballPosition;
 		final int next =
-				boalPosition + direction.getX() + (WIDTH + 1) * direction.getY();
+				ballPosition + direction.getX() + (WIDTH + 1) * direction.getY();
 
 		return (next > 0) ? edges.contains(computeHash(start, next)) : false;
 	}
@@ -733,7 +757,7 @@ public class Chart {
      * @return numer docelowego pola na planszy
      */
     public int computeNext(final Direction direction) {
-        return boalPosition + direction.getX() + (WIDTH + 1) * direction.getY();
+        return ballPosition + direction.getX() + (WIDTH + 1) * direction.getY();
     }
 
     /**

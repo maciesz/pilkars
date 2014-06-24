@@ -54,7 +54,7 @@ public class PvPManager extends AbstractManager {
          * Oceń stan rozgrywki.
          */
         GameState gameState = chart.observer.rateActualState();
-        chart.observer.markFinal(chart.getBoalPosition());
+        chart.observer.markFinal(chart.getballPosition());
 
         /**
          * Jeśli jesteśmy w stanie akceptującym(patrz enums/GameState), to:

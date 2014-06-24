@@ -6,15 +6,9 @@ import main.gala.enums.GameState;
 
 import java.util.*;
 
-/**
- * Klasa opisująca losowo grającego przeciwnika komputerowego.
- * 
- * @author Maciej Szeszko <m.szeszko@student.uw.edu.pl>
- */
-public class RandomPlayer implements IArtificialIntelligence {
-	
+
+public class EasyPlayer implements IArtificialIntelligence {
     public List<Direction> executeMoveSequence(final Chart chart) {
-    	
         List<Direction> moveSequence = new LinkedList<>();
         List<Integer> indexList = new ArrayList<Integer>() {
             {
@@ -23,16 +17,11 @@ public class RandomPlayer implements IArtificialIntelligence {
             }};
         Set<Integer> edges = new HashSet<>();
         Set<Integer> visited = new HashSet<>();
-      // ABPlayer x = new ABPlayer();
-     //  return x.executeMoveSequence(chart);
-            int HEIGHT = chart.getHeight();
-        int WIDTH = chart.getWidth();
-           // System.out.println((WIDTH + 1)*HEIGHT);
+
         /**
          * Ustal pozycję piłki w grze i zadeklaruj zmienne pomocnicze.
          */
-       int ballPosition = chart.getballPosition();
-        System.out.println(ballPosition);
+        int ballPosition = chart.getballPosition();
         int nextPosition;
         Direction direction;
 
@@ -44,7 +33,6 @@ public class RandomPlayer implements IArtificialIntelligence {
         boolean visitedCondition;
         boolean usedEdgeCondition;
         boolean isMovePossible;
-      
         while(true) {
             observerCondition = chart.observer.rateState(ballPosition) == GameState.OBLIGATORY_MOVE;
             visitedCondition = visited.contains(ballPosition);
@@ -63,9 +51,7 @@ public class RandomPlayer implements IArtificialIntelligence {
             /**
              * W przeciwnym wypadku, jeśli musimy wykonać ruch, to:
              */
-    Collections.shuffle(indexList);
 
-          
             isMovePossible = false;
             for (int index : indexList) {
                 direction = new Direction(chart.X_COORDS[index], chart.Y_COORDS[index]);
@@ -85,7 +71,7 @@ public class RandomPlayer implements IArtificialIntelligence {
             /**
              * Jeśli nie byliśmy w stanie wykonać żadnego ruchu, to blok.
              */
-    if (!isMovePossible)
+            if (!isMovePossible)
                 break;
         }
 

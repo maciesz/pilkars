@@ -1,5 +1,8 @@
 package main.gala.factories;
 
+import main.gala.ai.ABPlayer;
+import main.gala.ai.ABRandomPlayer;
+import main.gala.ai.EasyPlayer;
 import main.gala.ai.IArtificialIntelligence;
 import main.gala.ai.RandomPlayer;
 import main.gala.enums.Strategy;
@@ -26,6 +29,9 @@ public class StrategyFactory {
     static {
         strategies = new EnumMap<>(Strategy.class);
         addStrategy(Strategy.RANDOM, new RandomPlayer());
+        addStrategy(Strategy.EASY, new EasyPlayer());
+        addStrategy(Strategy.MEDIUM, new ABRandomPlayer());
+        addStrategy(Strategy.HARD, new ABPlayer());
     }
 
     /**

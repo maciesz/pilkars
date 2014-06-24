@@ -43,7 +43,7 @@ public class CvPManager extends AbstractManager {
          * Oznacz wierzchołek jako tylko 'do-odbicia'.
          */
         final GameState gameState = chart.observer.rateActualState();
-        chart.observer.markFinal(chart.getBoalPosition());
+        chart.observer.markFinal(chart.getballPosition());
 
         /**
          * Jeśli jesteśmy w stanie akceptującym(patrz enums/GameState), to:
@@ -105,7 +105,7 @@ public class CvPManager extends AbstractManager {
         for (int i = 0; i < resList.size(); i++) {
             chart.executeSingleMove(resList.get(i));
             gameState = chart.observer.rateActualState();
-            chart.observer.markFinal(chart.getBoalPosition());
+            chart.observer.markFinal(chart.getballPosition());
         }
 
         /**
