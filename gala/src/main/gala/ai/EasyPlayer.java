@@ -8,6 +8,8 @@ import java.util.*;
 
 
 public class EasyPlayer implements IArtificialIntelligence {
+    public static final int[] X_COORDS = {0, -1, 1, 1, 1, -1, 0, -1};
+    public static final int[] Y_COORDS = {-1, -1, -1, 1, 0, 1, 1, 0};
     public List<Direction> executeMoveSequence(final Chart chart) {
         List<Direction> moveSequence = new LinkedList<>();
         List<Integer> indexList = new ArrayList<Integer>() {
@@ -53,8 +55,8 @@ public class EasyPlayer implements IArtificialIntelligence {
              */
 
             isMovePossible = false;
-            for (int index : indexList) {
-                direction = new Direction(chart.X_COORDS[index], chart.Y_COORDS[index]);
+            for (int index = 0; index < chart.DIRECTIONS; index++) {
+                direction = new Direction(X_COORDS[index], Y_COORDS[index]);
                 nextPosition = chart.computeNext(ballPosition, direction);
 
                 edgeHash = chart.computeHash(ballPosition, nextPosition);
@@ -79,6 +81,6 @@ public class EasyPlayer implements IArtificialIntelligence {
     }
 
     public IArtificialIntelligence getInstance() {
-        return new RandomPlayer();
+        return new EasyPlayer();
     }
 }

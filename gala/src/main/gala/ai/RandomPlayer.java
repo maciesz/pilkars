@@ -23,16 +23,11 @@ public class RandomPlayer implements IArtificialIntelligence {
             }};
         Set<Integer> edges = new HashSet<>();
         Set<Integer> visited = new HashSet<>();
-      // ABPlayer x = new ABPlayer();
-     //  return x.executeMoveSequence(chart);
             int HEIGHT = chart.getHeight();
-        int WIDTH = chart.getWidth();
-           // System.out.println((WIDTH + 1)*HEIGHT);
-        /**
+        int WIDTH = chart.getWidth();        /**
          * Ustal pozycję piłki w grze i zadeklaruj zmienne pomocnicze.
          */
        int ballPosition = chart.getballPosition();
-        System.out.println(ballPosition);
         int nextPosition;
         Direction direction;
 

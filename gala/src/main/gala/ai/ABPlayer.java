@@ -15,6 +15,13 @@ import main.gala.chart.Chart;
 import main.gala.common.Direction;
 import main.gala.enums.GameState;
 
+
+
+/* przeszukiwanie DFS dla sztucznej inteligencji
+ * 
+ * alfabeta
+ * 
+ * ocena: zblizanie sie do bramki, duze punkty za stany koncowe, preferowanie krotkich sekwencji*/
 public class ABPlayer implements IArtificialIntelligence {
 
 	
@@ -90,7 +97,7 @@ public class ABPlayer implements IArtificialIntelligence {
 		  boolean vis = visited[bp];
 		  visited[bp] = true;
 		  for(int index : indexList)
-		  {//if(x==0)System.out.println(index);
+		  {
 			  direction = new Direction(xdir[index], ydir[index]);
               nextPosition = computeNext(bp, direction);
               edgeHash = computeHash(bp, nextPosition);
@@ -103,11 +110,7 @@ public class ABPlayer implements IArtificialIntelligence {
             		  tempGrade = SelfGrader(bp);
             		  tempGrade += firstMoveGrade;
             		  tempGrade -= nextMoveGrade * (seq.size() - 1);
-            		  int oponent = LOSE;
-            //		  System.out.println(tempGrade);
-            		  visited[bp] = false;
-            //		  System.out.println(visited[bp]);
-            		  edges.add(edgeHash);
+            		  visited[bp] = false;            		  edges.add(edgeHash);
             		  seq.removeLast();
             		  return new pair(tempGrade, new LinkedList(seq));
             	  }
@@ -131,6 +134,8 @@ public class ABPlayer implements IArtificialIntelligence {
 		  }
 		  return new pair(grade, new LinkedList<Direction> (best));
 	  }
+	  
+	  //to na lepszy sprzet, telefony za wolne:
 /*	  private int alphaBetaOpponent(int ballPosition, LinkedList<Direction> seq)
 	  {
 		  Direction direction;

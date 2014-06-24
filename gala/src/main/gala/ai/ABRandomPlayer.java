@@ -6,6 +6,10 @@ import java.util.Random;
 import main.gala.ai.ABPlayer.pair;
 import main.gala.common.Direction;
 
+
+/*uposledzamy gracza trudnego, oprócz oceny liczy się pewna losowość */
+
+
 public class ABRandomPlayer extends ABPlayer {
 	  private pair alphaBeta(int ballPosition, LinkedList<Direction> seq)
 	  {
