@@ -38,7 +38,7 @@ public class P2PManager extends AbstractManager {
         myMoves.add(direction);
 
         final GameState gameState = chart.observer.rateActualState();
-        chart.observer.markFinal(chart.getBoalPosition());
+        chart.observer.markFinal(chart.getballPosition());
 
         if (gameState == GameState.ACCEPTABLE) {
             chart.executeMoveSequence();
@@ -105,7 +105,7 @@ public class P2PManager extends AbstractManager {
 
             for (int i = 0; i < convertedList.size(); i++) {
                 chart.executeSingleMove(convertedList.get(i));
-                chart.observer.markFinal(chart.getBoalPosition());
+                chart.observer.markFinal(chart.getballPosition());
             }
 
             chart.executeMoveSequence();
@@ -146,7 +146,7 @@ public class P2PManager extends AbstractManager {
 
             for (int i = 0; i < convertedList.size(); i++) {
                 chart.executeSingleMove(convertedList.get(i));
-                chart.observer.markFinal(chart.getBoalPosition());
+                chart.observer.markFinal(chart.getballPosition());
             }
 
             boardView.drawSequence(resList);
